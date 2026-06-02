@@ -16,9 +16,8 @@ export function BackgroundAudio() {
     try {
       audio.volume = 0.7;
       await audio.play();
-      setIsPlaying(true);
     } catch {
-      setIsPlaying(false);
+      // Autoplay with sound is commonly blocked until the user clicks.
     }
   };
 
@@ -28,7 +27,14 @@ export function BackgroundAudio() {
 
   return (
     <>
-      <audio ref={audioRef} src="/audio/purple-bob.mp3" loop preload="auto" />
+      <audio
+        ref={audioRef}
+        src="/audio/purple-bob.mp3"
+        loop
+        onPause={() => setIsPlaying(false)}
+        onPlay={() => setIsPlaying(true)}
+        preload="auto"
+      />
       <button
         aria-label={
           isPlaying ? "Background audio is playing" : "Play background audio"
