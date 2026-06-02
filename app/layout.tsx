@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Malloy Site",
-  description: "A Vercel-ready site for Malloy."
+  description: ":)"
 };
 
 export default function RootLayout({
