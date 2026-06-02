@@ -1,9 +1,7 @@
-import { BackgroundAudio } from "./background-audio";
-
 export default function Home() {
   return (
     <main className="page">
-      <BackgroundAudio />
+      <p className="smile">:)</p>
     </main>
   );
 }
