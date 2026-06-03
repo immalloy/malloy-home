@@ -3,7 +3,7 @@ import { getAllBlogPosts } from "../../../lib/blog/posts";
 
 export const dynamic = "force-dynamic";
 
-const redisKey = "malloy:blog:last-discord-rss-slug:v2";
+const redisKey = "malloy:blog:last-discord-rss-slug:v3";
 
 function getSiteUrl() {
   return (process.env.SITE_URL || "https://malloy.vercel.app").replace(/\/$/, "");
