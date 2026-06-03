@@ -1,14 +1,16 @@
 import type { NextRequest } from "next/server";
 import { getAllBlogPosts } from "../../../lib/blog/posts";
 
-const redisKey = "malloy:blog:last-discord-rss-slug";
+export const dynamic = "force-dynamic";
+
+const redisKey = "malloy:blog:last-discord-rss-slug:v2";
 
 function getSiteUrl() {
   return (process.env.SITE_URL || "https://malloy.vercel.app").replace(/\/$/, "");
 }
 
 function getRequiredEnv(name: string) {
-  const value = process.env[name];
+  const value = process.env[name]?.trim();
 
   if (!value) {
     throw new Error(`Missing ${name}`);
@@ -84,44 +86,63 @@ async function postToDiscord(post: ReturnType<typeof getAllBlogPosts>[number]) {
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
+  const cronSecret = getRequiredEnv("CRON_SECRET");
 
-  if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const posts = getAllBlogPosts();
-  const latestPost = posts[0];
+  try {
+    const posts = getAllBlogPosts();
+    const latestPost = posts[0];
 
-  if (!latestPost) {
-    return Response.json({ posted: 0, status: "no-posts" });
-  }
+    if (!latestPost) {
+      return Response.json({ posted: 0, status: "no-posts" });
+    }
 
-  const lastPostedSlug = await getLastPostedSlug();
+    const lastPostedSlug = await getLastPostedSlug();
 
-  if (!lastPostedSlug) {
-    await setLastPostedSlug(latestPost.slug);
+    if (!lastPostedSlug) {
+      await postToDiscord(latestPost);
+      await setLastPostedSlug(latestPost.slug);
+
+      console.info("Discord RSS posted latest blog post during initialization", {
+        slug: latestPost.slug
+      });
+
+      return Response.json({
+        lastPosted: latestPost.slug,
+        posted: 1,
+        status: "initialized-and-posted"
+      });
+    }
+
+    const lastPostedIndex = posts.findIndex((post) => post.slug === lastPostedSlug);
+    const newPosts = lastPostedIndex === -1 ? [latestPost] : posts.slice(0, lastPostedIndex);
+
+    for (const post of [...newPosts].reverse()) {
+      await postToDiscord(post);
+    }
+
+    if (newPosts.length > 0) {
+      await setLastPostedSlug(newPosts[0].slug);
+    }
+
+    console.info("Discord RSS cron completed", {
+      lastPosted: newPosts[0]?.slug ?? lastPostedSlug,
+      posted: newPosts.length
+    });
 
     return Response.json({
-      initialized: latestPost.slug,
-      posted: 0,
-      status: "initialized"
+      lastPosted: newPosts[0]?.slug ?? lastPostedSlug,
+      posted: newPosts.length,
+      status: "ok"
     });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown cron error";
+
+    console.error("Discord RSS cron failed", { error: message });
+
+    return Response.json({ error: message, status: "failed" }, { status: 500 });
   }
-
-  const lastPostedIndex = posts.findIndex((post) => post.slug === lastPostedSlug);
-  const newPosts = lastPostedIndex === -1 ? [latestPost] : posts.slice(0, lastPostedIndex);
-
-  for (const post of [...newPosts].reverse()) {
-    await postToDiscord(post);
-  }
-
-  if (newPosts.length > 0) {
-    await setLastPostedSlug(newPosts[0].slug);
-  }
-
-  return Response.json({
-    lastPosted: newPosts[0]?.slug ?? lastPostedSlug,
-    posted: newPosts.length,
-    status: "ok"
-  });
 }
