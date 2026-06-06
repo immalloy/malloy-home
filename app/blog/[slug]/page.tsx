@@ -70,10 +70,24 @@ export async function generateMetadata({
     openGraph: {
       title: post.title,
       description: post.description,
+      images: [
+        {
+          url: `/blog/${post.slug}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: post.title
+        }
+      ],
       type: "article",
       url: `/blog/${post.slug}`,
       publishedTime: post.date,
       modifiedTime: post.updated
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: [`/blog/${post.slug}/opengraph-image`]
     }
   };
 }
