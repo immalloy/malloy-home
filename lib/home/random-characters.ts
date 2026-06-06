@@ -26,12 +26,5 @@ export const randomCharacters = [
     label: "Faker",
     src: "/images/random/Faker.png",
     width: 404
-  },
-  {
-    height: 404,
-    href: "https://house-of-puso.fandom.com/wiki/Puso",
-    label: "Puso",
-    src: "/images/random/Puso.png",
-    width: 404
   }
 ];

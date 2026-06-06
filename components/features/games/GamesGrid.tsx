@@ -19,7 +19,9 @@ export function GamesGrid({ games }: GamesGridProps) {
               src={game.thumbnail}
             />
           </div>
-          <span className="game-title">{game.title}</span>
+          <span className="game-card-body">
+            <span className="game-title">{game.title}</span>
+          </span>
         </Link>
       ))}
     </div>

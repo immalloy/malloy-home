@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Children, isValidElement } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -14,6 +15,33 @@ type BlogPostPageProps = {
     slug: string;
   }>;
 };
+
+function getYouTubeEmbedUrl(href?: string) {
+  if (!href) {
+    return undefined;
+  }
+
+  try {
+    const url = new URL(href);
+    let videoId: string | null = null;
+
+    if (url.hostname === "youtu.be") {
+      videoId = url.pathname.split("/").filter(Boolean)[0] ?? null;
+    }
+
+    if (url.hostname.endsWith("youtube.com")) {
+      videoId = url.searchParams.get("v");
+    }
+
+    if (!videoId || !/^[a-zA-Z0-9_-]{6,}$/.test(videoId)) {
+      return undefined;
+    }
+
+    return `https://www.youtube-nocookie.com/embed/${videoId}`;
+  } catch {
+    return undefined;
+  }
+}
 
 export function generateStaticParams() {
   return getAllBlogPosts().map((post) => ({
@@ -57,6 +85,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (!post) {
     notFound();
   }
+
+  const posts = getAllBlogPosts();
+  const postIndex = posts.findIndex((item) => item.slug === post.slug);
+  const newerPost = postIndex > 0 ? posts[postIndex - 1] : undefined;
+  const olderPost =
+    postIndex >= 0 && postIndex < posts.length - 1 ? posts[postIndex + 1] : undefined;
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -107,6 +141,33 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     {children}
                   </a>
                 );
+              },
+              p({ children }) {
+                const childArray = Children.toArray(children).filter(
+                  (child) => typeof child !== "string" || child.trim() !== ""
+                );
+                const onlyChild = childArray[0];
+
+                if (childArray.length === 1 && isValidElement(onlyChild)) {
+                  const href = (onlyChild.props as { href?: string }).href;
+                  const embedUrl = getYouTubeEmbedUrl(href);
+
+                  if (embedUrl) {
+                    return (
+                      <div className="markdown-video">
+                        <iframe
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                          loading="lazy"
+                          src={embedUrl}
+                          title="YouTube video"
+                        />
+                      </div>
+                    );
+                  }
+                }
+
+                return <p>{children}</p>;
               }
             }}
             remarkPlugins={[remarkGfm]}
@@ -114,6 +175,32 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {post.content}
           </ReactMarkdown>
         </div>
+
+        <nav className="blog-post-nav" aria-label="Blog post navigation">
+          {olderPost ? (
+            <Link className="blog-post-nav-link" href={`/blog/${olderPost.slug}`}>
+              <span>older</span>
+              <strong>{olderPost.title}</strong>
+            </Link>
+          ) : (
+            <span className="blog-post-nav-link blog-post-nav-disabled">
+              <span>older</span>
+              <strong>no older posts</strong>
+            </span>
+          )}
+
+          {newerPost ? (
+            <Link className="blog-post-nav-link" href={`/blog/${newerPost.slug}`}>
+              <span>newer</span>
+              <strong>{newerPost.title}</strong>
+            </Link>
+          ) : (
+            <span className="blog-post-nav-link blog-post-nav-disabled">
+              <span>newer</span>
+              <strong>no newer posts</strong>
+            </span>
+          )}
+        </nav>
       </article>
     </main>
   );
