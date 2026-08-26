@@ -1,0 +1,19 @@
+{
+  "name": "malloy-home",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "deploy": "npm run build && wrangler deploy",
+    "preview": "npm run build && wrangler dev"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.2.5",
+    "astro": "^7.2.0",
+    "swiper": "^14.1.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.126.0"
+  }
+}

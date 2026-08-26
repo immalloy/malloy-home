@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>ImMalloy</title>
+  </head>
+  <body>
+    <main class="swiper" aria-label="Site sections">
+      <div class="swiper-wrapper">
+        <section class="swiper-slide hero" aria-labelledby="site-title">
+          <div class="hero-content">
+            <h1 id="site-title">ImMalloy</h1>
+            <p>Welcome to my Website!</p>
+          </div>
+
+          <button class="scroll-cue" type="button" aria-label="Scroll to more content">
+            <span>Scroll to explore</span>
+            <span aria-hidden="true">&#8595;</span>
+          </button>
+        </section>
+
+        <section class="swiper-slide more" aria-label="More content">
+          <div class="more-content">
+            <p>More soon.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+  :global(html),
+  :global(body) {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  :global(body) {
+    margin: 0;
+    background: #f7f5ef;
+    color: #1a1d24;
+    font-family: "FunkinLingLong", sans-serif;
+  }
+
+  .swiper {
+    --swiper-wrapper-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+  }
+
+  .swiper-slide {
+    display: grid;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 2rem;
+    place-items: center;
+  }
+
+  .hero {
+    display: grid;
+    position: relative;
+  }
+
+  .hero-content,
+  .more-content {
+    max-width: 70rem;
+    text-align: center;
+  }
+
+  h1 {
+    margin: 0;
+    color: #5b8cff;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(5rem, 18vw, 14rem);
+    font-weight: 400;
+    letter-spacing: -0.06em;
+    line-height: 0.82;
+    text-wrap: balance;
+  }
+
+  .hero p {
+    margin: 2rem 0 0;
+    font-size: clamp(1.4rem, 3vw, 2.5rem);
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: max(2rem, env(safe-area-inset-bottom));
+    border: 0;
+    display: grid;
+    gap: 0.5rem;
+    padding: 0;
+    background: transparent;
+    color: #1a1d24a6;
+    cursor: pointer;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .scroll-cue span:last-child {
+    color: #5b8cff;
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .scroll-cue:hover,
+  .scroll-cue:focus-visible {
+    color: #1a1d24;
+  }
+
+  .scroll-cue:focus-visible {
+    outline: 2px solid #5b8cff;
+    outline-offset: 0.5rem;
+  }
+
+  .more {
+    display: grid;
+  }
+
+  .more p {
+    margin: 0;
+    color: #1a1d2480;
+    font-size: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  @media (max-width: 600px) {
+    .swiper-slide {
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-size: clamp(4rem, 22vw, 8rem);
+    }
+  }
+
+</style>
+
+<script>
+  import Swiper from "swiper";
+  import { Keyboard, Mousewheel } from "swiper/modules";
+  import "swiper/css";
+
+  const scrollCue = document.querySelector(".scroll-cue");
+  const swiper = new Swiper(".swiper", {
+    modules: [Keyboard, Mousewheel],
+    direction: "vertical",
+    slidesPerView: 1,
+    speed: 800,
+    mousewheel: {
+      forceToAxis: true,
+      releaseOnEdges: true,
+    },
+    keyboard: { enabled: true },
+  });
+
+  scrollCue?.addEventListener("click", () => swiper.slideNext());
+</script>
