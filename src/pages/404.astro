@@ -49,6 +49,12 @@ import ThemeToggle from "../components/ThemeToggle.astro";
     max-width: 90rem;
     margin: 0 auto;
     padding: clamp(2rem, 5vw, 5rem);
+    user-select: none;
+  }
+
+  .not-found img {
+    -webkit-user-drag: none;
+    user-select: none;
   }
 
   .character {
