@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>404 | ImMalloy</title>
+  </head>
+  <body>
+    <main class="not-found" aria-labelledby="not-found-title">
+      <div class="character">
+        <img src="/assets/b01-404.png" alt="B01 looking at a missing page." />
+      </div>
+
+      <div class="not-found-content">
+        <p class="eyebrow">Oops, where did this go?</p>
+        <h1 id="not-found-title">404</h1>
+        <p class="message">B01 couldn’t find that page.</p>
+        <a class="home-link" href="/">
+          Back to home
+          <span class="home-link-arrow" aria-hidden="true"></span>
+        </a>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+  :global(html),
+  :global(body) {
+    min-height: 100%;
+  }
+
+  :global(body) {
+    margin: 0;
+    overflow-x: hidden;
+    background: #f7f5ef;
+    color: #1a1d24;
+    font-family: "FunkinLingLong", sans-serif;
+  }
+
+  .not-found {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.85fr);
+    align-items: center;
+    gap: clamp(2rem, 7vw, 8rem);
+    min-height: 100svh;
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 5rem);
+  }
+
+  .character {
+    display: grid;
+    min-height: min(80svh, 52rem);
+    place-items: center;
+  }
+
+  .character img {
+    display: block;
+    width: auto;
+    height: min(80svh, 52rem);
+    max-width: 100%;
+    object-fit: contain;
+    transform: rotate(-2deg);
+  }
+
+  .not-found-content {
+    max-width: 32rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 clamp(2rem, 4vw, 3rem);
+    color: #1a1d2480;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    color: #5b8cff;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(8rem, 20vw, 16rem);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 0.78;
+  }
+
+  .message {
+    max-width: 24rem;
+    margin: 2rem 0 2.5rem;
+    font-size: clamp(1.4rem, 3vw, 2.5rem);
+    line-height: 1.2;
+  }
+
+  .home-link {
+    display: inline-flex;
+    gap: 0.75rem;
+    align-items: center;
+    color: #5b8cff;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 180ms ease, transform 180ms ease;
+  }
+
+  .home-link-arrow {
+    display: block;
+    width: 0.7rem;
+    aspect-ratio: 100 / 206;
+    flex: none;
+    background: currentColor;
+    -webkit-mask: url("/assets/down-arrow.png") center / contain no-repeat;
+    mask: url("/assets/down-arrow.png") center / contain no-repeat;
+    transform: rotate(-135deg);
+  }
+
+  .home-link:hover,
+  .home-link:focus-visible {
+    color: #1a1d24;
+    transform: translateX(0.25rem);
+  }
+
+  .home-link:focus-visible {
+    outline: 2px solid #5b8cff;
+    outline-offset: 0.5rem;
+  }
+
+  @media (max-width: 800px) {
+    .not-found {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      min-height: 100svh;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .character {
+      min-height: 0;
+    }
+
+    .character img {
+      height: min(50svh, 28rem);
+    }
+
+    .not-found-content {
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .message {
+      margin-inline: auto;
+    }
+  }
+</style>

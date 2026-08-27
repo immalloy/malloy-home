@@ -14,16 +14,48 @@
             <p>Welcome to my Website!</p>
           </div>
 
-          <button class="scroll-cue" type="button" aria-label="Scroll to more content">
-            <span>Scroll to explore</span>
-            <span aria-hidden="true">&#8595;</span>
-          </button>
+          <nav class="slide-navigation slide-navigation-down" aria-label="Section navigation">
+            <button class="slide-arrow scroll-cue slide-arrow-down" type="button" aria-label="Scroll to more content" data-slide-direction="next">
+              <span>Scroll to explore</span>
+              <img class="slide-arrow-icon" src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+            </button>
+          </nav>
+        </section>
+
+        <section class="swiper-slide about-preview" aria-labelledby="about-preview-title">
+          <div class="about-illustration">
+            <img src="/assets/memstar-hello.png" alt="Memstar waving hello." />
+          </div>
+
+          <div class="about-preview-content">
+            <h2 id="about-preview-title">Who am I?</h2>
+            <p>
+              I’m ImMalloy. I make things, collect ideas, and leave room for a few weird little characters
+              along the way.
+            </p>
+            <a class="about-link" href="/about">About Me</a>
+          </div>
+
+          <nav class="slide-navigation" aria-label="Section navigation">
+            <button class="slide-arrow slide-arrow-up" type="button" aria-label="Previous section" data-slide-direction="prev">
+              <img class="slide-arrow-icon" src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+            </button>
+            <button class="slide-arrow slide-arrow-down" type="button" aria-label="Next section" data-slide-direction="next">
+              <img class="slide-arrow-icon" src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+            </button>
+          </nav>
         </section>
 
         <section class="swiper-slide more" aria-label="More content">
           <div class="more-content">
             <p>More soon.</p>
           </div>
+
+          <nav class="slide-navigation slide-navigation-up" aria-label="Section navigation">
+            <button class="slide-arrow slide-arrow-up" type="button" aria-label="Previous section" data-slide-direction="prev">
+              <img class="slide-arrow-icon" src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+            </button>
+          </nav>
         </section>
       </div>
     </main>
@@ -73,6 +105,7 @@
     min-height: 100svh;
     padding: 2rem;
     place-items: center;
+    position: relative;
   }
 
   .hero {
@@ -84,6 +117,142 @@
   .more-content {
     max-width: 70rem;
     text-align: center;
+  }
+
+  .about-preview {
+    grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 0.75fr);
+    gap: clamp(2rem, 7vw, 8rem);
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 5rem);
+  }
+
+  .about-illustration {
+    display: grid;
+    min-height: min(80svh, 52rem);
+    place-items: center;
+  }
+
+  .about-illustration img {
+    display: block;
+    width: min(100%, 34rem);
+    height: min(80svh, 52rem);
+    object-fit: contain;
+  }
+
+  .about-preview-content {
+    max-width: 32rem;
+  }
+
+  .about-preview h2 {
+    margin: 0;
+    color: #5b8cff;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(4rem, 9vw, 8rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 0.84;
+    text-wrap: balance;
+  }
+
+  .about-preview-content p {
+    max-width: 28rem;
+    margin: 2rem 0 2.5rem;
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    line-height: 1.3;
+    text-wrap: pretty;
+  }
+
+  .about-link {
+    display: inline-block;
+    border: 2px solid #5b8cff;
+    padding: 0.85rem 1.1rem;
+    color: #5b8cff;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .about-link:hover,
+  .about-link:focus-visible {
+    background: #5b8cff;
+    color: #f7f5ef;
+    transform: translateY(-0.15rem);
+  }
+
+  .about-link:focus-visible {
+    outline: 2px solid #1a1d24;
+    outline-offset: 0.4rem;
+  }
+
+  .slide-navigation {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: max(1.5rem, env(safe-area-inset-top)) 1rem max(2rem, env(safe-area-inset-bottom));
+    pointer-events: none;
+  }
+
+  .slide-navigation-down {
+    justify-content: flex-end;
+  }
+
+  .slide-navigation-up {
+    justify-content: flex-start;
+  }
+
+  .slide-arrow {
+    border: 0;
+    display: grid;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.75rem;
+    place-items: center;
+    background: transparent;
+    color: #1a1d24a6;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: color 180ms ease, opacity 180ms ease;
+  }
+
+  .slide-arrow:hover:not(:disabled),
+  .slide-arrow:focus-visible:not(:disabled) {
+    color: #1a1d24;
+  }
+
+  .slide-arrow:disabled {
+    cursor: default;
+    opacity: 0.25;
+  }
+
+  .slide-arrow:focus-visible {
+    outline: 2px solid #5b8cff;
+    outline-offset: 0.4rem;
+  }
+
+  .slide-arrow-icon {
+    display: block;
+    width: clamp(0.6rem, 1.6vw, 1rem);
+    height: auto;
+    opacity: 0.65;
+    filter: brightness(0) saturate(100%) invert(56%) sepia(96%) saturate(1493%) hue-rotate(196deg) brightness(101%) contrast(101%);
+    transition: opacity 180ms ease;
+  }
+
+  .slide-arrow-up .slide-arrow-icon {
+    transform: rotate(180deg);
+  }
+
+  .slide-arrow:hover:not(:disabled) .slide-arrow-icon,
+  .slide-arrow:focus-visible:not(:disabled) .slide-arrow-icon {
+    opacity: 1;
   }
 
   h1 {
@@ -105,12 +274,10 @@
   }
 
   .scroll-cue {
-    position: absolute;
-    bottom: max(2rem, env(safe-area-inset-bottom));
     border: 0;
     display: grid;
     gap: 0.5rem;
-    padding: 0;
+    padding: 0.75rem;
     background: transparent;
     color: #1a1d24a6;
     cursor: pointer;
@@ -119,22 +286,6 @@
     letter-spacing: 0.12em;
     text-align: center;
     text-transform: uppercase;
-  }
-
-  .scroll-cue span:last-child {
-    color: #5b8cff;
-    font-size: 1.5rem;
-    line-height: 1;
-  }
-
-  .scroll-cue:hover,
-  .scroll-cue:focus-visible {
-    color: #1a1d24;
-  }
-
-  .scroll-cue:focus-visible {
-    outline: 2px solid #5b8cff;
-    outline-offset: 0.5rem;
   }
 
   .more {
@@ -155,6 +306,40 @@
     h1 {
       font-size: clamp(4rem, 22vw, 8rem);
     }
+
+    .about-preview {
+      gap: 2rem;
+      padding: 1.5rem;
+    }
+
+    .about-preview h2 {
+      font-size: clamp(3.5rem, 10vw, 6rem);
+    }
+  }
+
+  @media (max-width: 700px) {
+    .about-preview {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 1.5rem;
+    }
+
+    .about-illustration {
+      min-height: 0;
+    }
+
+    .about-illustration img {
+      height: min(44svh, 28rem);
+    }
+
+    .about-preview-content {
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .about-preview-content p {
+      margin-inline: auto;
+    }
   }
 
 </style>
@@ -164,7 +349,7 @@
   import { Keyboard, Mousewheel } from "swiper/modules";
   import "swiper/css";
 
-  const scrollCue = document.querySelector(".scroll-cue");
+  const slideControls = document.querySelectorAll("[data-slide-direction]");
   const swiper = new Swiper(".swiper", {
     modules: [Keyboard, Mousewheel],
     direction: "vertical",
@@ -177,5 +362,15 @@
     keyboard: { enabled: true },
   });
 
-  scrollCue?.addEventListener("click", () => swiper.slideNext());
+  slideControls.forEach((control) => {
+    control.addEventListener("click", () => {
+      if (!(control instanceof HTMLButtonElement) || control.disabled) return;
+
+      if (control.dataset.slideDirection === "prev") {
+        swiper.slidePrev();
+      } else {
+        swiper.slideNext();
+      }
+    });
+  });
 </script>
