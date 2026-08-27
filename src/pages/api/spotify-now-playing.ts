@@ -26,6 +26,10 @@ type SpotifyCurrentlyPlaying = {
   item?: SpotifyPlayingItem | null;
 };
 
+type SpotifyApiError = {
+  error?: { message?: string };
+};
+
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -85,12 +89,26 @@ export const GET: APIRoute = async () => {
   }
 
   if (!currentlyPlayingResponse.ok) {
+    let spotifyMessage = "";
+    try {
+      const errorData = (await currentlyPlayingResponse.clone().json()) as SpotifyApiError;
+      spotifyMessage = errorData.error?.message ?? "";
+    } catch {
+      // Some Spotify errors do not include a JSON body.
+    }
+
     if (currentlyPlayingResponse.status === 401) {
-      return jsonResponse({ error: "Spotify rejected the access token. Reauthorize Spotify at /spotify-login." }, 401);
+      return jsonResponse({
+        error: "Spotify rejected the access token. Reauthorize Spotify at /spotify-login.",
+        detail: spotifyMessage || "Invalid or expired access token.",
+      }, 401);
     }
 
     if (currentlyPlayingResponse.status === 403) {
-      return jsonResponse({ error: "Spotify denied playback access. Reauthorize Spotify at /spotify-login." }, 403);
+      return jsonResponse({
+        error: "Spotify denied playback access. Reauthorize Spotify at /spotify-login.",
+        detail: spotifyMessage || "The token does not have permission for this endpoint.",
+      }, 403);
     }
 
     if (currentlyPlayingResponse.status === 429) {
