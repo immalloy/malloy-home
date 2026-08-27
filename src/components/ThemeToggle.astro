@@ -1,0 +1,90 @@
+<button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+  <img class="theme-toggle-icon theme-toggle-moon" src="/assets/moon.png" alt="" aria-hidden="true" />
+  <img class="theme-toggle-icon theme-toggle-sun" src="/assets/sun.png" alt="" aria-hidden="true" />
+</button>
+
+<style>
+  .theme-toggle {
+    position: fixed;
+    z-index: 3;
+    top: max(1rem, env(safe-area-inset-top));
+    right: max(1rem, env(safe-area-inset-right));
+    display: grid;
+    width: 4.5rem;
+    height: 4.5rem;
+    border: 0;
+    padding: 0.5rem;
+    place-items: center;
+    background: transparent;
+    cursor: pointer;
+    transition: transform 180ms ease;
+  }
+
+  .theme-toggle:hover {
+    transform: scale(1.08);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--site-accent);
+    outline-offset: 0.25rem;
+  }
+
+  .theme-toggle-icon {
+    grid-area: 1 / 1;
+    place-self: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    object-fit: contain;
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+  }
+
+  .theme-toggle-moon {
+    opacity: 0;
+    transform: scale(0.75) rotate(-180deg);
+  }
+
+  .theme-toggle-sun {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+
+  :global(html[data-theme="dark"]) .theme-toggle-moon {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+
+  :global(html[data-theme="dark"]) .theme-toggle-sun {
+    opacity: 0;
+    transform: scale(0.75) rotate(180deg);
+  }
+</style>
+
+<script is:inline>
+  const themeToggle = document.querySelector(".theme-toggle");
+
+  const updateThemeToggle = (theme) => {
+    themeToggle?.setAttribute("aria-pressed", String(theme === "dark"));
+    themeToggle?.setAttribute(
+      "aria-label",
+      theme === "dark" ? "Switch to light mode" : "Switch to dark mode",
+    );
+  };
+
+  if (themeToggle) {
+    const currentTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    updateThemeToggle(currentTheme);
+
+    themeToggle.addEventListener("click", () => {
+      const theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+      updateThemeToggle(theme);
+
+      try {
+        window.localStorage.setItem("malloy-theme", theme);
+      } catch {
+        // Storage can be unavailable in strict privacy modes.
+      }
+    });
+  }
+</script>

@@ -1,11 +1,11 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>404 | ImMalloy</title>
-  </head>
-  <body>
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+---
+
+<SiteLayout title="404 | ImMalloy">
+  <ThemeToggle />
+
     <main class="not-found" aria-labelledby="not-found-title">
       <div class="character">
         <img src="/assets/b01-404.png" alt="B01 looking at a missing page." />
@@ -21,8 +21,7 @@
         </a>
       </div>
     </main>
-  </body>
-</html>
+</SiteLayout>
 
 <style>
   @font-face {
@@ -37,21 +36,8 @@
     font-display: swap;
   }
 
-  :global(*) {
-    box-sizing: border-box;
-  }
-
-  :global(html),
   :global(body) {
-    min-height: 100%;
-  }
-
-  :global(body) {
-    margin: 0;
     overflow-x: hidden;
-    background: #f7f5ef;
-    color: #1a1d24;
-    font-family: "FunkinLingLong", sans-serif;
   }
 
   .not-found {
@@ -80,13 +66,17 @@
     transform: rotate(-2deg);
   }
 
+  :global(html[data-theme="dark"]) .character img {
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
+  }
+
   .not-found-content {
     max-width: 32rem;
   }
 
   .eyebrow {
     margin: 0 0 clamp(2rem, 4vw, 3rem);
-    color: #1a1d2480;
+    color: var(--site-muted);
     font-family: "FunkinOptions", sans-serif;
     font-size: clamp(0.75rem, 1.5vw, 1rem);
     letter-spacing: 0.12em;
@@ -95,7 +85,7 @@
 
   h1 {
     margin: 0;
-    color: #5b8cff;
+    color: var(--site-accent);
     font-family: "FunkinOptions", sans-serif;
     font-size: clamp(8rem, 20vw, 16rem);
     font-weight: 400;
@@ -114,7 +104,7 @@
     display: inline-flex;
     gap: 0.75rem;
     align-items: center;
-    color: #5b8cff;
+    color: var(--site-accent);
     font-family: "FunkinOptions", sans-serif;
     font-size: 0.9rem;
     letter-spacing: 0.1em;
@@ -136,12 +126,12 @@
 
   .home-link:hover,
   .home-link:focus-visible {
-    color: #1a1d24;
+    color: var(--site-foreground);
     transform: translateX(0.25rem);
   }
 
   .home-link:focus-visible {
-    outline: 2px solid #5b8cff;
+    outline: 2px solid var(--site-accent);
     outline-offset: 0.5rem;
   }
 

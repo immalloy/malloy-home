@@ -1,12 +1,12 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>ImMalloy</title>
-  </head>
-  <body>
-    <main class="swiper" aria-label="Site sections">
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+---
+
+<SiteLayout title="ImMalloy">
+  <ThemeToggle />
+
+  <main class="swiper" aria-label="Site sections">
       <div class="swiper-wrapper">
         <section class="swiper-slide hero" aria-labelledby="site-title">
           <div class="hero-content">
@@ -30,8 +30,7 @@
           <div class="about-preview-content">
             <h2 id="about-preview-title">Who am I?</h2>
             <p>
-              I’m ImMalloy. I make things, collect ideas, and leave room for a few weird little characters
-              along the way.
+              I'm Malloy. I like coding, drawing, listening to music, and making cool projects! always thinking of something new!
             </p>
             <a class="about-link" href="/about">About Me</a>
           </div>
@@ -58,9 +57,8 @@
           </nav>
         </section>
       </div>
-    </main>
-  </body>
-</html>
+  </main>
+</SiteLayout>
 
 <style>
   @font-face {
@@ -75,10 +73,6 @@
     font-display: swap;
   }
 
-  :global(*) {
-    box-sizing: border-box;
-  }
-
   :global(html),
   :global(body) {
     height: 100%;
@@ -86,10 +80,8 @@
   }
 
   :global(body) {
-    margin: 0;
-    background: #f7f5ef;
-    color: #1a1d24;
-    font-family: "FunkinLingLong", sans-serif;
+    background: var(--site-background);
+    color: var(--site-foreground);
   }
 
   .swiper {
@@ -140,13 +132,17 @@
     object-fit: contain;
   }
 
+  :global(html[data-theme="dark"]) .about-illustration img {
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
+  }
+
   .about-preview-content {
     max-width: 32rem;
   }
 
   .about-preview h2 {
     margin: 0;
-    color: #5b8cff;
+    color: var(--site-accent);
     font-family: "FunkinOptions", sans-serif;
     font-size: clamp(4rem, 9vw, 8rem);
     font-weight: 400;
@@ -165,9 +161,9 @@
 
   .about-link {
     display: inline-block;
-    border: 2px solid #5b8cff;
+    border: 2px solid var(--site-accent);
     padding: 0.85rem 1.1rem;
-    color: #5b8cff;
+    color: var(--site-accent);
     font-family: "FunkinOptions", sans-serif;
     font-size: 0.9rem;
     letter-spacing: 0.1em;
@@ -178,13 +174,13 @@
 
   .about-link:hover,
   .about-link:focus-visible {
-    background: #5b8cff;
-    color: #f7f5ef;
+    background: var(--site-accent);
+    color: var(--site-background);
     transform: translateY(-0.15rem);
   }
 
   .about-link:focus-visible {
-    outline: 2px solid #1a1d24;
+    outline: 2px solid var(--site-foreground);
     outline-offset: 0.4rem;
   }
 
@@ -216,7 +212,7 @@
     padding: 0.75rem;
     place-items: center;
     background: transparent;
-    color: #1a1d24a6;
+    color: var(--site-muted-strong);
     cursor: pointer;
     pointer-events: auto;
     transition: color 180ms ease, opacity 180ms ease;
@@ -224,7 +220,7 @@
 
   .slide-arrow:hover:not(:disabled),
   .slide-arrow:focus-visible:not(:disabled) {
-    color: #1a1d24;
+    color: var(--site-foreground);
   }
 
   .slide-arrow:disabled {
@@ -233,7 +229,7 @@
   }
 
   .slide-arrow:focus-visible {
-    outline: 2px solid #5b8cff;
+    outline: 2px solid var(--site-accent);
     outline-offset: 0.4rem;
   }
 
@@ -257,7 +253,7 @@
 
   h1 {
     margin: 0;
-    color: #5b8cff;
+    color: var(--site-accent);
     font-family: "FunkinOptions", sans-serif;
     font-size: clamp(5rem, 18vw, 14rem);
     font-weight: 400;
@@ -279,7 +275,7 @@
     gap: 0.5rem;
     padding: 0.75rem;
     background: transparent;
-    color: #1a1d24a6;
+    color: var(--site-muted-strong);
     cursor: pointer;
     font-family: "FunkinOptions", sans-serif;
     font-size: 0.75rem;
@@ -294,7 +290,7 @@
 
   .more p {
     margin: 0;
-    color: #1a1d2480;
+    color: var(--site-muted);
     font-size: clamp(1.25rem, 3vw, 2rem);
   }
 

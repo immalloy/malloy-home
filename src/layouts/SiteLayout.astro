@@ -1,0 +1,77 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+    <script is:inline>
+      (() => {
+        let storedTheme = null;
+
+        try {
+          storedTheme = window.localStorage.getItem("malloy-theme");
+        } catch {
+          // Use the system preference when storage is unavailable.
+        }
+
+        const theme = storedTheme === "dark" || storedTheme === "light"
+          ? storedTheme
+          : window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: light;
+    --site-background: #f7f5ef;
+    --site-foreground: #1a1d24;
+    --site-muted: #1a1d2480;
+    --site-muted-strong: #1a1d24a6;
+    --site-accent: #5b8cff;
+  }
+
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --site-background: #1a1d24;
+    --site-foreground: #f7f5ef;
+    --site-muted: #f7f5ef80;
+    --site-muted-strong: #f7f5efa6;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--site-background);
+    color: var(--site-foreground);
+    font-family: "FunkinLingLong", sans-serif;
+    transition: background-color 220ms ease, color 220ms ease;
+  }
+</style>
