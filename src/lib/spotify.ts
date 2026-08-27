@@ -4,6 +4,7 @@ export const SPOTIFY_STATE_COOKIE = "spotify_oauth_state";
 type RuntimeEnv = {
   SPOTIFY_CLIENT_ID?: string;
   SPOTIFY_CLIENT_SECRET?: string;
+  SPOTIFY_REFRESH_TOKEN?: string;
   SPOTIFY_REDIRECT_URI?: string;
 };
 
@@ -13,6 +14,7 @@ export function getSpotifyConfig(runtimeEnv: unknown) {
   return {
     clientId: env.SPOTIFY_CLIENT_ID?.trim() ?? "",
     clientSecret: env.SPOTIFY_CLIENT_SECRET ?? "",
+    refreshToken: env.SPOTIFY_REFRESH_TOKEN?.trim() ?? "",
     redirectUri: env.SPOTIFY_REDIRECT_URI?.trim() ?? "",
   };
 }
