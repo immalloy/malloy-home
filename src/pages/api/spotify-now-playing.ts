@@ -73,7 +73,7 @@ export const GET: APIRoute = async () => {
 
   let currentlyPlayingResponse: Response;
   try {
-    currentlyPlayingResponse = await fetch("https://api.spotify.com/v1/me/player?additional_types=track,episode", {
+    currentlyPlayingResponse = await fetch("https://api.spotify.com/v1/me/player/currently-playing?additional_types=track,episode", {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
   } catch {
