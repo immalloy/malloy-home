@@ -85,6 +85,18 @@ export const GET: APIRoute = async () => {
   }
 
   if (!currentlyPlayingResponse.ok) {
+    if (currentlyPlayingResponse.status === 401) {
+      return jsonResponse({ error: "Spotify rejected the access token. Reauthorize Spotify at /spotify-login." }, 401);
+    }
+
+    if (currentlyPlayingResponse.status === 403) {
+      return jsonResponse({ error: "Spotify denied playback access. Reauthorize Spotify at /spotify-login." }, 403);
+    }
+
+    if (currentlyPlayingResponse.status === 429) {
+      return jsonResponse({ error: "Spotify rate limit reached. Try again later." }, 429);
+    }
+
     return jsonResponse({ error: "Spotify playback could not be read." }, 502);
   }
 
