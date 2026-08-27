@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { createState, getSpotifyConfig, setStateCookie, SPOTIFY_SCOPES } from "../lib/spotify";
 
+// Keep the authorization entry point server-only so credentials never reach the browser.
 export const GET: APIRoute = () => {
   const { clientId, redirectUri } = getSpotifyConfig(env);
 
