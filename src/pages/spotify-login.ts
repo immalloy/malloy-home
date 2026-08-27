@@ -1,8 +1,9 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 import { createState, getSpotifyConfig, setStateCookie, SPOTIFY_SCOPES } from "../lib/spotify";
 
-export const GET: APIRoute = ({ locals }) => {
-  const { clientId, redirectUri } = getSpotifyConfig(locals.runtime.env);
+export const GET: APIRoute = () => {
+  const { clientId, redirectUri } = getSpotifyConfig(env);
 
   if (!clientId || !redirectUri) {
     return new Response("Spotify authentication is not configured.", { status: 500 });

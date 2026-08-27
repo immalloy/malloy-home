@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 import {
   clearStateCookie,
   escapeHtml,
@@ -111,8 +112,8 @@ function errorResponse(title: string, message: string, status: number) {
   return htmlResponse(`<main><p class="eyebrow">Spotify authorization</p><h1>${escapeHtml(title)}</h1><p>${escapeHtml(message)}</p><a class="back-link" href="/">Back home</a></main>`, status);
 }
 
-export const GET: APIRoute = async ({ request, locals, url }) => {
-  const { clientId, clientSecret, redirectUri } = getSpotifyConfig(locals.runtime.env);
+export const GET: APIRoute = async ({ request, url }) => {
+  const { clientId, clientSecret, redirectUri } = getSpotifyConfig(env);
   const state = url.searchParams.get("state");
   const savedState = getCookie(request, SPOTIFY_STATE_COOKIE);
   const spotifyError = url.searchParams.get("error");
