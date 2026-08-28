@@ -75,6 +75,9 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     --site-muted-strong: #1a1d24a6;
     --site-accent: #5b8cff;
     --site-sidebar-width: min(26rem, calc(100vw - 3.5rem));
+    --site-picker-width: clamp(3rem, 5vw, 5.5rem);
+    --site-picker-height: calc(var(--site-picker-width) * 1.684);
+    --site-picker-cutoff-height: calc(var(--site-picker-height) - 0.4rem);
   }
 
   html[data-theme="dark"] {
@@ -110,7 +113,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     top: 50%;
     right: env(safe-area-inset-right);
     display: block;
-    width: clamp(3rem, 5vw, 5.5rem);
+    width: var(--site-picker-width);
     aspect-ratio: 250 / 421;
     padding: 0;
     transform: translateY(-50%);
@@ -164,20 +167,31 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     right: 0;
     width: var(--site-sidebar-width);
     padding: max(1.5rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1.5rem, env(safe-area-inset-left));
-    border-inline-start: 5px solid #CCCCCC;
     background: #000000;
     color: #CCCCCC;
     box-shadow: -2rem 0 4rem oklch(0 0 0 / 0.18);
-    opacity: 0;
+    opacity: 1;
     overflow-y: auto;
     overscroll-behavior: contain;
     pointer-events: none;
     transform: translateX(100%);
-    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .site-sidebar::before {
+    position: absolute;
+    z-index: 0;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 5px;
+    background:
+      linear-gradient(#CCCCCC, #CCCCCC) left top / 100% calc(50% - var(--site-picker-cutoff-height) / 2) no-repeat,
+      linear-gradient(#CCCCCC, #CCCCCC) left bottom / 100% calc(50% - var(--site-picker-cutoff-height) / 2) no-repeat;
+    content: "";
+    pointer-events: none;
   }
 
   .site-sidebar[aria-hidden="false"] {
-    opacity: 1;
     pointer-events: auto;
     transform: translateX(0);
   }
@@ -229,7 +243,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
   }
 
   html[data-sidebar-open="true"] .sidebar-button {
-    right: calc(var(--site-sidebar-width) - 0.3rem);
+    right: calc(var(--site-sidebar-width) - 0.25rem);
   }
 
   html[data-sidebar-open="true"] .sidebar-button,
@@ -324,7 +338,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
         }
 
         setSpriteFrame(frames[frameIndex]);
-      }, 55);
+      }, 35);
     });
   };
 
