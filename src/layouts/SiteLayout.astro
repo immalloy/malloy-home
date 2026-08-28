@@ -52,6 +52,17 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
   </head>
   <body>
     <slot />
+    <button class="sidebar-button" type="button" aria-controls="site-sidebar" aria-expanded="false" aria-label="Open site navigation">
+      <canvas class="sidebar-sprite" width="250" height="421" aria-hidden="true"></canvas>
+    </button>
+    <button class="sidebar-backdrop" type="button" tabindex="-1" aria-label="Close site navigation" aria-hidden="true"></button>
+    <aside class="site-sidebar" id="site-sidebar" aria-label="Site navigation" aria-hidden="true" inert>
+      <div class="sidebar-content">
+        <nav aria-label="Site navigation">
+          <a href="/">Home</a>
+        </nav>
+      </div>
+    </aside>
   </body>
 </html>
 
@@ -63,6 +74,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     --site-muted: #1a1d2480;
     --site-muted-strong: #1a1d24a6;
     --site-accent: #5b8cff;
+    --site-sidebar-width: min(26rem, calc(100vw - 3.5rem));
   }
 
   html[data-theme="dark"] {
@@ -91,4 +103,300 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     font-family: "FunkinLingLong", sans-serif;
     transition: background-color 220ms ease, color 220ms ease;
   }
+
+  .sidebar-button {
+    position: fixed;
+    z-index: 40;
+    top: 50%;
+    right: env(safe-area-inset-right);
+    display: block;
+    width: clamp(3rem, 5vw, 5.5rem);
+    aspect-ratio: 250 / 421;
+    padding: 0;
+    transform: translateY(-50%);
+    transform-origin: right center;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: right 280ms cubic-bezier(0.22, 1, 0.36, 1), transform 180ms ease, opacity 180ms ease;
+  }
+
+  .sidebar-button:hover,
+  .sidebar-button:focus-visible {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  .sidebar-button:active {
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  .sidebar-button:focus-visible {
+    outline: 2px solid var(--site-foreground);
+    outline-offset: 0.35rem;
+  }
+
+  .sidebar-sprite {
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    z-index: 20;
+    inset: 0;
+    border: 0;
+    padding: 0;
+    background: oklch(0 0 0 / 0.42);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 260ms ease;
+  }
+
+  .site-sidebar {
+    position: fixed;
+    z-index: 30;
+    inset-block: 0;
+    right: 0;
+    width: var(--site-sidebar-width);
+    padding: max(1.5rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1.5rem, env(safe-area-inset-left));
+    border-inline-start: 5px solid #CCCCCC;
+    background: #000000;
+    color: #CCCCCC;
+    box-shadow: -2rem 0 4rem oklch(0 0 0 / 0.18);
+    opacity: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    pointer-events: none;
+    transform: translateX(100%);
+    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+  }
+
+  .site-sidebar[aria-hidden="false"] {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+
+  .sidebar-content {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .site-sidebar nav {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .site-sidebar nav a {
+    display: block;
+    border: 2px solid transparent;
+    padding: 0.9rem 1rem;
+    color: #CCCCCC;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .site-sidebar nav a:hover,
+  .site-sidebar nav a:focus-visible {
+    background: #FFD84D;
+    color: #000000;
+    transform: translateX(-0.2rem);
+  }
+
+  .site-sidebar nav a:focus-visible {
+    outline: 2px solid var(--site-foreground);
+    outline-offset: 0.35rem;
+  }
+
+  html[data-sidebar-open="true"] {
+    overflow: hidden;
+  }
+
+  html[data-sidebar-open="true"] .sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  html[data-sidebar-open="true"] .sidebar-button {
+    right: calc(var(--site-sidebar-width) - 0.3rem);
+  }
+
+  html[data-sidebar-open="true"] .sidebar-button,
+  html[data-sidebar-open="true"] .sidebar-button:hover,
+  html[data-sidebar-open="true"] .sidebar-button:focus-visible,
+  html[data-sidebar-open="true"] .sidebar-button:active {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+
 </style>
+
+<script>
+  const sidebarButton = document.querySelector(".sidebar-button");
+  const sidebar = document.querySelector("#site-sidebar");
+  const sidebarBackdrop = document.querySelector(".sidebar-backdrop");
+  const sidebarSprite = sidebarButton?.querySelector(".sidebar-sprite");
+  const spriteContext = sidebarSprite instanceof HTMLCanvasElement ? sidebarSprite.getContext("2d") : null;
+  const spriteImage = new Image();
+  const pageContent = [...document.body.children].filter(
+    (element) => !element.matches(".sidebar-button, .sidebar-backdrop, #site-sidebar"),
+  );
+  let lastFocusedElement = null;
+  let spriteTimer = 0;
+  let spriteReady = false;
+  let currentFrame = null;
+  let spriteAnimations = {};
+
+  const setSpriteFrame = (frame) => {
+    currentFrame = frame;
+    if (!(sidebarSprite instanceof HTMLCanvasElement) || !spriteContext || !spriteReady) return;
+
+    const { frame: sourceFrame, spriteSourceSize, sourceSize } = frame;
+    const destinationX = 250 - sourceSize.w + spriteSourceSize.x;
+    spriteContext.clearRect(0, 0, 250, 421);
+    spriteContext.drawImage(
+      spriteImage,
+      sourceFrame.x,
+      sourceFrame.y,
+      sourceFrame.w,
+      sourceFrame.h,
+      destinationX,
+      spriteSourceSize.y,
+      spriteSourceSize.w,
+      spriteSourceSize.h,
+    );
+  };
+
+  const spriteReadyPromise = Promise.all([
+    new Promise((resolve) => {
+      spriteImage.addEventListener("load", resolve, { once: true });
+      spriteImage.src = "/assets/picker.png";
+    }),
+    fetch("/assets/picker.json").then((response) => {
+      if (!response.ok) throw new Error("Could not load picker metadata.");
+      return response.json();
+    }),
+  ]).then(([, atlas]) => {
+    spriteAnimations = atlas.frames.reduce((animations, frame) => {
+      const animationName = frame.filename.replace(/\d+$/, "");
+      (animations[animationName] ??= []).push(frame);
+      return animations;
+    }, {});
+    spriteReady = true;
+    setSpriteFrame(spriteAnimations.idle[0]);
+  }).catch(() => undefined);
+
+  const playSprite = async (animationName, loop = false) => {
+    await spriteReadyPromise;
+    window.clearInterval(spriteTimer);
+    const frames = spriteAnimations[animationName];
+    if (!frames?.length) return;
+    let frameIndex = 0;
+    setSpriteFrame(frames[frameIndex]);
+
+    if (loop) {
+      spriteTimer = window.setInterval(() => {
+        frameIndex = (frameIndex + 1) % frames.length;
+        setSpriteFrame(frames[frameIndex]);
+      }, 110);
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      spriteTimer = window.setInterval(() => {
+        frameIndex += 1;
+
+        if (frameIndex >= frames.length) {
+          window.clearInterval(spriteTimer);
+          resolve();
+          return;
+        }
+
+        setSpriteFrame(frames[frameIndex]);
+      }, 55);
+    });
+  };
+
+  const waitForSidebarTransition = () => new Promise((resolve) => {
+    if (!(sidebar instanceof HTMLElement)) {
+      resolve();
+      return;
+    }
+
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      sidebar.removeEventListener("transitionend", onTransitionEnd);
+      window.clearTimeout(fallbackTimer);
+      resolve();
+    };
+    const onTransitionEnd = (event) => {
+      if (event.target === sidebar && event.propertyName === "transform") finish();
+    };
+    const fallbackTimer = window.setTimeout(finish, 360);
+
+    sidebar.addEventListener("transitionend", onTransitionEnd);
+  });
+
+  const setSidebarOpen = (open) => {
+    if (!(sidebarButton instanceof HTMLButtonElement) || !(sidebar instanceof HTMLElement)) return;
+
+    if (open) lastFocusedElement = document.activeElement;
+
+    sidebarButton.setAttribute("aria-expanded", String(open));
+    sidebarButton.setAttribute("aria-label", open ? "Close site navigation" : "Open site navigation");
+    sidebarButton.tabIndex = 0;
+    sidebar.setAttribute("aria-hidden", String(!open));
+    sidebar.inert = !open;
+    sidebarBackdrop?.setAttribute("aria-hidden", String(!open));
+    document.documentElement.dataset.sidebarOpen = String(open);
+
+    pageContent.forEach((element) => {
+      element.inert = open;
+    });
+
+    if (open) {
+      sidebarButton.focus();
+    } else if (lastFocusedElement instanceof HTMLElement) {
+      lastFocusedElement.focus();
+    } else {
+      sidebarButton.focus();
+    }
+  };
+
+  const animateSidebar = (open) => {
+    setSidebarOpen(open);
+    void Promise.all([
+      playSprite(open ? "spin" : "spinclose"),
+      waitForSidebarTransition(),
+    ]).then(() => {
+      if (sidebarButton?.getAttribute("aria-expanded") === String(open)) {
+        void playSprite(open ? "idleopen" : "idle", true);
+      }
+    });
+  };
+
+  void playSprite("idle", true);
+
+  sidebarButton?.addEventListener("click", () => {
+    animateSidebar(sidebarButton.getAttribute("aria-expanded") !== "true");
+  });
+  sidebarBackdrop?.addEventListener("click", () => animateSidebar(false));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && sidebarButton?.getAttribute("aria-expanded") === "true") {
+      animateSidebar(false);
+    }
+  });
+</script>
