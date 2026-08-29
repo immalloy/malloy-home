@@ -1,0 +1,99 @@
+---
+const { comics } = Astro.props;
+const comicNumber = (index) => String(index + 1).padStart(2, "0");
+---
+
+<main class="comics-archive" aria-labelledby="comics-archive-title">
+  <h1 id="comics-archive-title">Comics</h1>
+
+  <div class="comic-archive-list">
+    {comics.map((comic, index) => (
+      <a class="comic-archive-item" href={`/comics/${index + 1}`}>
+        <h2>
+          <span class="comic-archive-number">{comicNumber(index)}.</span>
+          <span>{comic.title}</span>
+        </h2>
+        <p>{comic.description}</p>
+      </a>
+    ))}
+  </div>
+</main>
+
+<style>
+  .comics-archive {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: clamp(2rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem) 6rem;
+    color: var(--site-foreground);
+  }
+
+  .comics-archive h1 {
+    margin: 0 0 2rem;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 0.95;
+  }
+
+  .comic-archive-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.25rem;
+  }
+
+  .comic-archive-item {
+    display: block;
+    padding: 1rem;
+    color: var(--site-foreground);
+    text-decoration: none;
+    transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+  }
+
+  .comic-archive-item h2 {
+    display: flex;
+    gap: 0.65rem;
+    margin: 0;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(1.1rem, 2.2vw, 1.55rem);
+    font-weight: 400;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .comic-archive-number {
+    color: var(--site-accent);
+    flex: 0 0 auto;
+  }
+
+  .comic-archive-item p {
+    margin: 0.65rem 0 0;
+    color: var(--site-muted-strong);
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .comic-archive-item:hover,
+  .comic-archive-item:focus-visible {
+    background: var(--site-accent);
+    color: var(--site-background);
+    transform: translateX(0.2rem);
+  }
+
+  .comic-archive-item:hover .comic-archive-number,
+  .comic-archive-item:focus-visible .comic-archive-number,
+  .comic-archive-item:hover p,
+  .comic-archive-item:focus-visible p {
+    color: var(--site-background);
+  }
+
+  .comic-archive-item:focus-visible {
+    outline: 2px solid var(--site-accent);
+    outline-offset: 0.25rem;
+  }
+
+  @media (max-width: 600px) {
+    .comic-archive-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

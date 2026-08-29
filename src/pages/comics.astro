@@ -1,0 +1,337 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import ComicArchive from "../components/ComicArchive.astro";
+import { comics } from "../data/comics.js";
+
+const isArchive = !Astro.props.comic && !Astro.url.searchParams.has("comic");
+const requestedComicValue = Astro.props.comic ?? Astro.url.searchParams.get("comic") ?? "1";
+const requestedComic = Number.parseInt(requestedComicValue, 10) - 1;
+const comicIndex = Number.isInteger(requestedComic)
+  ? Math.min(Math.max(requestedComic, 0), comics.length - 1)
+  : 0;
+const currentComic = comics[comicIndex];
+const comicHref = (index) => `/comics/${index + 1}`;
+const comicNumber = (index) => String(index + 1).padStart(2, "0");
+const isFirst = comicIndex === 0;
+const isLast = comicIndex === comics.length - 1;
+const randomIndex = comics.length > 1
+  ? Math.floor(Math.random() * comics.length)
+  : comicIndex;
+---
+
+<SiteLayout
+  title="Comics | ImMalloy"
+  description="Read comics from ImMalloy."
+>
+  <ThemeToggle />
+
+  {isArchive ? (
+    <ComicArchive comics={comics} />
+  ) : (
+  <main class="comics-page">
+    <section class="comic-reader" aria-labelledby="comic-title">
+      <div class="comic-frame">
+        <img class="comic-image" src={currentComic.src} alt={currentComic.alt} />
+      </div>
+
+      <div class="comic-details">
+        <h2 id="comic-title">
+          {comicNumber(comicIndex)}. {currentComic.title}
+        </h2>
+        <a class="back-to-comics" href="/comics" aria-label="Back to comics">
+          <img src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+        </a>
+        <a class="permalink" href={comicHref(comicIndex)} title={`Permalink to ${currentComic.title}`}>
+          [Permalink]
+        </a>
+      </div>
+
+      <nav class="comic-navigation" aria-label="Comic navigation">
+        {isFirst ? (
+          <button class="comic-control is-disabled" type="button" disabled aria-label="First comic">
+            <img src="/assets/comics/leftend.png" alt="" aria-hidden="true" />
+            <span class="sr-only">First comic</span>
+          </button>
+        ) : (
+          <a class="comic-control" href={comicHref(0)} aria-label="First comic">
+            <img src="/assets/comics/leftend.png" alt="" aria-hidden="true" />
+            <span class="sr-only">First comic</span>
+          </a>
+        )}
+
+        {isFirst ? (
+          <button class="comic-control is-disabled" type="button" disabled aria-label="Previous comic">
+            <img src="/assets/comics/leftarrow.png" alt="" aria-hidden="true" />
+            <span class="sr-only">Previous comic</span>
+          </button>
+        ) : (
+          <a class="comic-control" href={comicHref(comicIndex - 1)} aria-label="Previous comic">
+            <img src="/assets/comics/leftarrow.png" alt="" aria-hidden="true" />
+            <span class="sr-only">Previous comic</span>
+          </a>
+        )}
+
+        <a class="comic-control" href={comicHref(randomIndex)} aria-label="Random comic" title="Random comic">
+          <img class="random-icon" src="/assets/comics/questionrandom.png" alt="" aria-hidden="true" />
+          <span class="sr-only">Random comic</span>
+        </a>
+
+        {isLast ? (
+          <button class="comic-control is-disabled" type="button" disabled aria-label="Next comic">
+            <img src="/assets/comics/rightarrow.png" alt="" aria-hidden="true" />
+            <span class="sr-only">Next comic</span>
+          </button>
+        ) : (
+          <a class="comic-control" href={comicHref(comicIndex + 1)} aria-label="Next comic">
+            <img src="/assets/comics/rightarrow.png" alt="" aria-hidden="true" />
+            <span class="sr-only">Next comic</span>
+          </a>
+        )}
+
+        {isLast ? (
+          <button class="comic-control is-disabled" type="button" disabled aria-label="Last comic">
+            <img src="/assets/comics/rightend.png" alt="" aria-hidden="true" />
+            <span class="sr-only">Last comic</span>
+          </button>
+        ) : (
+          <a class="comic-control" href={comicHref(comics.length - 1)} aria-label="Last comic">
+            <img src="/assets/comics/rightend.png" alt="" aria-hidden="true" />
+            <span class="sr-only">Last comic</span>
+          </a>
+        )}
+      </nav>
+    </section>
+  </main>
+  )}
+</SiteLayout>
+
+<style>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
+  :global(html),
+  :global(body) {
+    min-height: 100%;
+  }
+
+  :global(body) {
+    background: var(--site-background);
+  }
+
+  .comics-page {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: clamp(2rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem) 6rem;
+  }
+
+  .comic-reader {
+    max-width: 65rem;
+    margin: 0 auto;
+    color: var(--site-foreground);
+  }
+
+  .comic-details {
+    display: grid;
+    justify-items: center;
+    gap: 0;
+    padding: 1.25rem 0 0;
+    text-align: center;
+  }
+
+  .comic-details h2 {
+    margin: 0;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(1.7rem, 4vw, 2.8rem);
+    font-weight: 400;
+    line-height: 0.95;
+  }
+
+  .back-to-comics:focus-visible,
+  .permalink:focus-visible,
+  .comic-control:focus-visible {
+    outline: 2px solid var(--site-accent);
+    outline-offset: 0.25rem;
+  }
+
+  .back-to-comics {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0.25rem;
+    color: var(--site-muted);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 160ms ease, transform 160ms ease;
+  }
+
+  .back-to-comics img {
+    display: block;
+    position: relative;
+    top: -0.6rem;
+    width: 1rem;
+    height: auto;
+    opacity: 0.72;
+    transform: rotate(90deg);
+    transition: opacity 160ms ease;
+  }
+
+  :global(html[data-theme="dark"]) .back-to-comics img {
+    filter: brightness(0) saturate(100%) invert(1);
+  }
+
+  .back-to-comics:hover,
+  .back-to-comics:focus-visible {
+    color: var(--site-accent);
+    transform: scale(1.06);
+  }
+
+  .back-to-comics:hover img,
+  .back-to-comics:focus-visible img {
+    filter: brightness(0) saturate(100%) invert(56%) sepia(96%) saturate(1493%) hue-rotate(196deg) brightness(101%) contrast(101%);
+    opacity: 1;
+  }
+
+  .comic-frame {
+    border: 3px solid var(--site-foreground);
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .comic-image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .permalink {
+    display: inline-block;
+    margin-top: 0;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 160ms ease, text-decoration-color 160ms ease, transform 160ms ease;
+  }
+
+  .permalink:hover,
+  .permalink:focus-visible {
+    color: var(--site-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+    transform: scale(1.02);
+  }
+
+  :global(html[data-theme="dark"]) .comic-details h2,
+  :global(html[data-theme="dark"]) .permalink {
+    color: var(--site-foreground);
+  }
+
+  :global(html[data-theme="dark"]) .back-to-comics:hover,
+  :global(html[data-theme="dark"]) .permalink:hover,
+  :global(html[data-theme="dark"]) .permalink:focus-visible {
+    color: var(--site-accent);
+  }
+
+  .comic-navigation {
+    display: flex;
+    justify-content: center;
+    gap: clamp(0.35rem, 1.8vw, 1rem);
+    margin-top: 1.5rem;
+  }
+
+  .comic-control {
+    display: grid;
+    width: clamp(3.1rem, 8vw, 5rem);
+    aspect-ratio: 1;
+    place-items: center;
+    border: 0;
+    padding: 0.45rem;
+    background: transparent;
+    color: #1a1d24;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .comic-control img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  :global(html[data-theme="dark"]) .comic-control img {
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
+  }
+
+  .comic-control img.random-icon {
+    transform: scale(1.12);
+  }
+
+  .comic-control:hover,
+  .comic-control:focus-visible {
+    transform: scale(1.06);
+  }
+
+  .comic-control:active {
+    transform: scale(0.96);
+  }
+
+  .comic-control.is-disabled,
+  .comic-control.is-disabled:hover,
+  .comic-control.is-disabled:focus-visible {
+    cursor: not-allowed;
+    opacity: 0.25;
+    transform: none;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 600px) {
+    .comics-page {
+      padding-top: 2.5rem;
+      padding-bottom: 4rem;
+    }
+
+    .comic-navigation {
+      width: 100%;
+      gap: 0.35rem;
+    }
+
+    .comic-control {
+      width: calc((100% - 1.4rem) / 5);
+      max-width: 4.25rem;
+      padding: 0.35rem;
+    }
+  }
+</style>

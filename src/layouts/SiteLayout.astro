@@ -59,7 +59,8 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     <aside class="site-sidebar" id="site-sidebar" aria-label="Site navigation" aria-hidden="true" inert>
       <div class="sidebar-content">
         <nav aria-label="Site navigation">
-          <a href="/">Home</a>
+          <a href="/"><span class="sidebar-link-icon sidebar-icon-house" aria-hidden="true"></span><span>Home</span></a>
+          <a href="/comics"><span class="sidebar-link-icon sidebar-icon-book" aria-hidden="true"></span><span>Comics</span></a>
         </nav>
       </div>
     </aside>
@@ -74,6 +75,8 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     --site-muted: #1a1d2480;
     --site-muted-strong: #1a1d24a6;
     --site-accent: #5b8cff;
+    --sidebar-duration: 280ms;
+    --sidebar-easing: cubic-bezier(0.22, 1, 0.36, 1);
     --site-sidebar-width: min(26rem, calc(100vw - 3.5rem));
     --site-picker-width: clamp(3rem, 5vw, 5.5rem);
     --site-picker-height: calc(var(--site-picker-width) * 1.684);
@@ -116,23 +119,24 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     width: var(--site-picker-width);
     aspect-ratio: 250 / 421;
     padding: 0;
-    transform: translateY(-50%);
+    translate: 0 -50%;
+    scale: 1;
     transform-origin: right center;
     border: 0;
     background: transparent;
     cursor: pointer;
     opacity: 0.55;
-    transition: right 280ms cubic-bezier(0.22, 1, 0.36, 1), transform 180ms ease, opacity 180ms ease;
+    transition: translate var(--sidebar-duration) var(--sidebar-easing), scale 180ms ease, opacity 180ms ease;
   }
 
   .sidebar-button:hover,
   .sidebar-button:focus-visible {
     opacity: 1;
-    transform: translateY(-50%) scale(1.06);
+    scale: 1.06;
   }
 
   .sidebar-button:active {
-    transform: translateY(-50%) scale(0.96);
+    scale: 0.96;
   }
 
   .sidebar-button:focus-visible {
@@ -175,7 +179,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     overscroll-behavior: contain;
     pointer-events: none;
     transform: translateX(100%);
-    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform var(--sidebar-duration) var(--sidebar-easing);
   }
 
   .site-sidebar::before {
@@ -209,7 +213,9 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
   }
 
   .site-sidebar nav a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
     border: 2px solid transparent;
     padding: 0.9rem 1rem;
     color: #CCCCCC;
@@ -219,6 +225,24 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     text-decoration: none;
     text-transform: uppercase;
     transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .sidebar-link-icon {
+    display: block;
+    width: 1.65em;
+    height: 1.65em;
+    flex: 0 0 1.65em;
+    background-color: currentColor;
+    mask: var(--sidebar-icon) center / contain no-repeat;
+    -webkit-mask: var(--sidebar-icon) center / contain no-repeat;
+  }
+
+  .sidebar-icon-house {
+    --sidebar-icon: url("/assets/sidebar/house.png");
+  }
+
+  .sidebar-icon-book {
+    --sidebar-icon: url("/assets/sidebar/book.png");
   }
 
   .site-sidebar nav a:hover,
@@ -243,7 +267,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
   }
 
   html[data-sidebar-open="true"] .sidebar-button {
-    right: calc(var(--site-sidebar-width) - 0.25rem);
+    translate: calc(0.25rem + env(safe-area-inset-right) - var(--site-sidebar-width)) -50%;
   }
 
   html[data-sidebar-open="true"] .sidebar-button,
@@ -251,7 +275,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
   html[data-sidebar-open="true"] .sidebar-button:focus-visible,
   html[data-sidebar-open="true"] .sidebar-button:active {
     opacity: 1;
-    transform: translateY(-50%) scale(1);
+    scale: 1;
   }
 
 </style>
@@ -267,10 +291,13 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     (element) => !element.matches(".sidebar-button, .sidebar-backdrop, #site-sidebar"),
   );
   let lastFocusedElement = null;
-  let spriteTimer = 0;
   let spriteReady = false;
   let currentFrame = null;
   let spriteAnimations = {};
+  let spriteFrameRequest = 0;
+  let activeSpriteAnimation = null;
+  let requestedSidebarOpen = false;
+  let sidebarRequestId = 0;
 
   const setSpriteFrame = (frame) => {
     currentFrame = frame;
@@ -292,6 +319,28 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     );
   };
 
+  const getSidebarDuration = () => {
+    const rawDuration = getComputedStyle(document.documentElement)
+      .getPropertyValue("--sidebar-duration")
+      .trim();
+    const duration = Number.parseFloat(rawDuration);
+
+    if (!Number.isFinite(duration)) return 280;
+    if (rawDuration.endsWith("ms")) return duration;
+    if (rawDuration.endsWith("s")) return duration * 1000;
+    return 280;
+  };
+
+  const cancelSpriteAnimation = () => {
+    window.cancelAnimationFrame(spriteFrameRequest);
+    spriteFrameRequest = 0;
+
+    if (activeSpriteAnimation) {
+      activeSpriteAnimation.resolve(false);
+      activeSpriteAnimation = null;
+    }
+  };
+
   const spriteReadyPromise = Promise.all([
     new Promise((resolve) => {
       spriteImage.addEventListener("load", resolve, { once: true });
@@ -309,36 +358,70 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     }, {});
     spriteReady = true;
     setSpriteFrame(spriteAnimations.idle[0]);
-  }).catch(() => undefined);
+    return true;
+  }).catch(() => false);
 
   const playSprite = async (animationName, loop = false) => {
-    await spriteReadyPromise;
-    window.clearInterval(spriteTimer);
+    const ready = await spriteReadyPromise;
+    if (!ready) return false;
+
     const frames = spriteAnimations[animationName];
-    if (!frames?.length) return;
-    let frameIndex = 0;
-    setSpriteFrame(frames[frameIndex]);
+    if (!frames?.length) return false;
+
+    cancelSpriteAnimation();
 
     if (loop) {
-      spriteTimer = window.setInterval(() => {
-        frameIndex = (frameIndex + 1) % frames.length;
-        setSpriteFrame(frames[frameIndex]);
-      }, 110);
-      return Promise.resolve();
+      const animation = { resolve: () => undefined };
+      activeSpriteAnimation = animation;
+      const frameDuration = 110;
+      const startedAt = performance.now();
+      setSpriteFrame(frames[0]);
+
+      const tick = (timestamp) => {
+        if (activeSpriteAnimation !== animation) return;
+
+        const elapsed = Math.max(0, timestamp - startedAt);
+        setSpriteFrame(frames[Math.floor(elapsed / frameDuration) % frames.length]);
+        spriteFrameRequest = window.requestAnimationFrame(tick);
+      };
+
+      spriteFrameRequest = window.requestAnimationFrame(tick);
+      return true;
     }
 
     return new Promise((resolve) => {
-      spriteTimer = window.setInterval(() => {
-        frameIndex += 1;
+      const animation = { resolve };
+      activeSpriteAnimation = animation;
+      const duration = getSidebarDuration();
+      const startedAt = performance.now();
+      setSpriteFrame(frames[0]);
 
-        if (frameIndex >= frames.length) {
-          window.clearInterval(spriteTimer);
-          resolve();
+      const finish = (completed) => {
+        if (activeSpriteAnimation !== animation) return;
+
+        activeSpriteAnimation = null;
+        window.cancelAnimationFrame(spriteFrameRequest);
+        spriteFrameRequest = 0;
+        if (completed) setSpriteFrame(frames[frames.length - 1]);
+        resolve(completed);
+      };
+
+      const tick = (timestamp) => {
+        if (activeSpriteAnimation !== animation) return;
+
+        const progress = Math.min(1, Math.max(0, (timestamp - startedAt) / duration));
+        const frameIndex = Math.min(frames.length - 1, Math.floor(progress * frames.length));
+        setSpriteFrame(frames[frameIndex]);
+
+        if (progress >= 1) {
+          finish(true);
           return;
         }
 
-        setSpriteFrame(frames[frameIndex]);
-      }, 35);
+        spriteFrameRequest = window.requestAnimationFrame(tick);
+      };
+
+      spriteFrameRequest = window.requestAnimationFrame(tick);
     });
   };
 
@@ -353,15 +436,17 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
       if (finished) return;
       finished = true;
       sidebar.removeEventListener("transitionend", onTransitionEnd);
+      sidebar.removeEventListener("transitioncancel", finish);
       window.clearTimeout(fallbackTimer);
       resolve();
     };
     const onTransitionEnd = (event) => {
       if (event.target === sidebar && event.propertyName === "transform") finish();
     };
-    const fallbackTimer = window.setTimeout(finish, 360);
+    const fallbackTimer = window.setTimeout(finish, getSidebarDuration() + 80);
 
     sidebar.addEventListener("transitionend", onTransitionEnd);
+    sidebar.addEventListener("transitioncancel", finish);
   });
 
   const setSidebarOpen = (open) => {
@@ -390,27 +475,34 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     }
   };
 
-  const animateSidebar = (open) => {
+  const animateSidebar = async (open) => {
+    requestedSidebarOpen = open;
+    const requestId = ++sidebarRequestId;
+    await spriteReadyPromise;
+
+    if (requestId !== sidebarRequestId || !(sidebarButton instanceof HTMLButtonElement)) return;
+    if (sidebarButton.getAttribute("aria-expanded") === String(open)) return;
+
     setSidebarOpen(open);
-    void Promise.all([
+    await Promise.all([
       playSprite(open ? "spin" : "spinclose"),
       waitForSidebarTransition(),
-    ]).then(() => {
-      if (sidebarButton?.getAttribute("aria-expanded") === String(open)) {
-        void playSprite(open ? "idleopen" : "idle", true);
-      }
-    });
+    ]);
+
+    if (requestId === sidebarRequestId && sidebarButton.getAttribute("aria-expanded") === String(open)) {
+      void playSprite(open ? "idleopen" : "idle", true);
+    }
   };
 
   void playSprite("idle", true);
 
   sidebarButton?.addEventListener("click", () => {
-    animateSidebar(sidebarButton.getAttribute("aria-expanded") !== "true");
+    void animateSidebar(!requestedSidebarOpen);
   });
-  sidebarBackdrop?.addEventListener("click", () => animateSidebar(false));
+  sidebarBackdrop?.addEventListener("click", () => void animateSidebar(false));
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && sidebarButton?.getAttribute("aria-expanded") === "true") {
-      animateSidebar(false);
+    if (event.key === "Escape" && (requestedSidebarOpen || sidebarButton?.getAttribute("aria-expanded") === "true")) {
+      void animateSidebar(false);
     }
   });
 </script>
