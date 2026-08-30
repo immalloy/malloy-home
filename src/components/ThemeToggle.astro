@@ -62,6 +62,7 @@
   .theme-toggle-sun {
     opacity: 1;
     transform: scale(1) rotate(0);
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
   }
 
   :global(html[data-theme="dark"]) .theme-toggle-moon {

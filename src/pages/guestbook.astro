@@ -5,8 +5,8 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
 ---
 
 <SiteLayout title="Guestbook | ImMalloy" description="Leave an anonymous note or drawing for ImMalloy.">
-  <main class="guestbook-page" data-guestbook-shell inert aria-hidden="true">
-    <h1 class="visually-hidden">Guestbook</h1>
+  <main class="guestbook-page" data-guestbook-shell inert aria-hidden="true" aria-labelledby="guestbook-title">
+    <h1 id="guestbook-title">Guestbook</h1>
 
     <nav class="guestbook-view-switch" aria-label="Guestbook view">
       <button type="button" data-view="browse" aria-controls="browse-panel" aria-pressed="true">Browse</button>
@@ -194,14 +194,19 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     text-transform: uppercase;
   }
 
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    white-space: nowrap;
+  .guestbook-page > h1 {
+    margin: 0 0 clamp(2rem, 5vw, 4rem);
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 0.82;
+    text-align: center;
+  }
+
+  :global(html[data-theme="dark"]) .guestbook-page > h1 {
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
   }
 
   .guestbook-layout {
@@ -519,6 +524,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
 
   .entry {
     position: relative;
+    border: 2px solid var(--guestbook-accent);
     padding: 1.2rem 1.25rem 1.35rem;
     background: color-mix(in srgb, var(--guestbook-warm) 18%, var(--site-background));
     color: var(--site-foreground);

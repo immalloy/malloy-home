@@ -50,7 +50,8 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
 
   .comic-archive-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 32rem));
+    justify-content: center;
     gap: clamp(1rem, 2vw, 1.5rem);
   }
 
