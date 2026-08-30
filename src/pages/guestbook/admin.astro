@@ -1,0 +1,433 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { requireGuestbookAdmin } from "../../lib/guestbook-admin";
+
+const authError = requireGuestbookAdmin(Astro.request);
+const authenticated = !authError;
+
+if (authError) {
+  Astro.response.status = authError.status;
+  authError.headers.forEach((value, key) => Astro.response.headers.set(key, value));
+}
+---
+
+<SiteLayout title="Guestbook moderation | ImMalloy" description="Private guestbook moderation." noIndex>
+  {authenticated ? (
+    <main class="moderation-page" aria-labelledby="moderation-title">
+      <div class="moderation-heading">
+        <div>
+          <p class="section-label">Private tools</p>
+          <h1 id="moderation-title">Guestbook moderation</h1>
+          <p>Review entries before they appear on the public guestbook.</p>
+        </div>
+        <a class="back-link" href="/guestbook">Back to guestbook</a>
+      </div>
+
+      <div class="moderation-toolbar">
+        <p data-admin-status role="status" aria-live="polite">Loading entries...</p>
+        <button class="action-button" type="button" data-refresh>Refresh</button>
+      </div>
+
+      <section aria-labelledby="entries-title">
+        <h2 id="entries-title" class="visually-hidden">Guestbook entries</h2>
+        <div class="moderation-list" data-admin-list></div>
+      </section>
+    </main>
+  ) : (
+    <main class="moderation-page moderation-locked" aria-labelledby="moderation-locked-title">
+      <h1 id="moderation-locked-title">Guestbook moderation</h1>
+      <p>Authentication is required to open this page.</p>
+    </main>
+  )}
+</SiteLayout>
+
+{authenticated && (
+  <script>
+    type AdminEntry = {
+      id: string;
+      name: string;
+      message: string;
+      country: string;
+      drawing: string;
+      status: "pending" | "approved" | "rejected";
+      createdAt: string;
+    };
+
+    const list = document.querySelector("[data-admin-list]");
+    const status = document.querySelector("[data-admin-status]");
+    const refreshButton = document.querySelector("[data-refresh]");
+
+    const makeText = (tag: keyof HTMLElementTagNameMap, className: string, value: string) => {
+      const element = document.createElement(tag);
+      element.className = className;
+      element.textContent = value;
+      return element;
+    };
+
+    const formatDate = (value: string) => {
+      const date = new Date(`${value.replace(" ", "T")}Z`);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+    };
+
+    const setStatus = (message: string, error = false) => {
+      if (status) {
+        status.textContent = message;
+        status.dataset.state = error ? "error" : "";
+      }
+    };
+
+    const runAction = async (id: string, action: string) => {
+      const response = await fetch("/api/guestbook-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ id, action }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Could not update the entry.");
+    };
+
+    const renderEntries = (entries: AdminEntry[]) => {
+      if (!list) return;
+      list.replaceChildren();
+
+      if (!entries.length) {
+        list.append(makeText("p", "empty-state", "There are no guestbook entries yet."));
+        return;
+      }
+
+      for (const entry of entries) {
+        const article = document.createElement("article");
+        article.className = `moderation-entry moderation-entry-${entry.status}`;
+
+        const header = document.createElement("header");
+        header.className = "entry-header";
+        header.append(
+          makeText("h3", "entry-name", entry.name || "Anonymous"),
+          makeText("p", "entry-meta", `${entry.country || "Country hidden"} / ${formatDate(entry.createdAt)}`),
+          makeText("span", "entry-status", entry.status),
+        );
+        article.append(header);
+
+        if (entry.message) article.append(makeText("p", "entry-message", entry.message));
+        if (entry.drawing) {
+          const drawing = document.createElement("img");
+          drawing.className = "entry-drawing";
+          drawing.src = entry.drawing;
+          drawing.alt = `Drawing submitted by ${entry.name || "Anonymous"}`;
+          drawing.loading = "lazy";
+          article.append(drawing);
+        }
+
+        const actions = document.createElement("div");
+        actions.className = "entry-actions";
+        const actionLabels: Record<string, string> = {
+          approved: "Approve",
+          rejected: "Reject",
+          pending: "Set pending",
+          delete: "Delete",
+        };
+        for (const action of ["approved", "rejected", "pending", "delete"]) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = action === "delete" ? "action-button action-button-danger" : "action-button";
+          button.dataset.entryAction = action;
+          button.dataset.entryId = entry.id;
+          button.textContent = actionLabels[action];
+          actions.append(button);
+        }
+        article.append(actions);
+        list.append(article);
+      }
+    };
+
+    const loadEntries = async () => {
+      if (refreshButton instanceof HTMLButtonElement) refreshButton.disabled = true;
+      setStatus("Loading entries...");
+
+      try {
+        const response = await fetch("/api/guestbook-admin", { headers: { Accept: "application/json" } });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || "Could not load entries.");
+        const entries = Array.isArray(payload.entries) ? payload.entries as AdminEntry[] : [];
+        renderEntries(entries);
+        setStatus(`${entries.length} entr${entries.length === 1 ? "y" : "ies"} loaded.`);
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : "Could not load entries.", true);
+      } finally {
+        if (refreshButton instanceof HTMLButtonElement) refreshButton.disabled = false;
+      }
+    };
+
+    refreshButton?.addEventListener("click", loadEntries);
+    list?.addEventListener("click", async (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement)) return;
+      const id = target.dataset.entryId;
+      const action = target.dataset.entryAction;
+      if (!id || !action) return;
+      if (action === "delete" && !window.confirm("Delete this entry permanently?")) return;
+
+      const buttons = list.querySelectorAll("button");
+      buttons.forEach((button) => { button.disabled = true; });
+      setStatus("Updating entry...");
+      try {
+        await runAction(id, action);
+        await loadEntries();
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : "Could not update the entry.", true);
+        buttons.forEach((button) => { button.disabled = false; });
+      }
+    });
+
+    loadEntries();
+  </script>
+)}
+
+<style>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
+  .moderation-page {
+    max-width: 76rem;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 4vw, 4rem) 6rem;
+  }
+
+  .moderation-heading,
+  .moderation-toolbar,
+  .entry-header,
+  .entry-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .moderation-heading {
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .section-label {
+    margin: 0 0 0.75rem;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin-top: 0;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(2.75rem, 7vw, 6rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    text-wrap: balance;
+  }
+
+  .moderation-heading p:not(.section-label),
+  .moderation-locked p {
+    max-width: 38rem;
+    margin-bottom: 0;
+    color: var(--site-muted-strong);
+    font-family: "FunkinLingLong", sans-serif;
+    font-size: 1.15rem;
+    line-height: 1.35;
+  }
+
+  .back-link,
+  .action-button {
+    border: 2px solid var(--site-accent);
+    padding: 0.75rem 1rem;
+    background: transparent;
+    color: var(--site-accent);
+    cursor: pointer;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible,
+  .action-button:hover:not(:disabled),
+  .action-button:focus-visible:not(:disabled) {
+    background: var(--site-accent);
+    color: var(--site-background);
+    transform: translateY(-0.15rem);
+  }
+
+  .back-link:focus-visible,
+  .action-button:focus-visible {
+    outline: 2px solid var(--site-foreground);
+    outline-offset: 0.35rem;
+  }
+
+  .moderation-toolbar {
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  [data-admin-status] {
+    min-height: 1.3em;
+    margin: 0;
+    color: var(--site-muted-strong);
+    font-family: "FunkinLingLong", sans-serif;
+  }
+
+  [data-admin-status][data-state="error"] {
+    color: #d64264;
+  }
+
+  .moderation-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .moderation-entry {
+    padding: clamp(1rem, 3vw, 1.5rem);
+    background: color-mix(in srgb, var(--site-accent) 8%, var(--site-background));
+    box-shadow: 0 0.5rem 1.5rem color-mix(in srgb, var(--site-foreground) 10%, transparent);
+  }
+
+  .moderation-entry-pending {
+    background: color-mix(in srgb, #f0b84b 13%, var(--site-background));
+  }
+
+  .moderation-entry-rejected {
+    background: color-mix(in srgb, #d64264 10%, var(--site-background));
+  }
+
+  .entry-header {
+    flex-wrap: wrap;
+    align-items: baseline;
+    margin-bottom: 1rem;
+  }
+
+  .entry-name {
+    margin-bottom: 0;
+    color: var(--site-foreground);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
+
+  .entry-meta,
+  .entry-status {
+    margin-bottom: 0;
+    color: var(--site-muted-strong);
+    font-family: "FunkinLingLong", sans-serif;
+    font-size: 0.9rem;
+  }
+
+  .entry-status {
+    margin-inline-start: auto;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .entry-message {
+    max-width: 62rem;
+    margin-bottom: 1rem;
+    white-space: pre-wrap;
+  }
+
+  .entry-drawing {
+    display: block;
+    width: min(100%, 42rem);
+    max-height: 28rem;
+    margin-bottom: 1rem;
+    object-fit: contain;
+    object-position: left center;
+    background: #fffdf6;
+    outline: 1px solid color-mix(in srgb, var(--site-foreground) 16%, transparent);
+  }
+
+  .entry-actions {
+    flex-wrap: wrap;
+  }
+
+  .entry-actions .action-button-danger {
+    border-color: #d64264;
+    color: #d64264;
+  }
+
+  .entry-actions .action-button-danger:hover:not(:disabled),
+  .entry-actions .action-button-danger:focus-visible:not(:disabled) {
+    background: #d64264;
+    color: #fffdf6;
+  }
+
+  .action-button:disabled {
+    cursor: wait;
+    opacity: 0.5;
+  }
+
+  .empty-state {
+    margin: 2rem 0;
+    color: var(--site-muted-strong);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 40rem) {
+    .moderation-heading {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .back-link {
+      justify-self: start;
+    }
+
+    .moderation-toolbar {
+      align-items: flex-start;
+    }
+
+    .entry-status {
+      width: 100%;
+      margin-inline-start: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .back-link,
+    .action-button {
+      transition: none;
+    }
+  }
+</style>
