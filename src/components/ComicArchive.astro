@@ -9,11 +9,16 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
   <div class="comic-archive-list">
     {comics.map((comic, index) => (
       <a class="comic-archive-item" href={`/comics/${index + 1}`}>
-        <h2>
-          <span class="comic-archive-number">{comicNumber(index)}.</span>
-          <span>{comic.title}</span>
-        </h2>
-        <p>{comic.description}</p>
+        <div class="comic-archive-preview">
+          <img src={comic.src} alt="" loading="lazy" />
+        </div>
+        <div class="comic-archive-copy">
+          <h2>
+            <span class="comic-archive-number">{comicNumber(index)}.</span>
+            <span>{comic.title}</span>
+          </h2>
+          <p>{comic.description}</p>
+        </div>
       </a>
     ))}
   </div>
@@ -21,32 +26,63 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
 
 <style>
   .comics-archive {
-    max-width: 72rem;
+    max-width: 74rem;
+    min-height: 100svh;
     margin: 0 auto;
-    padding: clamp(2rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem) 6rem;
+    padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 4vw, 3rem) 6rem;
     color: var(--site-foreground);
   }
 
   .comics-archive h1 {
-    margin: 0 0 2rem;
+    margin: 0 0 clamp(2rem, 5vw, 4rem);
+    color: var(--site-accent);
     font-family: "FunkinOptions", sans-serif;
-    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-size: clamp(4rem, 10vw, 8rem);
     font-weight: 400;
-    line-height: 0.95;
+    letter-spacing: -0.04em;
+    line-height: 0.82;
+    text-align: center;
+  }
+
+  :global(html[data-theme="dark"]) .comics-archive h1 {
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
   }
 
   .comic-archive-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
   }
 
   .comic-archive-item {
-    display: block;
-    padding: 1rem;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 0;
+    overflow: hidden;
+    padding: 0;
+    background: color-mix(in srgb, var(--site-accent) 7%, var(--site-background));
     color: var(--site-foreground);
     text-decoration: none;
-    transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .comic-archive-preview {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--site-foreground);
+  }
+
+  .comic-archive-preview img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left center;
+    transition: transform 180ms ease;
+  }
+
+  .comic-archive-copy {
+    padding: 1rem 1.25rem 1.25rem;
   }
 
   .comic-archive-item h2 {
@@ -76,7 +112,12 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
   .comic-archive-item:focus-visible {
     background: var(--site-accent);
     color: var(--site-background);
-    transform: translateX(0.2rem);
+    transform: translateY(-0.25rem);
+  }
+
+  .comic-archive-item:hover .comic-archive-preview img,
+  .comic-archive-item:focus-visible .comic-archive-preview img {
+    transform: scale(1.03);
   }
 
   .comic-archive-item:hover .comic-archive-number,
@@ -91,9 +132,14 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
     outline-offset: 0.25rem;
   }
 
-  @media (max-width: 600px) {
-    .comic-archive-list {
-      grid-template-columns: 1fr;
+  @media (prefers-reduced-motion: reduce) {
+    .comic-archive-item,
+    .comic-archive-preview img {
+      transition: none;
+      transform: none;
     }
+  }
+
+  @media (max-width: 600px) {
   }
 </style>

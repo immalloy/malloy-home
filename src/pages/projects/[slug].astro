@@ -1,0 +1,617 @@
+---
+import { getEntry, render } from "astro:content";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+
+const { slug } = Astro.params;
+const project = slug ? await getEntry("projects", slug) : undefined;
+
+if (!project) return Astro.redirect("/404");
+
+const { data } = project;
+const { Content } = await render(project);
+const galleryItems = [{ src: data.thumbnail, alt: data.thumbnailAlt }, ...data.gallery];
+---
+
+<SiteLayout title={`${data.name} | ImMalloy`} description={data.description}>
+  <main
+    class="project-detail"
+    aria-labelledby="project-title"
+    style={`--project-color: ${data.accentColor}`}
+  >
+    <a class="back-link" href="/projects" aria-label="Back to projects" title="Back to projects">
+      <span class="back-arrow" aria-hidden="true"></span>
+    </a>
+
+    <section class="project-intro" aria-labelledby="project-title">
+      <div class="project-heading">
+        <div class="project-title-row">
+          <span class="project-icon" aria-hidden="true">
+            {data.iconImage ? <img src={data.iconImage} alt="" /> : data.icon}
+          </span>
+          <h1 id="project-title">{data.name}</h1>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-media" aria-label={`${data.name} images`}>
+      <div class="project-gallery" data-project-gallery>
+        <button
+          class="primary-preview"
+          data-gallery-preview-open
+          type="button"
+          aria-label={`Open ${galleryItems[0].alt} enlarged`}
+        >
+          <img
+            class="project-preview-image"
+            data-gallery-preview
+            src={galleryItems[0].src}
+            alt={galleryItems[0].alt}
+          />
+        </button>
+
+        <nav class="gallery-thumbnails" aria-label={`${data.name} gallery`}>
+          {galleryItems.map((image, index) => (
+            <button
+              class="gallery-thumb"
+              data-gallery-thumb
+              data-image-src={image.src}
+              data-image-alt={image.alt}
+              type="button"
+              aria-label={`Show ${image.alt}`}
+              aria-pressed={index === 0}
+            >
+              <img src={image.src} alt="" loading={index === 0 ? undefined : "lazy"} />
+            </button>
+          ))}
+        </nav>
+      </div>
+    </section>
+
+    <div class="project-intro-body">
+        <article class="project-markdown" aria-label={`${data.name} description`}>
+          <Content />
+        </article>
+
+        {data.links.length > 0 && (
+          <nav class="project-links" aria-label={`${data.name} links`}>
+            {data.links.map((link) => (
+              <a href={link.href}>{link.label}</a>
+            ))}
+          </nav>
+        )}
+    </div>
+
+    <dialog
+      class="image-lightbox"
+      data-gallery-lightbox
+      aria-label={`${data.name} image preview`}
+    >
+      <button class="lightbox-close" data-lightbox-close type="button" aria-label="Close image preview">
+        ×
+      </button>
+      <img class="lightbox-image" data-lightbox-image src={galleryItems[0].src} alt={galleryItems[0].alt} />
+    </dialog>
+  </main>
+</SiteLayout>
+
+<style>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
+  .project-detail {
+    --project-accent: color-mix(in srgb, var(--project-color) 58%, #1a1d24);
+    --project-surface: color-mix(in srgb, var(--project-color) 26%, var(--site-background));
+    --project-on-accent: #f7f5ef;
+    max-width: 86rem;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 4vw, 4rem) 6rem;
+  }
+
+  :global(html[data-theme="dark"]) .project-detail {
+    --project-accent: color-mix(in srgb, var(--project-color) 62%, #f7f5ef);
+    --project-surface: color-mix(in srgb, var(--project-color) 34%, var(--site-background));
+    --project-on-accent: #1a1d24;
+  }
+
+  .back-link {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    color: var(--project-accent);
+    text-decoration: none;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .back-arrow {
+    display: block;
+    width: 0.8rem;
+    aspect-ratio: 100 / 206;
+    background: currentColor;
+    -webkit-mask: url("/assets/down-arrow.png") center / contain no-repeat;
+    mask: url("/assets/down-arrow.png") center / contain no-repeat;
+    transform: rotate(90deg);
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    background: transparent;
+    color: var(--project-accent);
+    transform: translateX(-0.2rem);
+  }
+
+  .back-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--project-accent) 42%, transparent);
+  }
+
+  .project-links a:focus-visible,
+  .project-markdown a:focus-visible {
+    outline: 2px solid var(--project-accent);
+    outline-offset: 0.35rem;
+  }
+
+  .project-intro {
+    padding-top: clamp(1rem, 2.5vw, 1.75rem);
+  }
+
+  .project-heading {
+    min-width: 0;
+  }
+
+  .project-title-row {
+    display: grid;
+    grid-template-columns: clamp(4rem, 8vw, 7rem) minmax(0, 1fr);
+    gap: clamp(0.5rem, 1vw, 0.85rem);
+    align-items: center;
+  }
+
+  .project-icon {
+    display: grid;
+    width: 100%;
+    aspect-ratio: 1;
+    place-items: center;
+    color: var(--project-color);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1;
+    overflow: hidden;
+  }
+
+  .project-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--project-color);
+    font-family: "FunkinLingLong", sans-serif;
+    font-size: clamp(3.5rem, 8vw, 8rem);
+    font-weight: 400;
+    line-height: 0.84;
+    text-wrap: balance;
+  }
+
+  .project-intro-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem);
+    gap: clamp(2rem, 7vw, 7rem);
+    align-items: start;
+    margin-top: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .project-markdown {
+    max-width: 68ch;
+    color: var(--site-foreground);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+    line-height: 1.6;
+  }
+
+  .project-markdown :global(p) {
+    margin: 0 0 1.35rem;
+  }
+
+  .project-markdown :global(h2),
+  .project-markdown :global(h3) {
+    margin: 2.5rem 0 0.8rem;
+    color: var(--project-color);
+    font-family: "FunkinOptions", sans-serif;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .project-markdown :global(h2) {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  .project-markdown :global(h3) {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .project-markdown :global(ul),
+  .project-markdown :global(ol) {
+    margin: 0 0 1.35rem;
+    padding-inline-start: 1.5rem;
+  }
+
+  .project-markdown :global(a) {
+    color: var(--project-color);
+  }
+
+  .project-markdown :global(blockquote) {
+    margin: 1.5rem 0;
+    padding-inline-start: 1rem;
+    border-inline-start: 3px solid var(--project-accent);
+    color: var(--site-muted-strong);
+  }
+
+  .project-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .project-links a {
+    display: inline-flex;
+    min-height: 3.5rem;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--project-accent);
+    background: var(--project-accent);
+    color: var(--project-on-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .project-links a:hover,
+  .project-links a:focus-visible {
+    background: transparent;
+    color: var(--project-accent);
+    transform: translateY(-0.15rem);
+  }
+
+  .project-links a:active {
+    transform: translateY(0) scale(0.96);
+  }
+
+  .project-media {
+    margin-top: clamp(1.25rem, 3vw, 2.5rem);
+  }
+
+  .project-gallery {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(10rem, 0.75fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .primary-preview {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 0;
+    border: 2px solid var(--project-surface);
+    background: var(--project-surface);
+    cursor: zoom-in;
+    overflow: hidden;
+  }
+
+  .project-preview-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    outline: 0;
+  }
+
+  .image-lightbox {
+    display: grid;
+    width: 100vw;
+    height: 100svh;
+    max-width: none;
+    max-height: none;
+    place-items: center;
+    padding: clamp(1rem, 3vw, 3rem);
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .image-lightbox:not([open]) {
+    display: none;
+  }
+
+  .image-lightbox::backdrop {
+    background: rgb(0 0 0 / 0.82);
+  }
+
+  .lightbox-image {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: clamp(0.75rem, 2vw, 1.5rem);
+    right: clamp(0.75rem, 2vw, 1.5rem);
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: var(--project-accent);
+    color: var(--project-on-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .lightbox-close:hover,
+  .lightbox-close:focus-visible {
+    background: var(--project-on-accent);
+    color: var(--project-accent);
+  }
+
+  .lightbox-close:focus-visible {
+    outline: 2px solid var(--project-accent);
+    outline-offset: 0.35rem;
+  }
+
+  .gallery-thumbnails {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    gap: 0.75rem;
+    border: 0;
+    padding: 0.75rem;
+    background: var(--project-surface);
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 0;
+    scrollbar-color: var(--project-accent) transparent;
+    scrollbar-width: thin;
+  }
+
+  .gallery-thumbnails::-webkit-scrollbar {
+    width: 0.45rem;
+    height: 0.45rem;
+  }
+
+  .gallery-thumbnails::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .gallery-thumbnails::-webkit-scrollbar-thumb {
+    background: var(--project-accent);
+  }
+
+  .gallery-thumb {
+    display: block;
+    flex: 1 1 0;
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    overflow: hidden;
+    opacity: 0.42;
+    transition: opacity 150ms ease, transform 150ms ease;
+  }
+
+  .gallery-thumb[aria-pressed="true"] {
+    opacity: 1;
+  }
+
+  .gallery-thumb:hover,
+  .gallery-thumb:focus-visible {
+    opacity: 0.9;
+    transform: translateY(-0.15rem);
+  }
+
+  .gallery-thumb[aria-pressed="true"]:hover,
+  .gallery-thumb[aria-pressed="true"]:focus-visible {
+    opacity: 1;
+  }
+
+  .primary-preview:focus-visible,
+  .gallery-thumb:focus-visible {
+    outline: 2px solid var(--project-accent);
+    outline-offset: 0.35rem;
+  }
+
+  .gallery-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-preview-image.is-changing {
+    animation: gallery-preview-in 240ms ease both;
+  }
+
+  @keyframes gallery-preview-in {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-preview-image.is-changing {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .project-intro-body {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .project-links {
+      align-items: flex-start;
+    }
+
+    .project-links a {
+      width: min(100%, 20rem);
+    }
+
+    .project-gallery {
+      grid-template-columns: 1fr;
+    }
+
+    .gallery-thumbnails {
+      flex-direction: row;
+      align-self: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 0.6rem;
+    }
+
+    .gallery-thumb {
+      flex: 0 0 clamp(6rem, 14vw, 10rem);
+      width: auto;
+      aspect-ratio: 4 / 3;
+      min-height: auto;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .project-title-row {
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+      gap: 0.75rem;
+    }
+  }
+</style>
+
+<script>
+  const gallery = document.querySelector("[data-project-gallery]");
+  const previewTrigger = gallery?.querySelector("[data-gallery-preview-open]");
+  const previewImage = gallery?.querySelector("[data-gallery-preview]");
+  const thumbnails = gallery ? [...gallery.querySelectorAll("[data-gallery-thumb]")] : [];
+  const lightbox = document.querySelector("[data-gallery-lightbox]");
+  const lightboxImage = lightbox?.querySelector("[data-lightbox-image]");
+  const lightboxClose = lightbox?.querySelector("[data-lightbox-close]");
+  let currentIndex = 0;
+  let rotationTimer;
+  let lastPreviewTrigger;
+
+  const showImage = (index) => {
+    const thumbnail = thumbnails[index];
+    if (!(thumbnail instanceof HTMLButtonElement)) return;
+
+    currentIndex = index;
+    const imageSrc = thumbnail.dataset.imageSrc ?? "";
+    const imageAlt = thumbnail.dataset.imageAlt ?? "";
+
+    if (previewImage instanceof HTMLImageElement) {
+      const nextImage = new Image();
+      nextImage.onload = () => {
+        previewImage.src = imageSrc;
+        previewImage.alt = imageAlt;
+        previewImage.classList.remove("is-changing");
+        void previewImage.offsetWidth;
+        previewImage.classList.add("is-changing");
+      };
+      nextImage.src = imageSrc;
+    }
+
+    thumbnails.forEach((item, itemIndex) => {
+      item.setAttribute("aria-pressed", String(itemIndex === index));
+    });
+  };
+
+  const stopRotation = () => {
+    window.clearInterval(rotationTimer);
+    rotationTimer = undefined;
+  };
+
+  const startRotation = () => {
+    stopRotation();
+    if (thumbnails.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    rotationTimer = window.setInterval(() => {
+      showImage((currentIndex + 1) % thumbnails.length);
+    }, 5000);
+  };
+
+  thumbnails.forEach((thumbnail, index) => {
+    thumbnail.addEventListener("click", () => {
+      showImage(index);
+    });
+  });
+
+  const openLightbox = () => {
+    if (
+      !(previewTrigger instanceof HTMLButtonElement) ||
+      !(previewImage instanceof HTMLImageElement) ||
+      !(lightbox instanceof HTMLDialogElement) ||
+      !(lightboxImage instanceof HTMLImageElement)
+    ) return;
+
+    lightboxImage.src = previewImage.currentSrc || previewImage.src;
+    lightboxImage.alt = previewImage.alt;
+    lastPreviewTrigger = previewTrigger;
+    lightbox.showModal();
+    if (lightboxClose instanceof HTMLButtonElement) lightboxClose.focus();
+  };
+
+  const closeLightbox = () => {
+    if (lightbox instanceof HTMLDialogElement && lightbox.open) lightbox.close();
+  };
+
+  previewTrigger?.addEventListener("click", openLightbox);
+  lightboxClose?.addEventListener("click", closeLightbox);
+  lightbox?.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeLightbox();
+  });
+  lightbox?.addEventListener("click", (event) => {
+    if (event.target === lightbox) closeLightbox();
+  });
+  lightbox?.addEventListener("close", () => {
+    if (lastPreviewTrigger instanceof HTMLElement) lastPreviewTrigger.focus();
+  });
+
+  gallery?.addEventListener("pointerenter", stopRotation);
+  gallery?.addEventListener("pointerleave", startRotation);
+  gallery?.addEventListener("focusin", stopRotation);
+  gallery?.addEventListener("focusout", (event) => {
+    if (!gallery?.contains(event.relatedTarget)) startRotation();
+  });
+
+  startRotation();
+</script>

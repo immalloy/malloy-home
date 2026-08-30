@@ -1,5 +1,174 @@
 ---
-import UnfinishedPage from "../components/UnfinishedPage.astro";
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
+
+const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<UnfinishedPage title="Projects | ImMalloy" description="Projects by ImMalloy." />
+<SiteLayout title="Projects | ImMalloy" description="Projects by ImMalloy.">
+  <main class="projects-page" aria-labelledby="projects-title">
+    <h1 id="projects-title">Projects</h1>
+
+    <div class="project-grid">
+      {projects.map((project) => (
+        <a
+          class="project-card"
+          href={`/projects/${project.id}`}
+          style={`--project-color: ${project.data.accentColor}`}
+        >
+          <div class="project-thumbnail">
+            <img src={project.data.thumbnail} alt={project.data.thumbnailAlt} />
+          </div>
+
+          <div class="project-card-content">
+            <span class="project-icon" aria-hidden="true">
+              {project.data.iconImage ? <img src={project.data.iconImage} alt="" /> : project.data.icon}
+            </span>
+            <div>
+              <h2>{project.data.name}</h2>
+              <p class="project-description">{project.data.description}</p>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</SiteLayout>
+
+<style>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
+  .projects-page {
+    max-width: 74rem;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 4vw, 3rem) 6rem;
+  }
+
+  h1 {
+    margin: 0 0 clamp(2rem, 5vw, 4rem);
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 0.82;
+    text-align: center;
+  }
+
+  :global(html[data-theme="dark"]) h1 {
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: stretch;
+  }
+
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    --project-accent: color-mix(in srgb, var(--project-color) 58%, #1a1d24);
+    --project-surface: color-mix(in srgb, var(--project-color) 26%, var(--site-background));
+    border: 0;
+    background: var(--site-background);
+    color: inherit;
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-color 180ms ease, transform 180ms ease;
+  }
+
+  .project-card:hover,
+  .project-card:focus-visible {
+    transform: translateY(-0.25rem);
+  }
+
+  .project-card:focus-visible {
+    outline: 2px solid var(--project-accent);
+    outline-offset: 0.35rem;
+  }
+
+  :global(html[data-theme="dark"]) .project-card {
+    --project-accent: color-mix(in srgb, var(--project-color) 62%, #f7f5ef);
+    --project-surface: color-mix(in srgb, var(--project-color) 34%, var(--site-background));
+  }
+
+  .project-thumbnail {
+    aspect-ratio: 16 / 9;
+    background: var(--site-foreground);
+    overflow: hidden;
+  }
+
+  .project-thumbnail img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-card-content {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 1.25rem;
+    flex: 1;
+    background: var(--project-surface);
+    color: var(--site-foreground);
+  }
+
+  .project-icon {
+    display: grid;
+    width: 3rem;
+    aspect-ratio: 1;
+    place-items: center;
+    color: var(--project-color);
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .project-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--project-color);
+    font-family: "FunkinLingLong", sans-serif;
+    font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+    font-weight: 400;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .project-description {
+    margin: 0.65rem 0 0;
+    color: var(--site-foreground);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  @media (max-width: 600px) {
+    .projects-page {
+      padding-top: 2.5rem;
+      padding-bottom: 4rem;
+    }
+  }
+</style>

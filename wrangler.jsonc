@@ -13,6 +13,14 @@
       "id": "cc7fd8b0c8304592a730d2e16bbf2a96"
     }
   ],
+  "d1_databases": [
+    {
+      "binding": "GUESTBOOK_DB",
+      "database_name": "malloy-home-guestbook",
+      "database_id": "a23f6a04-2c33-4adc-a90f-88e942bcad7b",
+      "migrations_dir": "migrations"
+    }
+  ],
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist"

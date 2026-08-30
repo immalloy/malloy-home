@@ -1,6 +1,5 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
-import ThemeToggle from "../components/ThemeToggle.astro";
 import ComicArchive from "../components/ComicArchive.astro";
 import { comics } from "../data/comics.js";
 
@@ -24,8 +23,6 @@ const randomIndex = comics.length > 1
   title="Comics | ImMalloy"
   description="Read comics from ImMalloy."
 >
-  <ThemeToggle />
-
   {isArchive ? (
     <ComicArchive comics={comics} />
   ) : (
@@ -129,6 +126,11 @@ const randomIndex = comics.length > 1
   }
 
   .comics-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: safe center;
+    min-height: 100svh;
     max-width: 72rem;
     margin: 0 auto;
     padding: clamp(2rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem) 6rem;

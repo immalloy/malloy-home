@@ -1,5 +1,1075 @@
 ---
-import UnfinishedPage from "../components/UnfinishedPage.astro";
+import SiteLayout from "../layouts/SiteLayout.astro";
+
+const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
 ---
 
-<UnfinishedPage title="Guestbook | ImMalloy" description="Leave a message or drawing for ImMalloy." />
+<SiteLayout title="Guestbook | ImMalloy" description="Leave an anonymous note or drawing for ImMalloy.">
+  <main class="guestbook-page" data-guestbook-shell inert aria-hidden="true">
+    <h1 class="visually-hidden">Guestbook</h1>
+
+    <nav class="guestbook-view-switch" aria-label="Guestbook view">
+      <button type="button" data-view="browse" aria-controls="browse-panel" aria-pressed="true">Browse</button>
+      <button type="button" data-view="submit" aria-controls="submit-panel" aria-pressed="false">Submit</button>
+    </nav>
+
+    <div class="guestbook-layout" data-view-layout data-view="browse">
+      <section class="composer" id="submit-panel" data-view-panel="submit" aria-label="Submit an entry" hidden>
+        <div class="mode-switch" aria-label="Choose what to submit">
+          <button type="button" data-mode="write" aria-pressed="true">Write</button>
+          <button type="button" data-mode="draw" aria-pressed="false">Draw</button>
+          <button type="button" data-mode="both" aria-pressed="false">Both</button>
+        </div>
+        <form data-guestbook-form>
+          <div class="field-grid">
+            <label>
+              <span>Display name <small>optional</small></span>
+              <input name="name" type="text" maxlength="48" autocomplete="name" placeholder="Anonymous" />
+            </label>
+
+            <label>
+              <span>Country <small>optional</small></span>
+              <select name="country" data-country-select>
+                <option value="__auto__">Auto-detect my country</option>
+                <option value="__private__">Prefer not to say</option>
+                <option value="Honduras">Honduras</option>
+                <option value="United States">United States</option>
+                <option value="Mexico">Mexico</option>
+                <option value="Canada">Canada</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Brazil">Brazil</option>
+                <option value="Argentina">Argentina</option>
+                <option value="Chile">Chile</option>
+                <option value="Spain">Spain</option>
+                <option value="France">France</option>
+                <option value="Germany">Germany</option>
+                <option value="Italy">Italy</option>
+                <option value="Portugal">Portugal</option>
+                <option value="Japan">Japan</option>
+                <option value="South Korea">South Korea</option>
+                <option value="China">China</option>
+                <option value="Australia">Australia</option>
+                <option value="__other__">Other country…</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="custom-country" data-custom-country hidden>
+            <span>Your country</span>
+            <input name="customCountry" type="text" maxlength="56" autocomplete="country-name" placeholder="Type your country" />
+          </label>
+
+          <div class="message-field" data-message-field>
+            <label for="guestbook-message">
+              <span>Message <small data-message-required>required</small></span>
+            </label>
+            <textarea
+              id="guestbook-message"
+              name="message"
+              rows="7"
+              maxlength="1200"
+              placeholder="Say hello…"
+            ></textarea>
+          </div>
+
+          <div class="drawing-field" data-drawing-field hidden>
+            <span class="field-title">Drawing <small data-drawing-required>optional</small></span>
+
+            <div class="drawing-tools" aria-label="Drawing tools">
+              <input type="color" value="#1a1d24" data-ink-color aria-label="Ink color" />
+              <label class="brush-size">
+                <span>Brush <output data-brush-output>6</output></span>
+                <input type="range" min="2" max="24" value="6" data-brush-size aria-label="Brush size" />
+              </label>
+              <button type="button" data-undo disabled>Undo</button>
+              <button type="button" data-redo disabled>Redo</button>
+              <button type="button" data-clear>Clear</button>
+              <button type="button" data-expand-drawing aria-controls="drawing-board" aria-expanded="false">Expand</button>
+            </div>
+
+            <canvas
+              id="drawing-board"
+              class="drawing-canvas"
+              data-drawing-canvas
+              width="900"
+              height="520"
+              role="img"
+              aria-label="Blank drawing whiteboard"
+            ></canvas>
+          </div>
+
+          <div class="honeypot" aria-hidden="true">
+            <label for="guestbook-website">Website</label>
+            <input id="guestbook-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <div class="verification">
+            <div
+              class="cf-turnstile"
+              data-sitekey={turnstileSiteKey}
+              data-action="guestbook-submit"
+              data-theme="auto"
+            ></div>
+          </div>
+
+          <button class="submit-button" type="submit">Send for review</button>
+          <p class="form-status" data-form-status role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="entries" id="browse-panel" data-view-panel="browse" aria-label="Browse guestbook entries">
+        <p class="entries-status" data-entries-status role="status" aria-live="polite"></p>
+        <div class="entry-list" data-entry-list></div>
+      </section>
+    </div>
+  </main>
+
+  <dialog class="rules-dialog" data-rules-dialog open aria-labelledby="rules-title">
+    <p class="section-label">Before you enter</p>
+    <h2 id="rules-title">Keep this corner kind.</h2>
+    <p>Read these quick rules before writing or drawing:</p>
+    <ul>
+      <li>Be kind. No harassment, hate, threats, or personal information.</li>
+      <li>No spam, malicious links, NSFW or graphic drawings.</li>
+      <li>Entries are anonymous by default and reviewed before appearing.</li>
+      <li>Do not share anything private that you would not want displayed publicly.</li>
+    </ul>
+    <label class="rules-check">
+      <input type="checkbox" data-rules-check />
+      <span>I’ve read and agree to the guestbook rules.</span>
+    </label>
+    <p class="rules-error" data-rules-error role="alert" hidden>Check the box to enter the guestbook.</p>
+    <button class="enter-button" type="button" data-enter-guestbook>Enter guestbook</button>
+  </dialog>
+</SiteLayout>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<style>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
+  .guestbook-page {
+    --guestbook-accent: var(--site-accent);
+    --guestbook-warm: color-mix(in srgb, var(--site-accent) 28%, var(--site-background));
+    --guestbook-paper: #fffdf6;
+    --guestbook-ink: var(--site-background);
+    max-width: 78rem;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 4vw, 4rem) 6rem;
+  }
+
+  .section-label {
+    margin: 0 0 0.8rem;
+    color: var(--guestbook-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2,
+  p {
+    margin-top: 0;
+  }
+
+  h2 {
+    margin-bottom: 0;
+    color: var(--guestbook-accent);
+    font-family: "FunkinLingLong", sans-serif;
+    font-size: clamp(2.2rem, 5vw, 4.5rem);
+    font-weight: 400;
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .guestbook-layout {
+    display: block;
+  }
+
+  .composer,
+  .entries {
+    max-width: 54rem;
+    margin-inline: auto;
+    min-width: 0;
+  }
+
+  .guestbook-view-switch {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0 auto clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .composer {
+    width: 100%;
+  }
+
+  .mode-switch {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .guestbook-view-switch button,
+  .mode-switch button,
+  .drawing-tools button,
+  .submit-button,
+  .enter-button {
+    display: inline-block;
+    border: 2px solid var(--guestbook-accent);
+    padding: 0.85rem 1.1rem;
+    background: transparent;
+    color: var(--guestbook-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .guestbook-view-switch button[aria-pressed="true"],
+  .mode-switch button[aria-pressed="true"] {
+    background: var(--guestbook-accent);
+    color: var(--guestbook-ink);
+  }
+
+  .guestbook-view-switch button:hover:not(:disabled),
+  .guestbook-view-switch button:focus-visible,
+  .mode-switch button:hover:not(:disabled),
+  .mode-switch button:focus-visible,
+  .drawing-tools button:hover:not(:disabled),
+  .drawing-tools button:focus-visible,
+  .submit-button:hover:not(:disabled),
+  .submit-button:focus-visible,
+  .enter-button:hover:not(:disabled),
+  .enter-button:focus-visible {
+    background: var(--guestbook-accent);
+    color: var(--guestbook-ink);
+    transform: translateY(-0.15rem);
+  }
+
+  .guestbook-view-switch button:active,
+  .mode-switch button:active,
+  .drawing-tools button:active,
+  .submit-button:active,
+  .enter-button:active {
+    transform: scale(0.96);
+  }
+
+  .entries-status,
+  .form-status {
+    min-height: 1.5em;
+    margin-bottom: 1.5rem;
+    color: var(--site-muted-strong);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .entries-status:empty {
+    display: none;
+  }
+
+  form {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  label {
+    display: grid;
+    gap: 0.45rem;
+    color: var(--site-foreground);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.9rem;
+  }
+
+  label > span,
+  .field-title {
+    color: var(--site-foreground);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  small {
+    color: var(--site-muted-strong);
+    font-size: 0.8em;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  input[type="text"],
+  select,
+  textarea {
+    width: 100%;
+    border: 0.15rem solid color-mix(in srgb, var(--guestbook-accent) 35%, var(--site-background));
+    border-radius: 0;
+    padding: 0.8rem 0.85rem;
+    background: color-mix(in srgb, var(--guestbook-accent) 7%, var(--site-background));
+    color: var(--site-foreground);
+    font: inherit;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 1rem;
+  }
+
+  textarea {
+    min-height: 10rem;
+    resize: vertical;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--site-muted);
+  }
+
+  input[type="text"]:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  input[type="color"]:focus-visible,
+  input[type="range"]:focus-visible,
+  .guestbook-view-switch button:focus-visible,
+  .mode-switch button:focus-visible,
+  .drawing-tools button:focus-visible,
+  .submit-button:focus-visible,
+  .enter-button:focus-visible,
+  .rules-check input:focus-visible {
+    outline: 2px solid var(--site-foreground);
+    outline-offset: 0.4rem;
+  }
+
+  .drawing-field[hidden],
+  .message-field[hidden],
+  .custom-country[hidden] {
+    display: none;
+  }
+
+  .drawing-field {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .drawing-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: end;
+  }
+
+  .drawing-tools label {
+    display: flex;
+    min-height: 2.7rem;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.15rem;
+  }
+
+  .drawing-tools label > span {
+    font-size: 0.7rem;
+  }
+
+  .drawing-tools input[type="color"] {
+    width: 2.7rem;
+    height: 2.7rem;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .drawing-tools button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .brush-size {
+    width: min(12rem, 42vw);
+  }
+
+  .brush-size output {
+    color: var(--guestbook-accent);
+  }
+
+  .drawing-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 900 / 520;
+    border: 0.2rem solid var(--guestbook-accent);
+    background: var(--guestbook-paper);
+    cursor: crosshair;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+
+  :global(html.drawing-is-expanded) {
+    overflow: hidden;
+  }
+
+  :global(html.drawing-is-expanded::before) {
+    position: fixed;
+    z-index: 90;
+    inset: 0;
+    background: rgb(0 0 0 / 0.7);
+    content: "";
+  }
+
+  .drawing-field.is-expanded {
+    position: fixed;
+    z-index: 100;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    width: min(64rem, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    overflow: auto;
+    padding: clamp(1rem, 3vw, 2rem);
+    background: var(--site-background);
+    box-shadow: 0 1rem 4rem rgb(0 0 0 / 0.35);
+    transform: translate(-50%, -50%);
+    animation: drawing-board-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .drawing-field.is-expanded .drawing-tools {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding-block-end: 0.75rem;
+    background: var(--site-background);
+  }
+
+  .drawing-field.is-expanded .drawing-canvas {
+    width: 100%;
+    max-height: none;
+  }
+
+  @keyframes drawing-board-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% + 0.5rem));
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .verification {
+    min-height: 4rem;
+  }
+
+  .form-status {
+    margin: 0;
+  }
+
+  .form-status[data-state="error"],
+  .rules-error {
+    color: #d64264;
+  }
+
+  .form-status[data-state="success"] {
+    color: var(--guestbook-accent);
+  }
+
+  .honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .entry-list {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .entry {
+    position: relative;
+    padding: 1.2rem 1.25rem 1.35rem;
+    background: color-mix(in srgb, var(--guestbook-warm) 18%, var(--site-background));
+    color: var(--site-foreground);
+    transform: rotate(-1deg);
+  }
+
+  .entry:nth-child(even) {
+    background: color-mix(in srgb, var(--guestbook-accent) 12%, var(--site-background));
+    transform: rotate(1deg);
+  }
+
+  .entry-meta {
+    margin: 0 0 0.7rem;
+    color: var(--site-muted-strong);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .entry-message {
+    margin: 0;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 1rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .entry-drawing {
+    display: block;
+    width: 100%;
+    max-height: 20rem;
+    margin-top: 1rem;
+    object-fit: contain;
+    background: var(--guestbook-paper);
+  }
+
+  .empty-entries {
+    margin: 0;
+    color: var(--site-muted-strong);
+    font-family: "FunkinOptions", sans-serif;
+    line-height: 1.45;
+  }
+
+  .rules-dialog {
+    --guestbook-accent: var(--site-accent);
+    --guestbook-warm: color-mix(in srgb, var(--site-accent) 28%, var(--site-background));
+    --guestbook-ink: var(--site-background);
+    position: fixed;
+    z-index: 50;
+    inset: 50% auto auto 50%;
+    width: min(38rem, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: 0;
+    overflow-y: auto;
+    border: 0;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    background: var(--site-background);
+    color: var(--site-foreground);
+    box-shadow: 0 0 0 100vmax rgb(0 0 0 / 0.72), 0 1rem 4rem rgb(0 0 0 / 0.35);
+    transform: translate(-50%, -50%);
+    overscroll-behavior: contain;
+  }
+
+  .rules-dialog::backdrop {
+    background: rgb(0 0 0 / 0.72);
+  }
+
+  .rules-dialog h2 {
+    margin-bottom: 1rem;
+  }
+
+  .rules-dialog > p:not(.section-label):not(.rules-error) {
+    max-width: 32rem;
+    font-family: "FunkinOptions", sans-serif;
+    line-height: 1.45;
+  }
+
+  .rules-dialog ul {
+    display: grid;
+    gap: 0.65rem;
+    margin: 1.25rem 0 1.5rem;
+    padding-inline-start: 1.2rem;
+    font-family: "FunkinOptions", sans-serif;
+    line-height: 1.4;
+  }
+
+  .rules-check {
+    display: flex;
+    gap: 0.65rem;
+    align-items: start;
+    margin-bottom: 0.6rem;
+    cursor: pointer;
+  }
+
+  .rules-check input {
+    width: 1.2rem;
+    height: 1.2rem;
+    flex: 0 0 auto;
+    accent-color: var(--guestbook-accent);
+  }
+
+  .rules-check span {
+    font-size: 0.95rem;
+    line-height: 1.35;
+    text-transform: none;
+  }
+
+  .rules-error {
+    min-height: 1.3em;
+    margin: 0 0 0.75rem;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 800px) {
+    .entries {
+      max-width: 42rem;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .guestbook-page {
+      padding-top: 2.75rem;
+      padding-bottom: 4rem;
+    }
+
+    .field-grid {
+      grid-template-columns: 1fr;
+    }
+
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .guestbook-view-switch button,
+    .mode-switch button,
+    .drawing-tools button,
+    .submit-button,
+    .enter-button,
+    .entry {
+      transition: none;
+      transform: none;
+      animation: none;
+    }
+
+    .drawing-field.is-expanded {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const shell = document.querySelector("[data-guestbook-shell]");
+  const rulesDialog = document.querySelector("[data-rules-dialog]");
+  const rulesCheck = document.querySelector("[data-rules-check]");
+  const rulesError = document.querySelector("[data-rules-error]");
+  const enterGuestbook = document.querySelector("[data-enter-guestbook]");
+  const rulesStorageKey = "malloy-guestbook-rules-v1";
+
+  const viewButtons = [...document.querySelectorAll("[data-view]")];
+  const viewLayout = document.querySelector("[data-view-layout]");
+  const viewPanels = [...document.querySelectorAll("[data-view-panel]")];
+  const modeButtons = [...document.querySelectorAll("[data-mode]")];
+  const messageField = document.querySelector("[data-message-field]");
+  const messageInput = document.querySelector("#guestbook-message");
+  const drawingRequired = document.querySelector("[data-drawing-required]");
+  const drawingField = document.querySelector("[data-drawing-field]");
+  const form = document.querySelector("[data-guestbook-form]");
+  const formStatus = document.querySelector("[data-form-status]");
+  const countrySelect = document.querySelector("[data-country-select]");
+  const customCountry = document.querySelector("[data-custom-country]");
+  const customCountryInput = customCountry?.querySelector("input");
+  const entriesStatus = document.querySelector("[data-entries-status]");
+  const entryList = document.querySelector("[data-entry-list]");
+  const canvas = document.querySelector("[data-drawing-canvas]");
+  const inkColor = document.querySelector("[data-ink-color]");
+  const brushSize = document.querySelector("[data-brush-size]");
+  const brushOutput = document.querySelector("[data-brush-output]");
+  const undoButton = document.querySelector("[data-undo]");
+  const redoButton = document.querySelector("[data-redo]");
+  const clearButton = document.querySelector("[data-clear]");
+  const expandDrawingButton = document.querySelector("[data-expand-drawing]");
+  const context = canvas instanceof HTMLCanvasElement ? canvas.getContext("2d") : null;
+  const modes = ["write", "draw", "both"];
+  let currentMode = "write";
+  let rulesAccepted = false;
+  let isDrawing = false;
+  let lastPoint;
+  let hasDrawing = false;
+  let history = [];
+  let redoHistory = [];
+
+  const updateView = (view) => {
+    if (!(view === "browse" || view === "submit")) return;
+    viewButtons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.view === view));
+    });
+    if (viewLayout instanceof HTMLElement) viewLayout.dataset.view = view;
+    viewPanels.forEach((panel) => {
+      const isActive = panel.dataset.viewPanel === view;
+      panel.hidden = !isActive;
+      panel.setAttribute("aria-hidden", String(!isActive));
+    });
+  };
+
+  const setStatus = (message, state = "") => {
+    if (!(formStatus instanceof HTMLElement)) return;
+    formStatus.textContent = message;
+    if (state) formStatus.dataset.state = state;
+    else delete formStatus.dataset.state;
+  };
+
+  const updateHistoryButtons = () => {
+    if (undoButton instanceof HTMLButtonElement) undoButton.disabled = history.length === 0;
+    if (redoButton instanceof HTMLButtonElement) redoButton.disabled = redoHistory.length === 0;
+  };
+
+  const setDrawingExpanded = (expanded) => {
+    if (!(drawingField instanceof HTMLElement)) return;
+    drawingField.classList.toggle("is-expanded", expanded);
+    document.documentElement.classList.toggle("drawing-is-expanded", expanded);
+    if (expandDrawingButton instanceof HTMLButtonElement) {
+      expandDrawingButton.setAttribute("aria-expanded", String(expanded));
+      expandDrawingButton.textContent = expanded ? "Collapse" : "Expand";
+    }
+  };
+
+  const updateMode = (mode) => {
+    if (!modes.includes(mode)) return;
+    currentMode = mode;
+    modeButtons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
+    });
+
+    if (messageField instanceof HTMLElement) {
+      messageField.hidden = mode === "draw";
+      messageField.setAttribute("aria-hidden", String(mode === "draw"));
+    }
+    if (messageInput instanceof HTMLTextAreaElement) messageInput.required = mode !== "draw";
+    if (drawingRequired instanceof HTMLElement) drawingRequired.textContent = mode === "both" ? "required" : "optional";
+    if (drawingField instanceof HTMLElement) {
+      drawingField.hidden = mode === "write";
+      drawingField.setAttribute("aria-hidden", String(mode === "write"));
+    }
+  };
+
+  const showCustomCountry = () => {
+    const isOther = countrySelect instanceof HTMLSelectElement && countrySelect.value === "__other__";
+    if (customCountry instanceof HTMLElement) {
+      customCountry.hidden = !isOther;
+      customCountry.setAttribute("aria-hidden", String(!isOther));
+    }
+    if (customCountryInput instanceof HTMLInputElement) customCountryInput.required = isOther;
+  };
+
+  const snapshot = () => {
+    if (!(canvas instanceof HTMLCanvasElement) || !context) return;
+    history.push(context.getImageData(0, 0, canvas.width, canvas.height));
+    if (history.length > 20) history.shift();
+    redoHistory = [];
+    updateHistoryButtons();
+  };
+
+  const canvasHasInk = () => {
+    if (!(canvas instanceof HTMLCanvasElement) || !context) return false;
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    for (let index = 3; index < pixels.length; index += 4) {
+      if (pixels[index] > 0) return true;
+    }
+    return false;
+  };
+
+  const clearDrawing = () => {
+    if (!(canvas instanceof HTMLCanvasElement) || !context) return;
+    snapshot();
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    hasDrawing = false;
+    canvas.setAttribute("aria-label", "Blank drawing whiteboard");
+    updateHistoryButtons();
+  };
+
+  const undoDrawing = () => {
+    if (!(context && history.length)) return;
+    if (!(canvas instanceof HTMLCanvasElement)) return;
+    const previous = history.pop();
+    if (!previous) return;
+    redoHistory.push(context.getImageData(0, 0, canvas.width, canvas.height));
+    context.putImageData(previous, 0, 0);
+    hasDrawing = canvasHasInk();
+    canvas?.setAttribute("aria-label", hasDrawing ? "Drawing whiteboard with marks" : "Blank drawing whiteboard");
+    updateHistoryButtons();
+  };
+
+  const redoDrawing = () => {
+    if (!(context && redoHistory.length)) return;
+    if (!(canvas instanceof HTMLCanvasElement)) return;
+    const next = redoHistory.pop();
+    if (!next) return;
+    history.push(context.getImageData(0, 0, canvas.width, canvas.height));
+    if (history.length > 20) history.shift();
+    context.putImageData(next, 0, 0);
+    hasDrawing = canvasHasInk();
+    canvas.setAttribute("aria-label", hasDrawing ? "Drawing whiteboard with marks" : "Blank drawing whiteboard");
+    updateHistoryButtons();
+  };
+
+  const getPoint = (event) => {
+    if (!(canvas instanceof HTMLCanvasElement)) return { x: 0, y: 0 };
+    const bounds = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / canvas.clientWidth;
+    const scaleY = canvas.height / canvas.clientHeight;
+    return {
+      x: Math.min(Math.max((event.clientX - bounds.left - canvas.clientLeft) * scaleX, 0), canvas.width),
+      y: Math.min(Math.max((event.clientY - bounds.top - canvas.clientTop) * scaleY, 0), canvas.height),
+    };
+  };
+
+  const startDrawing = (event) => {
+    if (!(context && canvas instanceof HTMLCanvasElement)) return;
+    event.preventDefault();
+    snapshot();
+    isDrawing = true;
+    lastPoint = getPoint(event);
+    canvas.setPointerCapture?.(event.pointerId);
+  };
+
+  const draw = (event) => {
+    if (!(isDrawing && context && lastPoint)) return;
+    event.preventDefault();
+    const point = getPoint(event);
+    context.beginPath();
+    context.moveTo(lastPoint.x, lastPoint.y);
+    context.lineTo(point.x, point.y);
+    context.strokeStyle = inkColor instanceof HTMLInputElement ? inkColor.value : "#1a1d24";
+    context.lineWidth = brushSize instanceof HTMLInputElement ? Number(brushSize.value) : 6;
+    context.lineCap = "round";
+    context.lineJoin = "round";
+    context.stroke();
+    lastPoint = point;
+    hasDrawing = true;
+    canvas?.setAttribute("aria-label", "Drawing whiteboard with marks");
+  };
+
+  const finishDrawing = (event) => {
+    if (!isDrawing) return;
+    isDrawing = false;
+    lastPoint = undefined;
+    if (canvas instanceof HTMLCanvasElement) canvas.releasePointerCapture?.(event.pointerId);
+  };
+
+  const formatCountry = (country) => {
+    if (!country) return "";
+    if (!/^[A-Z]{2}$/.test(country)) return country;
+    try {
+      return new Intl.DisplayNames(["en"], { type: "region" }).of(country) ?? country;
+    } catch {
+      return country;
+    }
+  };
+
+  const renderEntries = (entries) => {
+    if (!(entryList instanceof HTMLElement)) return;
+    entryList.replaceChildren();
+
+    if (!entries.length) {
+      const empty = document.createElement("p");
+      empty.className = "empty-entries";
+      empty.textContent = "No approved entries yet. You could be the first little note here.";
+      entryList.append(empty);
+      return;
+    }
+
+    entries.forEach((entry) => {
+      const article = document.createElement("article");
+      article.className = "entry";
+
+      const meta = document.createElement("p");
+      meta.className = "entry-meta";
+      const date = new Date(entry.createdAt);
+      const dateText = Number.isNaN(date.valueOf())
+        ? "Recently"
+        : date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+      const country = formatCountry(entry.country);
+      meta.textContent = [entry.name || "Anonymous", country, dateText].filter(Boolean).join(" · ");
+      article.append(meta);
+
+      if (entry.message) {
+        const message = document.createElement("p");
+        message.className = "entry-message";
+        message.textContent = entry.message;
+        article.append(message);
+      }
+
+      if (entry.drawing) {
+        const drawing = document.createElement("img");
+        drawing.className = "entry-drawing";
+        drawing.src = entry.drawing;
+        drawing.alt = `Drawing left by ${entry.name || "Anonymous"}`;
+        article.append(drawing);
+      }
+
+      entryList.append(article);
+    });
+  };
+
+  const loadEntries = async () => {
+    try {
+      const response = await fetch("/api/guestbook", { headers: { Accept: "application/json" } });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Could not load entries.");
+      renderEntries(Array.isArray(payload.entries) ? payload.entries : []);
+    } catch (error) {
+      if (entriesStatus instanceof HTMLElement) entriesStatus.textContent = error instanceof Error ? error.message : "Entries are temporarily unavailable.";
+    }
+  };
+
+  const unlockGuestbook = () => {
+    rulesAccepted = true;
+    shell?.removeAttribute("inert");
+    shell?.setAttribute("aria-hidden", "false");
+    if (rulesDialog instanceof HTMLDialogElement && rulesDialog.open) rulesDialog.close();
+    loadEntries();
+  };
+
+  const readRulesAcceptance = () => {
+    try {
+      return window.localStorage.getItem(rulesStorageKey) === "accepted";
+    } catch {
+      return false;
+    }
+  };
+
+  const rememberRulesAcceptance = () => {
+    try {
+      window.localStorage.setItem(rulesStorageKey, "accepted");
+    } catch {
+      // The rules still apply when storage is unavailable.
+    }
+  };
+
+  viewButtons.forEach((button) => button.addEventListener("click", () => updateView(button.dataset.view ?? "browse")));
+  modeButtons.forEach((button) => button.addEventListener("click", () => updateMode(button.dataset.mode ?? "write")));
+  countrySelect?.addEventListener("change", showCustomCountry);
+  undoButton?.addEventListener("click", undoDrawing);
+  redoButton?.addEventListener("click", redoDrawing);
+  clearButton?.addEventListener("click", () => clearDrawing());
+  expandDrawingButton?.addEventListener("click", () => {
+    setDrawingExpanded(!drawingField?.classList.contains("is-expanded"));
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !drawingField?.classList.contains("is-expanded")) return;
+    setDrawingExpanded(false);
+    expandDrawingButton?.focus();
+  });
+  canvas?.addEventListener("pointerdown", startDrawing);
+  canvas?.addEventListener("pointermove", draw);
+  canvas?.addEventListener("pointerup", finishDrawing);
+  canvas?.addEventListener("pointercancel", finishDrawing);
+  brushSize?.addEventListener("input", () => {
+    if (brushOutput instanceof HTMLOutputElement && brushSize instanceof HTMLInputElement) brushOutput.value = brushSize.value;
+  });
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const turnstileInput = form.querySelector('input[name="cf-turnstile-response"]');
+    const country = countrySelect instanceof HTMLSelectElement
+      ? countrySelect.value === "__other__"
+        ? customCountryInput instanceof HTMLInputElement ? customCountryInput.value.trim() : ""
+        : countrySelect.value
+      : "__auto__";
+    const drawing = hasDrawing && canvas instanceof HTMLCanvasElement ? canvas.toDataURL("image/png") : "";
+
+    if (!(turnstileInput instanceof HTMLInputElement) || !turnstileInput.value) {
+      setStatus("Complete the bot check before sending.", "error");
+      return;
+    }
+    if (currentMode !== "draw" && messageInput instanceof HTMLTextAreaElement && !messageInput.value.trim()) {
+      setStatus("Add a message or choose Draw mode.", "error");
+      messageInput.focus();
+      return;
+    }
+    if (currentMode !== "write" && !hasDrawing) {
+      setStatus(currentMode === "both" ? "Add a drawing for Both mode." : "Draw something first, or choose Write mode.", "error");
+      canvas?.focus();
+      return;
+    }
+
+    setStatus("Sending…");
+    const submitButton = form.querySelector(".submit-button");
+    if (submitButton instanceof HTMLButtonElement) submitButton.disabled = true;
+
+    try {
+      const response = await fetch("/api/guestbook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: form.elements.namedItem("name")?.value ?? "",
+          message: messageInput instanceof HTMLTextAreaElement ? messageInput.value : "",
+          country,
+          drawing,
+          website: form.elements.namedItem("website")?.value ?? "",
+          turnstileToken: turnstileInput.value,
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "The entry could not be sent.");
+
+      clearDrawing();
+      history = [];
+      redoHistory = [];
+      updateHistoryButtons();
+      form.reset();
+      updateMode("write");
+      showCustomCountry();
+      globalThis.turnstile?.reset?.();
+      setStatus("Thanks! Your entry is waiting for moderation.", "success");
+    } catch (error) {
+      globalThis.turnstile?.reset?.();
+      setStatus(error instanceof Error ? error.message : "The entry could not be sent.", "error");
+    } finally {
+      if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
+    }
+  });
+
+  enterGuestbook?.addEventListener("click", () => {
+    if (!(rulesCheck instanceof HTMLInputElement) || !rulesCheck.checked) {
+      if (rulesError instanceof HTMLElement) rulesError.hidden = false;
+      rulesCheck?.focus();
+      return;
+    }
+    rememberRulesAcceptance();
+    unlockGuestbook();
+  });
+
+  rulesCheck?.addEventListener("change", () => {
+    if (rulesCheck instanceof HTMLInputElement && rulesCheck.checked && rulesError instanceof HTMLElement) rulesError.hidden = true;
+  });
+  rulesDialog?.addEventListener("cancel", (event) => event.preventDefault());
+  rulesDialog?.addEventListener("close", () => {
+    if (!rulesAccepted && rulesDialog instanceof HTMLDialogElement) rulesDialog.showModal();
+  });
+
+  updateView("browse");
+  updateMode("write");
+  showCustomCountry();
+  updateHistoryButtons();
+  if (readRulesAcceptance()) {
+    if (rulesCheck instanceof HTMLInputElement) rulesCheck.checked = true;
+    unlockGuestbook();
+  }
+</script>

@@ -1,4 +1,6 @@
 ---
+import ThemeToggle from "../components/ThemeToggle.astro";
+
 interface Props {
   title: string;
   description: string;
@@ -57,15 +59,16 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
       <canvas class="sidebar-sprite" width="250" height="421" aria-hidden="true"></canvas>
     </button>
     <button class="sidebar-backdrop" type="button" tabindex="-1" aria-label="Close site navigation" aria-hidden="true"></button>
+    <ThemeToggle />
     <aside class="site-sidebar" id="site-sidebar" aria-label="Site navigation" aria-hidden="true" inert>
       <div class="sidebar-content">
         <nav aria-label="Site navigation">
-          <a href="/"><span class="sidebar-link-icon sidebar-icon-house" aria-hidden="true"></span><span>Home</span></a>
-          <a href="/about"><span class="sidebar-link-icon sidebar-icon-book" aria-hidden="true"></span><span>About</span></a>
-          <a href="/projects"><span class="sidebar-link-icon sidebar-icon-book" aria-hidden="true"></span><span>Projects</span></a>
-          <a href="/library"><span class="sidebar-link-icon sidebar-icon-book" aria-hidden="true"></span><span>Library</span></a>
-          <a href="/comics"><span class="sidebar-link-icon sidebar-icon-book" aria-hidden="true"></span><span>Comics</span></a>
-          <a href="/guestbook"><span class="sidebar-link-icon sidebar-icon-book" aria-hidden="true"></span><span>Guestbook</span></a>
+          <a href="/"><span class="sidebar-link-icon sidebar-icon-home" aria-hidden="true"></span><span>Home</span></a>
+          <a href="/about"><span class="sidebar-link-icon sidebar-icon-about" aria-hidden="true"></span><span>About</span></a>
+          <a href="/projects"><span class="sidebar-link-icon sidebar-icon-projects" aria-hidden="true"></span><span>Projects</span></a>
+          <a href="/blog"><span class="sidebar-link-icon sidebar-icon-blog" aria-hidden="true"></span><span>Blog</span></a>
+          <a href="/comics"><span class="sidebar-link-icon sidebar-icon-comics" aria-hidden="true"></span><span>Comics</span></a>
+          <a href="/guestbook"><span class="sidebar-link-icon sidebar-icon-guestbook" aria-hidden="true"></span><span>Guestbook</span></a>
         </nav>
       </div>
     </aside>
@@ -179,9 +182,10 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     background: #000000;
     color: #CCCCCC;
     box-shadow: -2rem 0 4rem oklch(0 0 0 / 0.18);
+    display: flex;
+    flex-direction: column;
     opacity: 1;
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    overflow: hidden;
     pointer-events: none;
     transform: translateX(100%);
     transition: transform var(--sidebar-duration) var(--sidebar-easing);
@@ -207,14 +211,33 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
 
   .sidebar-content {
     display: flex;
-    min-height: 100%;
+    min-height: 0;
+    flex: 1;
     flex-direction: column;
     gap: 2rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-block: 0.4rem;
+    scrollbar-color: #ffffff transparent;
+    scrollbar-width: thin;
+  }
+
+  .sidebar-content::-webkit-scrollbar {
+    width: 0.45rem;
+  }
+
+  .sidebar-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .sidebar-content::-webkit-scrollbar-thumb {
+    background: #ffffff;
   }
 
   .site-sidebar nav {
     display: grid;
     gap: 0.75rem;
+    margin-block: auto;
   }
 
   .site-sidebar nav a {
@@ -242,12 +265,28 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     -webkit-mask: var(--sidebar-icon) center / contain no-repeat;
   }
 
-  .sidebar-icon-house {
-    --sidebar-icon: url("/assets/sidebar/house.png");
+  .sidebar-icon-home {
+    --sidebar-icon: url("/assets/sidebar/home.png");
   }
 
-  .sidebar-icon-book {
-    --sidebar-icon: url("/assets/sidebar/book.png");
+  .sidebar-icon-about {
+    --sidebar-icon: url("/assets/sidebar/about.png");
+  }
+
+  .sidebar-icon-projects {
+    --sidebar-icon: url("/assets/sidebar/projects.png");
+  }
+
+  .sidebar-icon-blog {
+    --sidebar-icon: url("/assets/sidebar/blog.png");
+  }
+
+  .sidebar-icon-comics {
+    --sidebar-icon: url("/assets/sidebar/comics.png");
+  }
+
+  .sidebar-icon-guestbook {
+    --sidebar-icon: url("/assets/sidebar/guestbook.png");
   }
 
   .site-sidebar nav a:hover,
@@ -293,7 +332,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
   const spriteContext = sidebarSprite instanceof HTMLCanvasElement ? sidebarSprite.getContext("2d") : null;
   const spriteImage = new Image();
   const pageContent = [...document.body.children].filter(
-    (element) => !element.matches(".sidebar-button, .sidebar-backdrop, #site-sidebar"),
+    (element) => !element.matches(".sidebar-button, .sidebar-backdrop, .theme-toggle, #site-sidebar"),
   );
   let lastFocusedElement = null;
   let spriteReady = false;
