@@ -15,11 +15,7 @@ if (authError) {
   {authenticated ? (
     <main class="moderation-page" aria-labelledby="moderation-title">
       <div class="moderation-heading">
-        <div>
-          <p class="section-label">Private tools</p>
-          <h1 id="moderation-title">Guestbook moderation</h1>
-          <p>Review entries before they appear on the public guestbook.</p>
-        </div>
+        <h1 id="moderation-title">Guestbook moderation</h1>
         <a class="back-link" href="/guestbook">Back to guestbook</a>
       </div>
 
@@ -218,15 +214,6 @@ if (authError) {
     margin-bottom: 2rem;
   }
 
-  .section-label {
-    margin: 0 0 0.75rem;
-    color: var(--site-accent);
-    font-family: "FunkinOptions", sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
   h1,
   h2,
   h3,
@@ -245,7 +232,10 @@ if (authError) {
     text-wrap: balance;
   }
 
-  .moderation-heading p:not(.section-label),
+  .moderation-heading h1 {
+    margin-bottom: 0;
+  }
+
   .moderation-locked p {
     max-width: 38rem;
     margin-bottom: 0;
