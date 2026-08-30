@@ -21,6 +21,12 @@
       "migrations_dir": "migrations"
     }
   ],
+  "r2_buckets": [
+    {
+      "binding": "GUESTBOOK_DRAWINGS",
+      "bucket_name": "malloy-home-guestbook-drawings"
+    }
+  ],
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist"

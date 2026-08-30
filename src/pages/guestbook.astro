@@ -556,8 +556,9 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
 
   :global(.entry-drawing) {
     display: block;
-    width: 100%;
-    max-height: 20rem;
+    width: min(100%, 42rem);
+    aspect-ratio: 900 / 520;
+    height: auto;
     margin-top: 1rem;
     object-fit: contain;
     background: var(--guestbook-paper);
@@ -798,6 +799,19 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     return false;
   };
 
+  const exportDrawing = () => {
+    if (!(canvas instanceof HTMLCanvasElement) || !context) return Promise.resolve(null);
+    const exportCanvas = document.createElement("canvas");
+    exportCanvas.width = canvas.width;
+    exportCanvas.height = canvas.height;
+    const exportContext = exportCanvas.getContext("2d");
+    if (!exportContext) return Promise.resolve(null);
+    exportContext.fillStyle = "#fff";
+    exportContext.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+    exportContext.drawImage(canvas, 0, 0);
+    return new Promise((resolve) => exportCanvas.toBlob(resolve, "image/png"));
+  };
+
   const clearDrawing = () => {
     if (!(canvas instanceof HTMLCanvasElement) || !context) return;
     snapshot();
@@ -919,10 +933,10 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
         article.append(message);
       }
 
-      if (entry.drawing) {
+      if (entry.hasDrawing) {
         const drawing = document.createElement("img");
         drawing.className = "entry-drawing";
-        drawing.src = entry.drawing;
+        drawing.src = `/api/guestbook-drawing?id=${encodeURIComponent(entry.id)}`;
         drawing.alt = `Drawing left by ${entry.name || "Anonymous"}`;
         article.append(drawing);
       }
@@ -998,8 +1012,6 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
         ? customCountryInput instanceof HTMLInputElement ? customCountryInput.value.trim() : ""
         : countrySelect.value
       : "__auto__";
-    const drawing = hasDrawing && canvas instanceof HTMLCanvasElement ? canvas.toDataURL("image/png") : "";
-
     if (!(turnstileInput instanceof HTMLInputElement) || !turnstileInput.value) {
       setStatus("Complete the bot check before sending.", "error");
       return;
@@ -1015,22 +1027,29 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
       return;
     }
 
+    const drawing = hasDrawing ? await exportDrawing() : null;
+    if (hasDrawing && !drawing) {
+      setStatus("The drawing could not be prepared.", "error");
+      return;
+    }
+
     setStatus("Sending…");
     const submitButton = form.querySelector(".submit-button");
     if (submitButton instanceof HTMLButtonElement) submitButton.disabled = true;
 
     try {
+      const formData = new FormData();
+      formData.set("name", form.elements.namedItem("name")?.value ?? "");
+      formData.set("message", messageInput instanceof HTMLTextAreaElement ? messageInput.value : "");
+      formData.set("country", country);
+      formData.set("website", form.elements.namedItem("website")?.value ?? "");
+      formData.set("turnstileToken", turnstileInput.value);
+      if (drawing) formData.set("drawing", drawing, "drawing.png");
+
       const response = await fetch("/api/guestbook", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name: form.elements.namedItem("name")?.value ?? "",
-          message: messageInput instanceof HTMLTextAreaElement ? messageInput.value : "",
-          country,
-          drawing,
-          website: form.elements.namedItem("website")?.value ?? "",
-          turnstileToken: turnstileInput.value,
-        }),
+        headers: { Accept: "application/json" },
+        body: formData,
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "The entry could not be sent.");

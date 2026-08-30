@@ -8,6 +8,7 @@ const authenticated = !authError;
 if (authError) {
   Astro.response.status = authError.status;
   authError.headers.forEach((value, key) => Astro.response.headers.set(key, value));
+  Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
 }
 ---
 
@@ -44,7 +45,7 @@ if (authError) {
       name: string;
       message: string;
       country: string;
-      drawing: string;
+      hasDrawing: boolean;
       status: "pending" | "approved" | "rejected";
       createdAt: string;
     };
@@ -105,10 +106,10 @@ if (authError) {
         article.append(header);
 
         if (entry.message) article.append(makeText("p", "entry-message", entry.message));
-        if (entry.drawing) {
+        if (entry.hasDrawing) {
           const drawing = document.createElement("img");
           drawing.className = "entry-drawing";
-          drawing.src = entry.drawing;
+          drawing.src = `/api/guestbook-drawing?id=${encodeURIComponent(entry.id)}&admin=1`;
           drawing.alt = `Drawing submitted by ${entry.name || "Anonymous"}`;
           drawing.loading = "lazy";
           article.append(drawing);

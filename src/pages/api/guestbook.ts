@@ -1,10 +1,11 @@
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
+import { guestbookDrawingKey } from "../../lib/guestbook-drawing";
 
 const MAX_NAME_LENGTH = 48;
 const MAX_MESSAGE_LENGTH = 1200;
 const MAX_COUNTRY_LENGTH = 56;
-const MAX_DRAWING_LENGTH = 400_000;
+const MAX_DRAWING_BYTES = 300_000;
 const MAX_TURNSTILE_TOKEN_LENGTH = 2048;
 
 const json = (body: unknown, status = 200) =>
@@ -48,7 +49,7 @@ export const GET: APIRoute = async () => {
   try {
     const { results } = await database
       .prepare(
-        `SELECT id, name, message, country, drawing, created_at AS createdAt
+        `SELECT id, name, message, country, drawing <> '' AS hasDrawing, created_at AS createdAt
          FROM guestbook_entries
          WHERE status = 'approved'
          ORDER BY created_at DESC
@@ -72,42 +73,51 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (!database || !turnstileSecret) return json({ error: "Guestbook submission is not configured." }, 503);
 
-  let body: Record<string, unknown>;
+  let formData: FormData;
   try {
-    body = await request.json();
+    formData = await request.formData();
   } catch {
-    return json({ error: "The submission was not valid JSON." }, 400);
+    return json({ error: "The submission was not valid form data." }, 400);
   }
 
-  if (typeof body.website === "string" && body.website.trim()) {
+  const field = (name: string) => {
+    const value = formData.get(name);
+    return typeof value === "string" ? value : "";
+  };
+  const drawing = formData.get("drawing");
+  const drawingBytes = drawing instanceof File && drawing.size > 0 && drawing.size <= MAX_DRAWING_BYTES
+    ? new Uint8Array(await drawing.arrayBuffer())
+    : null;
+
+  if (field("website").trim()) {
     return json({ error: "Spam check failed." }, 400);
   }
 
-  const name = typeof body.name === "string" ? body.name.trim().slice(0, MAX_NAME_LENGTH) : "";
-  const message = typeof body.message === "string" ? body.message.trim().slice(0, MAX_MESSAGE_LENGTH) : "";
-  const selectedCountry = typeof body.country === "string" ? body.country.trim().slice(0, MAX_COUNTRY_LENGTH) : "";
+  const name = field("name").trim().slice(0, MAX_NAME_LENGTH);
+  const message = field("message").trim().slice(0, MAX_MESSAGE_LENGTH);
+  const selectedCountry = field("country").trim().slice(0, MAX_COUNTRY_LENGTH);
   const detectedCountry = request.headers.get("CF-IPCountry")?.toUpperCase() ?? "";
   const country = selectedCountry === "__private__"
     ? ""
     : selectedCountry === "__auto__" || !selectedCountry
       ? /^[A-Z]{2}$/.test(detectedCountry) && !["XX", "T1"].includes(detectedCountry) ? detectedCountry : ""
       : selectedCountry;
-  const drawing = typeof body.drawing === "string" ? body.drawing : "";
-  const turnstileToken = typeof body.turnstileToken === "string" ? body.turnstileToken : "";
+  const turnstileToken = field("turnstileToken");
 
-  if (!message && !drawing) return json({ error: "Add a message, a drawing, or both." }, 400);
+  if (!message && !drawingBytes) return json({ error: "Add a message, a drawing, or both." }, 400);
   if (message.length > MAX_MESSAGE_LENGTH || country.length > MAX_COUNTRY_LENGTH) {
     return json({ error: "One of the fields is too long." }, 400);
   }
-  if (
-    drawing &&
-    (drawing.length > MAX_DRAWING_LENGTH || !/^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(drawing))
-  ) {
+  if (drawing && !drawingBytes) {
     return json({ error: "The drawing is too large or invalid." }, 400);
   }
   if (!turnstileToken || turnstileToken.length > MAX_TURNSTILE_TOKEN_LENGTH) {
     return json({ error: "Complete the bot check and try again." }, 400);
   }
+
+  const id = crypto.randomUUID();
+  let drawingKey = "";
+  let drawingUploaded = false;
 
   try {
     if (!(await verifyTurnstile(turnstileToken, request, turnstileSecret))) {
@@ -129,16 +139,35 @@ export const POST: APIRoute = async ({ request }) => {
       if (recent) return json({ error: "Please wait a few minutes before sending another entry." }, 429);
     }
 
+    drawingKey = drawingBytes ? guestbookDrawingKey(id) : "";
+
+    if (drawingBytes) {
+      const bucket = env.GUESTBOOK_DRAWINGS;
+      if (!bucket) return json({ error: "Guestbook drawing storage is not configured." }, 503);
+
+      await bucket.put(drawingKey, drawingBytes, {
+        httpMetadata: { cacheControl: "no-store", contentType: "image/png" },
+      });
+      drawingUploaded = true;
+    }
+
     await database
       .prepare(
         `INSERT INTO guestbook_entries (id, name, message, country, drawing, status, ip_hash)
          VALUES (?, ?, ?, ?, ?, 'pending', ?)`,
       )
-      .bind(crypto.randomUUID(), name || "Anonymous", message, country, drawing, ipHash)
+      .bind(id, name || "Anonymous", message, country, drawingKey, ipHash)
       .run();
 
     return json({ ok: true }, 202);
   } catch (error) {
+    if (drawingUploaded && env.GUESTBOOK_DRAWINGS) {
+      try {
+        await env.GUESTBOOK_DRAWINGS.delete(drawingKey);
+      } catch (cleanupError) {
+        console.error("Could not clean up guestbook drawing.", cleanupError);
+      }
+    }
     console.error("Could not save guestbook entry.", error);
     return json({ error: "The guestbook could not save your entry." }, 503);
   }

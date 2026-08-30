@@ -20,7 +20,7 @@ export const GET: APIRoute = async ({ request }) => {
   try {
     const { results } = await database
       .prepare(
-        `SELECT id, name, message, country, drawing, status, created_at AS createdAt
+        `SELECT id, name, message, country, drawing <> '' AS hasDrawing, status, created_at AS createdAt
          FROM guestbook_entries
          ORDER BY created_at DESC
          LIMIT 100`,
@@ -57,6 +57,16 @@ export const POST: APIRoute = async ({ request }) => {
   if (!id || id.length > 100) return json({ error: "A valid entry ID is required." }, 400);
 
   try {
+    let drawingKey = "";
+    if (action === "delete") {
+      const entry = await database.prepare("SELECT drawing FROM guestbook_entries WHERE id = ?").bind(id).first<{ drawing: string }>();
+      if (!entry) return json({ error: "Entry not found." }, 404);
+      drawingKey = entry.drawing;
+      if (drawingKey && !env.GUESTBOOK_DRAWINGS) {
+        return json({ error: "Guestbook drawing storage is not configured." }, 503);
+      }
+    }
+
     const result = action === "delete"
       ? await database.prepare("DELETE FROM guestbook_entries WHERE id = ?").bind(id).run()
       : ["approved", "rejected", "pending"].includes(action)
@@ -65,6 +75,15 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (!result) return json({ error: "Unknown moderation action." }, 400);
     if (!result.meta.changes) return json({ error: "Entry not found." }, 404);
+
+    if (drawingKey && env.GUESTBOOK_DRAWINGS) {
+      try {
+        await env.GUESTBOOK_DRAWINGS.delete(drawingKey);
+      } catch (error) {
+        console.error("Could not delete guestbook drawing.", error);
+      }
+    }
+
     return json({ ok: true });
   } catch (error) {
     console.error("Could not update moderation entry.", error);
