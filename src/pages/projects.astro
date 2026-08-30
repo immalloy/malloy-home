@@ -5,7 +5,7 @@ import { getCollection } from "astro:content";
 const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<SiteLayout title="Projects | ImMalloy" description="Projects by ImMalloy.">
+<SiteLayout title="Projects | ImMalloy" description="Explore my projects.">
   <main class="projects-page" aria-labelledby="projects-title">
     <h1 id="projects-title">Projects</h1>
 

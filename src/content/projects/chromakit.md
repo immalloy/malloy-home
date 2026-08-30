@@ -1,6 +1,6 @@
 ---
 name: ChromaKit
-description: A focused FNF tool for turning songs into chromatic samples.
+description: A focused FNF tool for turning samples into chromatic samples.
 accentColor: "#f4c430"
 iconImage: /assets/projects/chromakit-icon.png
 thumbnail: /assets/projects/chromakit-banner.png
