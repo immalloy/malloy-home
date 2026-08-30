@@ -41,7 +41,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.85fr);
     align-items: center;
-    gap: clamp(2rem, 7vw, 8rem);
+    gap: var(--site-feature-gap);
     min-height: 100svh;
     max-width: 90rem;
     margin: 0 auto;
@@ -56,14 +56,14 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 
   .character {
     display: grid;
-    min-height: min(88svh, 58rem);
+    min-height: var(--site-feature-visual-height);
     place-items: center;
   }
 
   .character img {
     display: block;
     width: auto;
-    height: min(88svh, 58rem);
+    height: var(--site-feature-visual-height);
     max-width: 100%;
     object-fit: contain;
     transform: rotate(-2deg);
@@ -151,7 +151,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
     }
 
     .character img {
-      height: min(58svh, 34rem);
+      height: var(--site-feature-visual-height-mobile);
     }
 
     .not-found-content {

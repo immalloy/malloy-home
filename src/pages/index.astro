@@ -42,9 +42,59 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           </nav>
         </section>
 
-        <section class="swiper-slide more" aria-label="More content">
-          <div class="more-content">
-            <p>More soon.</p>
+        <section class="swiper-slide explore-preview" aria-labelledby="explore-preview-title">
+          <div class="explore-illustration">
+            <img src="/assets/inkandcatexplore.png" alt="Ink and Cat exploring together." />
+          </div>
+
+          <div class="explore-content">
+            <h2 id="explore-preview-title">Explore</h2>
+            <p>Curious? Open the picker on the right and explore the rest of the site.</p>
+            <button class="about-link explore-picker-button" type="button">Open picker</button>
+          </div>
+
+          <nav class="slide-navigation" aria-label="Section navigation">
+            <button class="slide-arrow slide-arrow-up" type="button" aria-label="Previous section" data-slide-direction="prev">
+              <img class="slide-arrow-icon" src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+            </button>
+            <button class="slide-arrow slide-arrow-down" type="button" aria-label="Next section" data-slide-direction="next">
+              <img class="slide-arrow-icon" src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+            </button>
+          </nav>
+        </section>
+
+        <section class="swiper-slide support-preview" aria-labelledby="support-preview-title">
+          <div class="support-illustration">
+            <img src="/assets/b01andbumyxdonate.png" alt="B01 and Bumyx supporting the site." />
+          </div>
+
+          <div class="support-content">
+            <h2 id="support-preview-title">Support my work</h2>
+            <p>Like what I make? A small Ko-fi tip helps me keep building this site and new projects.</p>
+            <a class="about-link" href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer">Support me on Ko-fi</a>
+          </div>
+
+          <nav class="slide-navigation" aria-label="Section navigation">
+            <button class="slide-arrow slide-arrow-up" type="button" aria-label="Previous section" data-slide-direction="prev">
+              <img class="slide-arrow-icon" src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+            </button>
+            <button class="slide-arrow slide-arrow-down" type="button" aria-label="Next section" data-slide-direction="next">
+              <img class="slide-arrow-icon" src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+            </button>
+          </nav>
+        </section>
+
+        <footer class="swiper-slide site-footer" aria-labelledby="site-footer-title">
+          <div class="site-footer-content">
+            <h2 id="site-footer-title">IMMALLOY</h2>
+            <nav class="site-footer-links" aria-label="Footer links">
+              <a href="/">Home</a>
+              <a href="/about">About</a>
+              <a href="/projects">Projects</a>
+              <a href="/guestbook">Guestbook</a>
+              <a href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer">Support me on Ko-fi</a>
+            </nav>
+            <p class="site-footer-note">© ImMalloy · Honduras</p>
           </div>
 
           <nav class="slide-navigation slide-navigation-up" aria-label="Section navigation">
@@ -52,8 +102,11 @@ import SiteLayout from "../layouts/SiteLayout.astro";
               <img class="slide-arrow-icon" src="/assets/down-arrow.png" alt="" aria-hidden="true" />
             </button>
           </nav>
-        </section>
+        </footer>
       </div>
+      <span class="explore-picker-hint" aria-hidden="true">
+        <img src="/assets/down-arrow.png" alt="" />
+      </span>
   </main>
 </SiteLayout>
 
@@ -83,6 +136,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 
   .swiper {
     --swiper-wrapper-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
     width: 100%;
     height: 100vh;
     height: 100svh;
@@ -108,47 +162,61 @@ import SiteLayout from "../layouts/SiteLayout.astro";
     position: relative;
   }
 
-  .hero-content,
-  .more-content {
+  .hero-content {
     max-width: 70rem;
     text-align: center;
   }
 
-  .about-preview {
+  .about-preview,
+  .explore-preview,
+  .support-preview {
     grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 0.75fr);
-    gap: clamp(2rem, 7vw, 8rem);
+    gap: var(--site-feature-gap);
     max-width: 90rem;
     margin: 0 auto;
     padding: clamp(2rem, 5vw, 5rem);
   }
 
-  .about-illustration {
+  .about-illustration,
+  .explore-illustration,
+  .support-illustration {
     display: grid;
-    min-height: min(86svh, 58rem);
+    min-height: var(--site-feature-visual-height);
     place-items: center;
   }
 
-  .about-illustration img {
+  .about-illustration img,
+  .explore-illustration img,
+  .support-illustration img {
     display: block;
     width: min(100%, 38rem);
-    height: min(86svh, 58rem);
+    height: var(--site-feature-visual-height);
     object-fit: contain;
   }
 
-  :global(html[data-theme="dark"]) .about-illustration img {
+  :global(html[data-theme="dark"]) .about-illustration img,
+  :global(html[data-theme="dark"]) .explore-illustration img,
+  :global(html[data-theme="dark"]) .support-illustration img {
     filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
   }
 
   :global(html[data-theme="dark"]) #site-title,
-  :global(html[data-theme="dark"]) .about-preview h2 {
+  :global(html[data-theme="dark"]) .about-preview h2,
+  :global(html[data-theme="dark"]) .explore-preview h2,
+  :global(html[data-theme="dark"]) .support-preview h2,
+  :global(html[data-theme="dark"]) .site-footer h2 {
     filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
   }
 
-  .about-preview-content {
+  .about-preview-content,
+  .explore-content,
+  .support-content {
     max-width: 32rem;
   }
 
-  .about-preview h2 {
+  .about-preview h2,
+  .explore-preview h2,
+  .support-preview h2 {
     margin: 0;
     color: var(--site-accent);
     font-family: "FunkinOptions", sans-serif;
@@ -159,12 +227,55 @@ import SiteLayout from "../layouts/SiteLayout.astro";
     text-wrap: balance;
   }
 
-  .about-preview-content p {
+  .about-preview-content p,
+  .explore-content p,
+  .support-content p {
     max-width: 28rem;
     margin: 2rem 0 2.5rem;
     font-size: clamp(1.25rem, 2.5vw, 2rem);
     line-height: 1.3;
     text-wrap: pretty;
+  }
+
+  .explore-picker-hint {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    right: calc(var(--site-picker-width) + env(safe-area-inset-right) + 1rem);
+    width: clamp(1.5rem, 3vw, 2.5rem);
+    transform: translateY(-50%);
+    animation: explore-picker-point 900ms ease-in-out infinite alternate;
+    animation-play-state: paused;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 320ms ease;
+  }
+
+  .swiper:has(.explore-preview.swiper-slide-active) .explore-picker-hint {
+    animation-play-state: running;
+    opacity: 1;
+  }
+
+  .explore-picker-hint img {
+    display: block;
+    width: 100%;
+    transform: rotate(-90deg);
+    filter: brightness(0);
+    opacity: 0.5;
+  }
+
+  :global(html[data-theme="dark"]) .explore-picker-hint img {
+    filter: brightness(0) invert(1);
+  }
+
+  @keyframes explore-picker-point {
+    from {
+      transform: translate(-0.25rem, -50%);
+    }
+
+    to {
+      transform: translate(0.35rem, -50%);
+    }
   }
 
   .about-link {
@@ -190,6 +301,12 @@ import SiteLayout from "../layouts/SiteLayout.astro";
   .about-link:focus-visible {
     outline: 2px solid var(--site-foreground);
     outline-offset: 0.4rem;
+  }
+
+  .explore-picker-button {
+    appearance: none;
+    background: none;
+    cursor: pointer;
   }
 
   .slide-navigation {
@@ -292,14 +409,60 @@ import SiteLayout from "../layouts/SiteLayout.astro";
     text-transform: uppercase;
   }
 
-  .more {
+  .site-footer {
     display: grid;
+    align-items: end;
   }
 
-  .more p {
+  .site-footer-content {
+    width: min(100%, 42rem);
+    max-width: 42rem;
+    padding-top: 1.25rem;
+    text-align: center;
+  }
+
+  .site-footer h2 {
     margin: 0;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(2.75rem, 8vw, 5.5rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 0.84;
+  }
+
+  .site-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .site-footer-links a {
+    color: var(--site-muted-strong);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 180ms ease;
+  }
+
+  .site-footer-links a:hover,
+  .site-footer-links a:focus-visible {
+    color: var(--site-accent);
+  }
+
+  .site-footer-links a:focus-visible {
+    outline: 2px solid var(--site-accent);
+    outline-offset: 0.35rem;
+  }
+
+  .site-footer-note {
+    margin: 1rem 0 0;
     color: var(--site-muted);
-    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-size: 0.75rem;
   }
 
   @media (max-width: 1100px) {
@@ -311,41 +474,56 @@ import SiteLayout from "../layouts/SiteLayout.astro";
       font-size: clamp(4rem, 22vw, 8rem);
     }
 
-    .about-preview {
-      gap: 2rem;
+    .about-preview,
+    .explore-preview,
+    .support-preview {
       padding: 1.5rem;
     }
 
-    .about-preview h2 {
+    .about-preview h2,
+    .explore-preview h2,
+    .support-preview h2 {
       font-size: clamp(3.5rem, 10vw, 6rem);
     }
   }
 
-  @media (max-width: 700px) {
-    .about-preview {
+  @media (max-width: 800px) {
+    .about-preview,
+    .explore-preview,
+    .support-preview {
       grid-template-columns: 1fr;
       gap: 1rem;
       padding: 1.5rem;
     }
 
-    .about-illustration {
+    .about-illustration,
+    .explore-illustration,
+    .support-illustration {
       min-height: 0;
     }
 
-    .about-illustration img {
-      height: min(50svh, 30rem);
+    .about-illustration img,
+    .explore-illustration img,
+    .support-illustration img {
+      height: var(--site-feature-visual-height-mobile);
     }
 
-    .about-preview-content {
+    .about-preview-content,
+    .explore-content,
+    .support-content {
       margin: 0 auto;
       text-align: center;
     }
 
-    .about-preview-content p {
+    .about-preview-content p,
+    .explore-content p,
+    .support-content p {
       margin-inline: auto;
     }
 
-    .about-preview .slide-navigation {
+    .about-preview .slide-navigation,
+    .explore-preview .slide-navigation,
+    .support-preview .slide-navigation {
       display: none;
     }
   }
@@ -358,6 +536,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
   import "swiper/css";
 
   const slideControls = document.querySelectorAll("[data-slide-direction]");
+  const explorePickerButton = document.querySelector(".explore-picker-button");
   const swiper = new Swiper(".swiper", {
     modules: [Keyboard, Mousewheel],
     direction: "vertical",
@@ -380,5 +559,9 @@ import SiteLayout from "../layouts/SiteLayout.astro";
         swiper.slideNext();
       }
     });
+  });
+
+  explorePickerButton?.addEventListener("click", () => {
+    document.querySelector<HTMLButtonElement>(".sidebar-button")?.click();
   });
 </script>

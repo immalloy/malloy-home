@@ -89,6 +89,9 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     --site-picker-width: clamp(3rem, 5vw, 5.5rem);
     --site-picker-height: calc(var(--site-picker-width) * 1.684);
     --site-picker-cutoff-height: calc(var(--site-picker-height) - 0.4rem);
+    --site-feature-gap: clamp(1.5rem, 4vw, 4rem);
+    --site-feature-visual-height: min(86svh, 58rem);
+    --site-feature-visual-height-mobile: min(50svh, 30rem);
   }
 
   html[data-theme="dark"] {
@@ -264,14 +267,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     mask: var(--sidebar-icon) center / contain no-repeat;
     -webkit-mask: var(--sidebar-icon) center / contain no-repeat;
     transform-origin: left bottom;
-    transition: transform 180ms ease;
-  }
-
-  @keyframes sidebar-icon-bounce {
-    0% { transform: rotate(0) scale(1); }
-    35% { transform: rotate(-7deg) scale(1.06); }
-    65% { transform: rotate(3deg) scale(1.02); }
-    100% { transform: rotate(-2deg) scale(1.03); }
+    transition: transform 140ms cubic-bezier(0.2, 0.9, 0.3, 1);
   }
 
   .sidebar-icon-home {
@@ -312,7 +308,7 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
 
   .site-sidebar nav a:hover .sidebar-link-icon,
   .site-sidebar nav a:focus-visible .sidebar-link-icon {
-    animation: sidebar-icon-bounce 360ms ease-out both;
+    transform: rotate(-3deg) scale(1.025);
   }
 
   html[data-sidebar-open="true"] {
