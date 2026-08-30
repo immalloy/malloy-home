@@ -85,7 +85,7 @@ export const POST: APIRoute = async ({ request }) => {
     return typeof value === "string" ? value : "";
   };
   const drawing = formData.get("drawing");
-  const drawingBytes = drawing instanceof File && drawing.size > 0 && drawing.size <= MAX_DRAWING_BYTES
+  const drawingBytes = drawing instanceof File && drawing.type === "image/png" && drawing.size > 0 && drawing.size <= MAX_DRAWING_BYTES
     ? new Uint8Array(await drawing.arrayBuffer())
     : null;
 
