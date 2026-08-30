@@ -522,7 +522,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     gap: 1.25rem;
   }
 
-  .entry {
+  :global(.entry) {
     position: relative;
     border: 2px solid var(--guestbook-accent);
     padding: 1.2rem 1.25rem 1.35rem;
@@ -531,12 +531,12 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     transform: rotate(-1deg);
   }
 
-  .entry:nth-child(even) {
+  :global(.entry:nth-child(even)) {
     background: color-mix(in srgb, var(--guestbook-accent) 12%, var(--site-background));
     transform: rotate(1deg);
   }
 
-  .entry-meta {
+  :global(.entry-meta) {
     margin: 0 0 0.7rem;
     color: var(--site-muted-strong);
     font-family: "FunkinOptions", sans-serif;
@@ -545,7 +545,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     text-transform: uppercase;
   }
 
-  .entry-message {
+  :global(.entry-message) {
     margin: 0;
     font-family: "FunkinOptions", sans-serif;
     font-size: 1rem;
@@ -554,7 +554,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     overflow-wrap: anywhere;
   }
 
-  .entry-drawing {
+  :global(.entry-drawing) {
     display: block;
     width: 100%;
     max-height: 20rem;
@@ -665,7 +665,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     .drawing-tools button,
     .submit-button,
     .enter-button,
-    .entry {
+    :global(.entry) {
       transition: none;
       transform: none;
       animation: none;
