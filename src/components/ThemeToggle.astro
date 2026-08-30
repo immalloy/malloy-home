@@ -6,7 +6,7 @@
 <style>
   .theme-toggle {
     position: fixed;
-    z-index: 25;
+    z-index: 35;
     top: max(1rem, env(safe-area-inset-top));
     left: max(1rem, env(safe-area-inset-left));
     display: grid;
@@ -31,13 +31,6 @@
 
   .theme-toggle:hover {
     transform: scale(1.08);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .theme-toggle,
-    .theme-toggle-icon {
-      transition: none;
-    }
   }
 
   .theme-toggle:focus-visible {

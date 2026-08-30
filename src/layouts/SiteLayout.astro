@@ -263,6 +263,15 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
     background-color: currentColor;
     mask: var(--sidebar-icon) center / contain no-repeat;
     -webkit-mask: var(--sidebar-icon) center / contain no-repeat;
+    transform-origin: left bottom;
+    transition: transform 180ms ease;
+  }
+
+  @keyframes sidebar-icon-bounce {
+    0% { transform: rotate(0) scale(1); }
+    35% { transform: rotate(-7deg) scale(1.06); }
+    65% { transform: rotate(3deg) scale(1.02); }
+    100% { transform: rotate(-2deg) scale(1.03); }
   }
 
   .sidebar-icon-home {
@@ -299,6 +308,11 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
   .site-sidebar nav a:focus-visible {
     outline: 2px solid var(--site-foreground);
     outline-offset: 0.35rem;
+  }
+
+  .site-sidebar nav a:hover .sidebar-link-icon,
+  .site-sidebar nav a:focus-visible .sidebar-link-icon {
+    animation: sidebar-icon-bounce 360ms ease-out both;
   }
 
   html[data-sidebar-open="true"] {

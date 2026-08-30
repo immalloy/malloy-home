@@ -160,23 +160,16 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
 
   .guestbook-page {
     --guestbook-accent: var(--site-accent);
-    --guestbook-card-border: #d08a27;
-    --guestbook-card-background: #fff4d6;
-    --guestbook-card-background-alt: #fce9bd;
-    --guestbook-card-meta: #76531d;
+    --guestbook-card-border: color-mix(in srgb, var(--site-accent) 70%, var(--site-foreground));
+    --guestbook-card-background: color-mix(in srgb, var(--site-accent) 12%, var(--site-background));
+    --guestbook-card-background-alt: color-mix(in srgb, var(--site-accent) 20%, var(--site-background));
+    --guestbook-card-meta: color-mix(in srgb, var(--site-accent) 35%, var(--site-foreground));
     --guestbook-paper: #fffdf6;
     --guestbook-ink: var(--site-background);
     max-width: 78rem;
     min-height: 100svh;
     margin: 0 auto;
     padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 4vw, 4rem) 6rem;
-  }
-
-  :global(html[data-theme="dark"]) .guestbook-page {
-    --guestbook-card-border: #e3ad4d;
-    --guestbook-card-background: #332b1c;
-    --guestbook-card-background-alt: #3a2d1c;
-    --guestbook-card-meta: #f0d18a;
   }
 
   .section-label {
@@ -677,22 +670,6 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
 
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .guestbook-view-switch button,
-    .mode-switch button,
-    .drawing-tools button,
-    .submit-button,
-    .enter-button,
-    :global(.entry) {
-      transition: none;
-      transform: none;
-      animation: none;
-    }
-
-    .drawing-field.is-expanded {
-      animation: none;
-    }
-  }
 </style>
 
 <script>

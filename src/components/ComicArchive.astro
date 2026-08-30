@@ -64,7 +64,9 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
     background: color-mix(in srgb, var(--site-accent) 7%, var(--site-background));
     color: var(--site-foreground);
     text-decoration: none;
-    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+    box-shadow: 0 0 0 rgb(0 0 0 / 0);
+    transform: translateY(0);
+    transition: background-color 220ms ease, color 220ms ease, box-shadow 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .comic-archive-preview {
@@ -79,11 +81,13 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
     height: 100%;
     object-fit: cover;
     object-position: left center;
-    transition: transform 180ms ease;
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .comic-archive-copy {
     padding: 1rem 1.25rem 1.25rem;
+    transform: translateX(0);
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .comic-archive-item h2 {
@@ -100,6 +104,7 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
   .comic-archive-number {
     color: var(--site-accent);
     flex: 0 0 auto;
+    transition: color 220ms ease;
   }
 
   .comic-archive-item p {
@@ -107,18 +112,25 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
     color: var(--site-muted-strong);
     font-size: 1rem;
     line-height: 1.35;
+    transition: color 220ms ease;
   }
 
   .comic-archive-item:hover,
   .comic-archive-item:focus-visible {
     background: var(--site-accent);
     color: var(--site-background);
-    transform: translateY(-0.25rem);
+    box-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 0.18);
+    transform: translateY(-0.35rem);
   }
 
   .comic-archive-item:hover .comic-archive-preview img,
   .comic-archive-item:focus-visible .comic-archive-preview img {
-    transform: scale(1.03);
+    transform: scale(1.05);
+  }
+
+  .comic-archive-item:hover .comic-archive-copy,
+  .comic-archive-item:focus-visible .comic-archive-copy {
+    transform: translateX(0.25rem);
   }
 
   .comic-archive-item:hover .comic-archive-number,
@@ -131,14 +143,6 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
   .comic-archive-item:focus-visible {
     outline: 2px solid var(--site-accent);
     outline-offset: 0.25rem;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .comic-archive-item,
-    .comic-archive-preview img {
-      transition: none;
-      transform: none;
-    }
   }
 
   @media (max-width: 600px) {

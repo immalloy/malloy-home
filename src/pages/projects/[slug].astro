@@ -469,12 +469,6 @@ const galleryItems = [{ src: data.thumbnail, alt: data.thumbnailAlt }, ...data.g
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .project-preview-image.is-changing {
-      animation: none;
-    }
-  }
-
   @media (max-width: 800px) {
     .project-intro-body {
       grid-template-columns: 1fr;
@@ -561,7 +555,7 @@ const galleryItems = [{ src: data.thumbnail, alt: data.thumbnailAlt }, ...data.g
 
   const startRotation = () => {
     stopRotation();
-    if (thumbnails.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (thumbnails.length < 2) return;
 
     rotationTimer = window.setInterval(() => {
       showImage((currentIndex + 1) % thumbnails.length);
