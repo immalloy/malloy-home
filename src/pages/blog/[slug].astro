@@ -1,0 +1,265 @@
+---
+import { getEntry, render } from "astro:content";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+
+const { slug } = Astro.params;
+const post = slug ? await getEntry("blog", slug) : undefined;
+
+if (!post) return Astro.redirect("/404");
+
+const { Content } = await render(post);
+const songUrl = post.data.songUrl;
+const songId = songUrl?.match(/(?:[?&]v=|youtu\.be\/)([A-Za-z0-9_-]{11})/)?.[1] ?? null;
+---
+
+<SiteLayout title={`${post.data.title} | ImMalloy`} description={post.data.description}>
+  <main class="blog-post-page" aria-labelledby="post-title">
+    <a class="back-link" href="/blog">
+      <span class="back-arrow" aria-hidden="true"></span>
+      <span>Back to blog</span>
+    </a>
+
+    <article class="blog-article">
+      <header class="post-header">
+        <p class="post-meta">
+          <time datetime={post.data.date.toISOString()}>
+            {post.data.date.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              timeZone: "UTC",
+            })}
+          </time>
+        </p>
+        <h1 id="post-title">{post.data.title}</h1>
+        <p class="post-description">{post.data.description}</p>
+        <figure class="post-banner">
+          <img src={post.data.image} alt={post.data.imageAlt} />
+        </figure>
+      </header>
+
+      <div class="post-content">
+        <Content />
+      </div>
+
+      {songId && songUrl && (
+        <section class="post-song" aria-labelledby="post-song-title">
+          <h2 id="post-song-title">Song for this post</h2>
+          <div class="song-frame">
+            <iframe
+              src={`https://www.youtube.com/embed/${songId}`}
+              title={`Song for ${post.data.title}`}
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </section>
+      )}
+    </article>
+  </main>
+</SiteLayout>
+
+<style>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
+  .blog-post-page {
+    max-width: 82rem;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1.25rem, 4vw, 3rem) 6rem;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .back-arrow {
+    display: block;
+    width: 0.8rem;
+    height: 1.4rem;
+    flex: 0 0 0.8rem;
+    background: currentColor;
+    mask: url("/assets/ui/down-arrow.webp") center / contain no-repeat;
+    -webkit-mask: url("/assets/ui/down-arrow.webp") center / contain no-repeat;
+    transform: rotate(90deg);
+    transition: transform 180ms ease;
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    color: var(--site-foreground);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .back-link:hover .back-arrow,
+  .back-link:focus-visible .back-arrow {
+    transform: translateX(-0.2rem) rotate(90deg);
+  }
+
+  .back-link:focus-visible,
+  .post-content :global(a):focus-visible {
+    outline: 2px solid var(--site-accent);
+    outline-offset: 0.35rem;
+  }
+
+  .blog-article {
+    max-width: 76rem;
+    margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
+  }
+
+  .post-header {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin: 0 0 0.75rem;
+    color: color-mix(in srgb, var(--site-foreground) 68%, var(--site-background));
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    max-width: 50rem;
+    margin: 0;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    line-height: 0.84;
+    text-wrap: balance;
+  }
+
+  .post-description {
+    max-width: 44rem;
+    margin: 0.75rem 0 0;
+    color: color-mix(in srgb, var(--site-foreground) 82%, var(--site-background));
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    line-height: 1.35;
+  }
+
+  .post-banner {
+    width: 100%;
+    aspect-ratio: 16 / 5;
+    max-height: 22rem;
+    margin: clamp(1.25rem, 3vw, 2rem) 0 0;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--site-accent) 10%, var(--site-background));
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 1.5rem), 0 100%);
+  }
+
+  .post-banner img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .post-content {
+    max-width: 72rem;
+    margin: clamp(1.75rem, 4vw, 3rem) auto 0;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+    line-height: 1.65;
+  }
+
+  .post-content :global(p) {
+    margin: 0 0 1.4rem;
+  }
+
+  .post-content :global(h2),
+  .post-content :global(h3) {
+    margin: 2.75rem 0 0.8rem;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .post-content :global(h2) {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  .post-content :global(h3) {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    margin: 0 0 1.4rem;
+    padding-inline-start: 1.5rem;
+  }
+
+  .post-content :global(a) {
+    color: var(--site-accent);
+  }
+
+  .post-content :global(blockquote) {
+    margin: 1.5rem 0;
+    padding-inline-start: 1rem;
+    border-inline-start: 3px solid var(--site-accent);
+    color: var(--site-muted-strong);
+  }
+
+  .post-song {
+    max-width: 72rem;
+    margin: clamp(3rem, 5vw, 4.5rem) auto 0;
+  }
+
+  .post-song h2 {
+    margin: 0;
+    color: var(--site-foreground);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 400;
+    line-height: 0.9;
+  }
+
+  .song-frame {
+    aspect-ratio: 16 / 9;
+    margin-top: 1rem;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .song-frame iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  @media (max-width: 600px) {
+    .post-banner {
+      aspect-ratio: 16 / 7;
+      max-height: 13rem;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 0.75rem), 0 100%);
+    }
+  }
+</style>

@@ -37,7 +37,7 @@ const randomIndex = comics.length > 1
           {comicNumber(comicIndex)}. {currentComic.title}
         </h2>
         <a class="back-to-comics" href="/comics" aria-label="Back to comics">
-          <img src="/assets/down-arrow.png" alt="" aria-hidden="true" />
+          <img src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
         </a>
         <a class="permalink" href={comicHref(comicIndex)} title={`Permalink to ${currentComic.title}`}>
           [Permalink]
@@ -47,53 +47,53 @@ const randomIndex = comics.length > 1
       <nav class="comic-navigation" aria-label="Comic navigation">
         {isFirst ? (
           <button class="comic-control is-disabled" type="button" disabled aria-label="First comic">
-            <img src="/assets/comics/leftend.png" alt="" aria-hidden="true" />
+            <img src="/assets/comics/leftend.webp" alt="" aria-hidden="true" />
             <span class="sr-only">First comic</span>
           </button>
         ) : (
           <a class="comic-control" href={comicHref(0)} aria-label="First comic">
-            <img src="/assets/comics/leftend.png" alt="" aria-hidden="true" />
+            <img src="/assets/comics/leftend.webp" alt="" aria-hidden="true" />
             <span class="sr-only">First comic</span>
           </a>
         )}
 
         {isFirst ? (
           <button class="comic-control is-disabled" type="button" disabled aria-label="Previous comic">
-            <img src="/assets/comics/leftarrow.png" alt="" aria-hidden="true" />
+            <img src="/assets/comics/leftarrow.webp" alt="" aria-hidden="true" />
             <span class="sr-only">Previous comic</span>
           </button>
         ) : (
           <a class="comic-control" href={comicHref(comicIndex - 1)} aria-label="Previous comic">
-            <img src="/assets/comics/leftarrow.png" alt="" aria-hidden="true" />
+            <img src="/assets/comics/leftarrow.webp" alt="" aria-hidden="true" />
             <span class="sr-only">Previous comic</span>
           </a>
         )}
 
         <a class="comic-control" href={comicHref(randomIndex)} aria-label="Random comic" title="Random comic">
-          <img class="random-icon" src="/assets/comics/questionrandom.png" alt="" aria-hidden="true" />
+          <img class="random-icon" src="/assets/comics/questionrandom.webp" alt="" aria-hidden="true" />
           <span class="sr-only">Random comic</span>
         </a>
 
         {isLast ? (
           <button class="comic-control is-disabled" type="button" disabled aria-label="Next comic">
-            <img src="/assets/comics/rightarrow.png" alt="" aria-hidden="true" />
+            <img src="/assets/comics/rightarrow.webp" alt="" aria-hidden="true" />
             <span class="sr-only">Next comic</span>
           </button>
         ) : (
           <a class="comic-control" href={comicHref(comicIndex + 1)} aria-label="Next comic">
-            <img src="/assets/comics/rightarrow.png" alt="" aria-hidden="true" />
+            <img src="/assets/comics/rightarrow.webp" alt="" aria-hidden="true" />
             <span class="sr-only">Next comic</span>
           </a>
         )}
 
         {isLast ? (
           <button class="comic-control is-disabled" type="button" disabled aria-label="Last comic">
-            <img src="/assets/comics/rightend.png" alt="" aria-hidden="true" />
+            <img src="/assets/comics/rightend.webp" alt="" aria-hidden="true" />
             <span class="sr-only">Last comic</span>
           </button>
         ) : (
           <a class="comic-control" href={comicHref(comics.length - 1)} aria-label="Last comic">
-            <img src="/assets/comics/rightend.png" alt="" aria-hidden="true" />
+            <img src="/assets/comics/rightend.webp" alt="" aria-hidden="true" />
             <span class="sr-only">Last comic</span>
           </a>
         )}

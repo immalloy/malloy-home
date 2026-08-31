@@ -2,7 +2,7 @@
 name: "V.S. Impostor Legacy: Mint Expansion"
 description: "Detective always knows who the impostor is. But why?"
 accentColor: "#8bd8c0"
-iconImage: /assets/projects/mint-expansion-icon.png
+iconImage: /assets/projects/mint-expansion-icon.webp
 thumbnail: /assets/projects/mint-expansion-banner.webp
 thumbnailAlt: "V.S. Impostor Legacy: Mint Expansion banner"
 links:

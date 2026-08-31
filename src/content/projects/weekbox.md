@@ -2,13 +2,16 @@
 name: WeekBox
 description: One launcher for every FNF mod you want to play.
 accentColor: "#1db7ed"
-iconImage: /assets/projects/weekbox-icon.png
-thumbnail: /assets/projects/weekbox-banner.png
+iconImage: /assets/projects/weekbox-icon.webp
+thumbnail: /assets/projects/weekbox-banner.webp
 thumbnailAlt: WeekBox banner with the WeekBox logo and a blue mascot.
+links:
+  - label: Open WeekBox on GameBanana
+    href: https://gamebanana.com/tools/23228
 gallery:
-  - src: /assets/projects/weekbox-browse.png
+  - src: /assets/projects/weekbox-browse.webp
     alt: WeekBox home screen showing featured mods and engine filters.
-  - src: /assets/projects/weekbox-library.png
+  - src: /assets/projects/weekbox-library.webp
     alt: WeekBox mod manager with installed mods and launch controls.
 order: 2
 ---

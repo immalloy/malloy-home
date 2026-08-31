@@ -2,16 +2,16 @@
 name: Your Little Oyachi
 description: A tiny pet game for quiet, happy moments.
 accentColor: "#f05a9d"
-iconImage: /assets/projects/your-little-oyachi-icon.png
+iconImage: /assets/projects/your-little-oyachi-icon.webp
 thumbnail: /assets/projects/your-little-oyachi-banner.webp
 thumbnailAlt: Your Little Oyachi project banner.
 links:
   - label: Play on itch.io
     href: https://immalloy.itch.io/oyachigame
 gallery:
-  - src: /assets/projects/your-little-oyachi-screenshot-01.png
+  - src: /assets/projects/your-little-oyachi-screenshot-01.webp
     alt: Your Little Oyachi with the character standing in the room.
-  - src: /assets/projects/your-little-oyachi-screenshot-02.png
+  - src: /assets/projects/your-little-oyachi-screenshot-02.webp
     alt: Your Little Oyachi with the Toys menu open.
 order: 1
 ---

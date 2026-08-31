@@ -9,7 +9,7 @@ interface Props {
 
 const { title, description, noIndex = false } = Astro.props;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.url).href;
-const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
+const socialImageUrl = new URL("/assets/brand/og-image.png", Astro.url).href;
 ---
 
 <!doctype html>
@@ -275,27 +275,27 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
   }
 
   .sidebar-icon-home {
-    --sidebar-icon: url("/assets/sidebar/home.png");
+    --sidebar-icon: url("/assets/sidebar/home.webp");
   }
 
   .sidebar-icon-about {
-    --sidebar-icon: url("/assets/sidebar/about.png");
+    --sidebar-icon: url("/assets/sidebar/about.webp");
   }
 
   .sidebar-icon-projects {
-    --sidebar-icon: url("/assets/sidebar/projects.png");
+    --sidebar-icon: url("/assets/sidebar/projects.webp");
   }
 
   .sidebar-icon-blog {
-    --sidebar-icon: url("/assets/sidebar/blog.png");
+    --sidebar-icon: url("/assets/sidebar/blog.webp");
   }
 
   .sidebar-icon-comics {
-    --sidebar-icon: url("/assets/sidebar/comics.png");
+    --sidebar-icon: url("/assets/sidebar/comics.webp");
   }
 
   .sidebar-icon-guestbook {
-    --sidebar-icon: url("/assets/sidebar/guestbook.png");
+    --sidebar-icon: url("/assets/sidebar/guestbook.webp");
   }
 
   .site-sidebar nav a:hover,
@@ -402,9 +402,9 @@ const socialImageUrl = new URL("/assets/og-image.png", Astro.url).href;
   const spriteReadyPromise = Promise.all([
     new Promise((resolve) => {
       spriteImage.addEventListener("load", resolve, { once: true });
-      spriteImage.src = "/assets/picker.png";
+      spriteImage.src = "/assets/picker/picker.png";
     }),
-    fetch("/assets/picker.json").then((response) => {
+    fetch("/assets/picker/picker.json").then((response) => {
       if (!response.ok) throw new Error("Could not load picker metadata.");
       return response.json();
     }),
