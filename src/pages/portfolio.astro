@@ -2,18 +2,18 @@
 import SiteLayout from "../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
 
-const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
+const portfolio = (await getCollection("portfolio")).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<SiteLayout title="Projects | ImMalloy" description="Explore my projects.">
-  <main class="projects-page" aria-labelledby="projects-title">
-    <h1 id="projects-title">Projects</h1>
+<SiteLayout title="Portfolio | ImMalloy" description="Explore my portfolio.">
+  <main class="portfolio-page" aria-labelledby="portfolio-title">
+    <h1 id="portfolio-title">Portfolio</h1>
 
     <div class="project-grid">
-      {projects.map((project) => (
+      {portfolio.map((project) => (
         <a
           class="project-card"
-          href={`/projects/${project.id}`}
+          href={`/portfolio/${project.id}`}
           style={`--project-color: ${project.data.accentColor}`}
         >
           <div class="project-thumbnail">
@@ -48,7 +48,7 @@ const projects = (await getCollection("projects")).sort((a, b) => a.data.order -
     font-display: swap;
   }
 
-  .projects-page {
+  .portfolio-page {
     max-width: 74rem;
     min-height: 100svh;
     margin: 0 auto;
@@ -166,7 +166,7 @@ const projects = (await getCollection("projects")).sort((a, b) => a.data.order -
   }
 
   @media (max-width: 600px) {
-    .projects-page {
+    .portfolio-page {
       padding-top: 2.5rem;
       padding-bottom: 4rem;
     }

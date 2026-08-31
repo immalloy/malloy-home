@@ -3,7 +3,7 @@ import { getEntry, render } from "astro:content";
 import SiteLayout from "../../layouts/SiteLayout.astro";
 
 const { slug } = Astro.params;
-const project = slug ? await getEntry("projects", slug) : undefined;
+const project = slug ? await getEntry("portfolio", slug) : undefined;
 
 if (!project) return Astro.redirect("/404");
 
@@ -18,7 +18,7 @@ const galleryItems = [{ src: data.thumbnail, alt: data.thumbnailAlt }, ...data.g
     aria-labelledby="project-title"
     style={`--project-color: ${data.accentColor}`}
   >
-    <a class="back-link" href="/projects" aria-label="Back to projects" title="Back to projects">
+    <a class="back-link" href="/portfolio" aria-label="Back to portfolio" title="Back to portfolio">
       <span class="back-arrow" aria-hidden="true"></span>
     </a>
 

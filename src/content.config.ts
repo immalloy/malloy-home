@@ -2,8 +2,8 @@ import { glob } from "astro/loaders";
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 
-const projects = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
+const portfolio = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/portfolio" }),
   schema: z
     .object({
       name: z.string(),
@@ -17,8 +17,8 @@ const projects = defineCollection({
       gallery: z.array(z.object({ src: z.string(), alt: z.string() })).default([]),
       order: z.number().default(0),
     })
-    .refine((project) => project.icon || project.iconImage, {
-      message: "A project must define icon or iconImage",
+    .refine((item) => item.icon || item.iconImage, {
+      message: "A portfolio item must define icon or iconImage",
       path: ["iconImage"],
     }),
 });
@@ -36,4 +36,4 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { projects, blog };
+export const collections = { portfolio, blog };
