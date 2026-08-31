@@ -1,5 +1,644 @@
 ---
-import UnfinishedPage from "../components/UnfinishedPage.astro";
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
 ---
 
-<UnfinishedPage title="About Me | ImMalloy" description="About me." />
+<SiteLayout
+  title="About Malloy | ImMalloy"
+  description="A little about Malloy, the things I make, and what I'm working on."
+>
+  <div class="about-page" data-about-color="blue">
+    <h1 class="about-page-title" id="about-page-title" aria-live="polite">About <span class="about-page-title-name">Malloy</span></h1>
+
+    <main class="swiper about-swiper" aria-labelledby="about-page-title">
+      <div class="swiper-wrapper">
+        <section class="swiper-slide about-panel about-panel-me" aria-labelledby="about-me-heading">
+          <div class="about-bubbles" aria-label="Floating bubbles">
+            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 8%; --bubble-size: 2.8rem; --bubble-delay: -2s; --bubble-duration: 11s; --bubble-drift: 3rem;"><img src="/assets/about-bubble.png" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 24%; --bubble-size: 2.1rem; --bubble-delay: -7s; --bubble-duration: 13s; --bubble-drift: -4rem;"><img src="/assets/about-bubble.png" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 42%; --bubble-size: 3.4rem; --bubble-delay: -4s; --bubble-duration: 15s; --bubble-drift: 5rem;"><img src="/assets/about-bubble.png" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 61%; --bubble-size: 2.4rem; --bubble-delay: -10s; --bubble-duration: 12s; --bubble-drift: -3rem;"><img src="/assets/about-bubble.png" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 78%; --bubble-size: 3rem; --bubble-delay: -6s; --bubble-duration: 14s; --bubble-drift: 4rem;"><img src="/assets/about-bubble.png" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 92%; --bubble-size: 1.8rem; --bubble-delay: -12s; --bubble-duration: 10s; --bubble-drift: -5rem;"><img src="/assets/about-bubble.png" alt="" /></button>
+          </div>
+
+          <div class="about-panel-inner about-me-layout">
+            <div class="about-panel-copy">
+              <h2 id="about-me-heading">Hi, I'm Malloy.</h2>
+              <p class="about-lede">
+                I'm a programmer, software developer, comic and character artist, singer, and voice actor from Honduras. I like turning passing ideas into small projects and giving them a place to live.
+              </p>
+
+              <nav class="about-socials" aria-label="Find Malloy online">
+                <a class="about-social" href="https://x.com/immalloy" target="_blank" rel="noreferrer" aria-label="Malloy on X">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siX.path} /></svg>
+                  <span>X</span>
+                </a>
+                <a class="about-social" href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer" aria-label="Support Malloy on Ko-fi">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siKofi.path} /></svg>
+                  <span>Ko-fi</span>
+                </a>
+                <a class="about-social" href="https://www.youtube.com/@ImMalloy" target="_blank" rel="noreferrer" aria-label="Malloy on YouTube">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siYoutube.path} /></svg>
+                  <span>YouTube</span>
+                </a>
+                <span class="about-social about-social-static" title="Discord: malloycore" aria-label="Discord: malloycore">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siDiscord.path} /></svg>
+                  <span>malloycore</span>
+                </span>
+                <a class="about-social" href="https://open.spotify.com/user/31vpcyzysmxjx2lk24u3ithegcyi?si=3f4a0a3b38d8429f" target="_blank" rel="noreferrer" aria-label="Malloy on Spotify">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siSpotify.path} /></svg>
+                  <span>Spotify</span>
+                </a>
+              </nav>
+            </div>
+
+            <div class="about-me-visual">
+              <img src="/assets/malloy-chud.png" alt="Malloy standing with crossed arms." />
+            </div>
+          </div>
+        </section>
+
+        <section class="swiper-slide about-panel about-panel-oyachi" aria-labelledby="about-oyachi-heading">
+          <div class="about-sakura" aria-hidden="true">
+            <img class="about-sakura-particle" src="/assets/oyachi-leaf.png" alt="" style="--sakura-y: 7%; --sakura-size: 2.2rem; --sakura-delay: -2s; --sakura-duration: 14s; --sakura-drift: 10rem;" />
+            <img class="about-sakura-particle" src="/assets/oyachi-flower.png" alt="" style="--sakura-y: 19%; --sakura-size: 2.7rem; --sakura-delay: -8s; --sakura-duration: 18s; --sakura-drift: -13rem;" />
+            <img class="about-sakura-particle" src="/assets/oyachi-leaf.png" alt="" style="--sakura-y: 36%; --sakura-size: 1.5rem; --sakura-delay: -12s; --sakura-duration: 20s; --sakura-drift: 15rem;" />
+            <img class="about-sakura-particle" src="/assets/oyachi-flower.png" alt="" style="--sakura-y: 55%; --sakura-size: 2rem; --sakura-delay: -5s; --sakura-duration: 16s; --sakura-drift: -9rem;" />
+            <img class="about-sakura-particle" src="/assets/oyachi-leaf.png" alt="" style="--sakura-y: 72%; --sakura-size: 2.5rem; --sakura-delay: -15s; --sakura-duration: 19s; --sakura-drift: 12rem;" />
+            <img class="about-sakura-particle" src="/assets/oyachi-flower.png" alt="" style="--sakura-y: 89%; --sakura-size: 1.7rem; --sakura-delay: -10s; --sakura-duration: 15s; --sakura-drift: -15rem;" />
+          </div>
+
+          <div class="about-panel-inner about-oyachi-layout">
+            <div class="about-panel-copy">
+              <h2 id="about-oyachi-heading">Oyachi.</h2>
+              <p class="about-lede">
+                Oyachi is my girlfriend, and she’s really sweet and caring. She shows her affection in lovely ways, and she’s especially cute when she talks or reacts to things, especially when she gets very happy. She can be busy and a little oblivious sometimes, but she’s caring, affectionate, and the love of my life. I’ll always be there for her.
+              </p>
+              <p class="about-lede">
+                She makes me the happiest man ever! ♥
+              </p>
+            </div>
+
+            <div class="about-oyachi-visual">
+              <img src="/assets/oyachi.png" alt="A drawing of Oyachi." />
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="about-index" aria-label="About sections">
+      <div class="about-index-items">
+        <button type="button" data-about-jump="0" aria-current="page">Malloy</button>
+        <button type="button" data-about-jump="1" aria-current="false">Oyachi</button>
+      </div>
+    </nav>
+  </div>
+</SiteLayout>
+
+<style>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
+  :global(html),
+  :global(body) {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  :global(body) {
+    background: var(--site-background);
+    color: var(--site-foreground);
+  }
+
+  .about-page {
+    --about-accent: var(--site-accent);
+    --about-background: var(--site-background);
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--about-background);
+    transition: background-color 700ms ease;
+  }
+
+  .about-page[data-about-color="pink"] {
+    --about-accent: #FA5656;
+    --about-background: #f7eee8;
+  }
+
+  :global(html[data-theme="dark"]) .about-page[data-about-color="pink"] {
+    --about-background: #252026;
+  }
+
+  .about-page-title {
+    position: absolute;
+    z-index: 4;
+    inset-block-start: max(1.25rem, env(safe-area-inset-top));
+    inset-inline: 0;
+    margin: 0;
+    color: var(--about-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(2.75rem, 6vw, 5.5rem);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+    text-align: center;
+    transition: color 700ms ease;
+    pointer-events: none;
+  }
+
+  :global(html[data-theme="dark"]) .about-page-title,
+  :global(html[data-theme="dark"]) .about-panel h2 {
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
+  }
+
+  .about-swiper {
+    --swiper-wrapper-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+  }
+
+  .about-panel {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    background: var(--about-background);
+    isolation: isolate;
+    transition: background-color 700ms ease;
+  }
+
+  .about-panel-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: min(100%, 96rem);
+    height: 100%;
+    margin: 0 auto;
+    padding: clamp(6rem, 11vw, 9rem) clamp(4.5rem, 9vw, 9rem) clamp(6.5rem, 11vw, 8rem) clamp(1.5rem, 7vw, 8rem);
+    align-items: center;
+  }
+
+  .about-me-layout {
+    width: min(100%, 78rem);
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.85fr);
+    gap: clamp(0.5rem, 1.5vw, 1.5rem);
+    justify-content: center;
+  }
+
+  .about-oyachi-layout {
+    width: min(100%, 78rem);
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.85fr);
+    gap: clamp(0.5rem, 1.5vw, 1.5rem);
+    justify-content: center;
+  }
+
+  .about-panel-copy {
+    max-width: 42rem;
+  }
+
+  h1,
+  h2 {
+    margin: 0;
+    color: var(--about-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(4rem, 9vw, 8.5rem);
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    line-height: 0.82;
+    text-wrap: balance;
+    transition: color 700ms ease;
+  }
+
+  .about-oyachi-layout h2 {
+    font-size: clamp(3.5rem, 7vw, 7rem);
+  }
+
+  .about-lede {
+    max-width: 38rem;
+    margin: 1.75rem 0 0;
+    font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+
+  .about-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+  }
+
+  .about-social {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.7rem;
+    background: color-mix(in srgb, var(--about-accent) 9%, var(--about-background));
+    color: var(--about-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 700ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .about-social svg {
+    display: block;
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: currentColor;
+  }
+
+  .about-social:hover,
+  .about-social:focus-visible {
+    background: var(--about-accent);
+    color: var(--site-background);
+    transform: translateY(-0.15rem);
+  }
+
+  .about-social:focus-visible {
+    outline: 2px solid var(--site-foreground);
+    outline-offset: 0.3rem;
+  }
+
+  .about-social-static {
+    cursor: default;
+  }
+
+  .about-me-visual,
+  .about-oyachi-visual {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+  }
+
+  .about-me-visual img {
+    display: block;
+    width: min(100%, 32rem);
+    height: min(72svh, 50rem);
+    object-fit: contain;
+  }
+
+  .about-oyachi-visual img {
+    display: block;
+    width: min(100%, 30rem);
+    max-height: 64svh;
+    object-fit: contain;
+  }
+
+  :global(html[data-theme="dark"]) .about-me-visual img,
+  :global(html[data-theme="dark"]) .about-oyachi-visual img {
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
+  }
+
+  .about-sakura {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 700ms ease;
+  }
+
+  .about-bubbles {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 700ms ease;
+  }
+
+  .swiper-slide-active .about-bubbles {
+    opacity: 1;
+  }
+
+  .about-bubble {
+    position: absolute;
+    bottom: -7rem;
+    left: var(--bubble-x);
+    display: grid;
+    width: max(2.75rem, var(--bubble-size));
+    height: max(2.75rem, var(--bubble-size));
+    place-items: center;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: auto;
+    animation: about-bubble-rise var(--bubble-duration) linear var(--bubble-delay) infinite paused;
+  }
+
+  .swiper-slide-active .about-bubble {
+    animation-play-state: running;
+  }
+
+  .about-bubble img {
+    display: block;
+    width: var(--bubble-size);
+    height: var(--bubble-size);
+  }
+
+  .about-bubble:focus-visible {
+    outline: 2px solid var(--about-accent);
+    outline-offset: 0.25rem;
+    border-radius: 50%;
+  }
+
+  .about-bubble.is-popped {
+    animation: about-bubble-pop 260ms ease-out forwards;
+  }
+
+  @keyframes about-bubble-rise {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 8rem, 0) scale(0.65) rotate(-10deg);
+    }
+
+    14% {
+      opacity: 0.9;
+    }
+
+    55% {
+      opacity: 0.72;
+      transform: translate3d(var(--bubble-drift), -50vh, 0) scale(1) rotate(12deg);
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate3d(calc(var(--bubble-drift) * -0.5), -115vh, 0) scale(0.8) rotate(-8deg);
+    }
+  }
+
+  @keyframes about-bubble-pop {
+    0% {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+
+    45% {
+      opacity: 0.9;
+      transform: scale(1.25);
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(0.1);
+    }
+  }
+
+  .swiper-slide-active .about-sakura {
+    opacity: 1;
+  }
+
+  .about-sakura-particle {
+    position: absolute;
+    top: var(--sakura-y);
+    left: -5rem;
+    width: var(--sakura-size);
+    height: auto;
+    opacity: 0;
+    transform-origin: center;
+    animation: about-sakura-fall var(--sakura-duration) linear var(--sakura-delay) infinite;
+  }
+
+  @keyframes about-sakura-fall {
+    0% {
+      opacity: 0;
+      transform: translate3d(-10vw, 0, 0) rotate(-35deg);
+    }
+
+    16% {
+      opacity: 0.28;
+      transform: translate3d(10vw, calc(var(--sakura-drift) * -0.2), 0) rotate(35deg);
+    }
+
+    58% {
+      opacity: 0.16;
+      transform: translate3d(60vw, calc(var(--sakura-drift) * 0.35), 0) rotate(150deg);
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate3d(115vw, var(--sakura-drift), 0) rotate(260deg);
+    }
+  }
+
+  .about-index {
+    position: absolute;
+    z-index: 5;
+    inset-inline: 0;
+    inset-block-end: max(1.25rem, env(safe-area-inset-bottom));
+    display: flex;
+    justify-content: center;
+    padding-inline: 1rem;
+    pointer-events: none;
+  }
+
+  .about-index-items {
+    display: flex;
+    gap: 0.4rem;
+    pointer-events: auto;
+  }
+
+  .about-index-items button {
+    border: 0;
+    border-block-end: 2px solid transparent;
+    padding: 0.35rem 0.55rem;
+    background: transparent;
+    color: var(--site-muted-strong);
+    cursor: pointer;
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: border-color 700ms ease, color 700ms ease;
+  }
+
+  .about-index-items button[aria-current="page"],
+  .about-index-items button:hover,
+  .about-index-items button:focus-visible {
+    border-color: var(--about-accent);
+    color: var(--about-accent);
+  }
+
+  .about-index-items button:focus-visible {
+    outline: 2px solid var(--site-foreground);
+    outline-offset: 0.25rem;
+  }
+
+  @media (max-width: 800px) {
+    .about-page-title {
+      font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+
+    .about-panel-inner {
+      padding: 5.5rem 4rem 6rem 1.25rem;
+    }
+
+    .about-me-layout,
+    .about-oyachi-layout {
+      width: 100%;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      align-content: center;
+    }
+
+    .about-me-layout .about-panel-copy,
+    .about-oyachi-layout .about-panel-copy {
+      order: 2;
+      text-align: center;
+    }
+
+    .about-me-layout .about-me-visual,
+    .about-oyachi-layout .about-oyachi-visual {
+      order: 1;
+      justify-items: center;
+    }
+
+    h1,
+    h2,
+    .about-oyachi-layout h2 {
+      font-size: clamp(3.1rem, 14vw, 5.25rem);
+    }
+
+    .about-lede {
+      margin-inline: auto;
+      font-size: clamp(1.05rem, 3.8vw, 1.35rem);
+    }
+
+    .about-socials {
+      justify-content: center;
+    }
+
+    .about-me-visual img {
+      width: min(100%, 18rem);
+      height: min(40svh, 23rem);
+    }
+
+    .about-oyachi-visual img {
+      width: min(100%, 17rem);
+      max-height: 36svh;
+    }
+
+  }
+
+  @media (max-width: 430px) {
+    .about-panel-inner {
+      padding-inline-start: 1rem;
+    }
+
+    .about-socials {
+      gap: 0.45rem;
+    }
+
+    .about-social {
+      padding-inline: 0.55rem;
+      font-size: 0.7rem;
+    }
+  }
+</style>
+
+<script>
+  import Swiper from "swiper";
+  import { Keyboard, Mousewheel } from "swiper/modules";
+  import "swiper/css";
+
+  const aboutPage = document.querySelector(".about-page");
+  const pageTitleName = document.querySelector(".about-page-title-name");
+  const sectionControls = document.querySelectorAll("[data-about-jump]");
+  const bubbles = document.querySelectorAll(".about-bubble");
+  const sectionTitles = ["Malloy", "Oyachi"];
+  let titleTypeTimer;
+  const swiper = new Swiper(".about-swiper", {
+    modules: [Keyboard, Mousewheel],
+    direction: "horizontal",
+    slidesPerView: 1,
+    speed: 800,
+    mousewheel: {
+      forceToAxis: false,
+      releaseOnEdges: true,
+    },
+    keyboard: { enabled: true },
+  });
+
+  const updateAboutState = () => {
+    const isOyachi = swiper.activeIndex === 1;
+    const nextTitle = sectionTitles[swiper.activeIndex] ?? sectionTitles[0];
+
+    if (pageTitleName.textContent !== nextTitle) {
+      window.clearTimeout(titleTypeTimer);
+
+      let erasingTitle = true;
+      const typeTitle = () => {
+        const currentTitle = pageTitleName.textContent ?? "";
+
+        if (erasingTitle && currentTitle) {
+          pageTitleName.textContent = currentTitle.slice(0, -1);
+          titleTypeTimer = window.setTimeout(typeTitle, 28);
+          return;
+        }
+
+        erasingTitle = false;
+        const typedTitle = pageTitleName.textContent ?? "";
+        const nextCharacter = nextTitle[typedTitle.length];
+
+        if (nextCharacter) {
+          pageTitleName.textContent = typedTitle + nextCharacter;
+          titleTypeTimer = window.setTimeout(typeTitle, 52);
+        }
+      };
+
+      typeTitle();
+    }
+
+    aboutPage.dataset.aboutColor = isOyachi ? "pink" : "blue";
+
+    sectionControls.forEach((control) => {
+      control.setAttribute(
+        "aria-current",
+        Number(control.dataset.aboutJump) === swiper.activeIndex ? "page" : "false",
+      );
+    });
+  };
+
+  swiper.on("slideChange", updateAboutState);
+  updateAboutState();
+
+  sectionControls.forEach((control) => {
+    control.addEventListener("click", () => {
+      swiper.slideTo(Number(control.dataset.aboutJump));
+    });
+  });
+
+  const randomizeBubble = (bubble) => {
+    bubble.style.setProperty("--bubble-x", `${Math.random() * 100}%`);
+    bubble.style.setProperty("--bubble-drift", `${Math.random() * 12 - 6}rem`);
+  };
+
+  bubbles.forEach((bubble) => {
+    randomizeBubble(bubble);
+    bubble.addEventListener("animationiteration", () => randomizeBubble(bubble));
+    bubble.addEventListener("click", () => {
+      bubble.classList.add("is-popped");
+      window.setTimeout(() => bubble.classList.remove("is-popped"), 300);
+    });
+  });
+</script>
