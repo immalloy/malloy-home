@@ -1,19 +1,25 @@
 ---
 import ThemeToggle from "../components/ThemeToggle.astro";
+import { getLocale, localizedPath, tx, type Locale } from "../lib/i18n";
 
 interface Props {
   title: string;
   description: string;
   noIndex?: boolean;
+  locale?: Locale;
 }
 
-const { title, description, noIndex = false } = Astro.props;
+const { title, description, noIndex = false, locale: requestedLocale } = Astro.props;
+const locale = getLocale(requestedLocale ?? Astro.currentLocale);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.url).href;
 const socialImageUrl = new URL("/assets/brand/og-image.png", Astro.url).href;
+const currentPath = Astro.url.pathname.replace(/^\/es(?=\/|$)/, "") || "/";
+const alternateLocale = locale === "en" ? "es" : "en";
+const languageHref = localizedPath(alternateLocale, currentPath);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -59,20 +65,19 @@ const socialImageUrl = new URL("/assets/brand/og-image.png", Astro.url).href;
   </head>
   <body>
     <slot />
-    <button class="sidebar-button" type="button" aria-controls="site-sidebar" aria-expanded="false" aria-label="Open site navigation">
+    <button class="sidebar-button" type="button" aria-controls="site-sidebar" aria-expanded="false" aria-label={tx(locale, "Open site navigation", "Abrir navegación del sitio")}>
       <canvas class="sidebar-sprite" width="250" height="421" aria-hidden="true"></canvas>
     </button>
-    <button class="sidebar-backdrop" type="button" tabindex="-1" aria-label="Close site navigation" aria-hidden="true"></button>
+    <button class="sidebar-backdrop" type="button" tabindex="-1" aria-label={tx(locale, "Close site navigation", "Cerrar navegación del sitio")} aria-hidden="true"></button>
     <ThemeToggle />
-    <aside class="site-sidebar" id="site-sidebar" aria-label="Site navigation" aria-hidden="true" inert>
+    <aside class="site-sidebar" id="site-sidebar" aria-label={tx(locale, "Site navigation", "Navegación del sitio")} aria-hidden="true" inert>
       <div class="sidebar-content">
-        <nav aria-label="Site navigation">
-          <a href="/"><span class="sidebar-link-icon sidebar-icon-home" aria-hidden="true"></span><span>Home</span></a>
-          <a href="/about"><span class="sidebar-link-icon sidebar-icon-about" aria-hidden="true"></span><span>About</span></a>
-          <a href="/portfolio"><span class="sidebar-link-icon sidebar-icon-portfolio" aria-hidden="true"></span><span>Portfolio</span></a>
-          <a href="/blog"><span class="sidebar-link-icon sidebar-icon-blog" aria-hidden="true"></span><span>Blog</span></a>
-          <a href="/comics"><span class="sidebar-link-icon sidebar-icon-comics" aria-hidden="true"></span><span>Comics</span></a>
-          <a href="/guestbook"><span class="sidebar-link-icon sidebar-icon-guestbook" aria-hidden="true"></span><span>Guestbook</span></a>
+        <nav aria-label={tx(locale, "Site navigation", "Navegación del sitio")}>
+          <a href={localizedPath(locale, "/")}><span class="sidebar-link-icon sidebar-icon-home" aria-hidden="true"></span><span>{tx(locale, "Home", "Inicio")}</span></a>
+          <a href={localizedPath(locale, "/about")}><span class="sidebar-link-icon sidebar-icon-about" aria-hidden="true"></span><span>{tx(locale, "About", "Sobre mí")}</span></a>
+          <a href={localizedPath(locale, "/comics")}><span class="sidebar-link-icon sidebar-icon-comics" aria-hidden="true"></span><span>{tx(locale, "Comics", "Cómics")}</span></a>
+          <a href={localizedPath(locale, "/guestbook")}><span class="sidebar-link-icon sidebar-icon-guestbook" aria-hidden="true"></span><span>{tx(locale, "Guestbook", "Libro de visitas")}</span></a>
+          <a class="language-link" href={languageHref} lang={alternateLocale}>{locale === "en" ? "Español" : "English"}</a>
         </nav>
       </div>
     </aside>
@@ -342,6 +347,7 @@ const socialImageUrl = new URL("/assets/brand/og-image.png", Astro.url).href;
   const sidebarButton = document.querySelector(".sidebar-button");
   const sidebar = document.querySelector("#site-sidebar");
   const sidebarBackdrop = document.querySelector(".sidebar-backdrop");
+  const sidebarText = (english, spanish) => document.documentElement.lang === "es" ? spanish : english;
   const sidebarSprite = sidebarButton?.querySelector(".sidebar-sprite");
   const spriteContext = sidebarSprite instanceof HTMLCanvasElement ? sidebarSprite.getContext("2d") : null;
   const spriteImage = new Image();
@@ -513,7 +519,7 @@ const socialImageUrl = new URL("/assets/brand/og-image.png", Astro.url).href;
     if (open) lastFocusedElement = document.activeElement;
 
     sidebarButton.setAttribute("aria-expanded", String(open));
-    sidebarButton.setAttribute("aria-label", open ? "Close site navigation" : "Open site navigation");
+    sidebarButton.setAttribute("aria-label", open ? sidebarText("Close site navigation", "Cerrar navegación del sitio") : sidebarText("Open site navigation", "Abrir navegación del sitio"));
     sidebarButton.tabIndex = 0;
     sidebar.setAttribute("aria-hidden", String(!open));
     sidebar.inert = !open;

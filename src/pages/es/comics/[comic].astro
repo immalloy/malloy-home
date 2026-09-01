@@ -1,0 +1,7 @@
+---
+import ComicsPage from "../../comics.astro";
+
+const comic = Astro.params.comic ?? "1";
+---
+
+<ComicsPage comic={comic} locale="es" />

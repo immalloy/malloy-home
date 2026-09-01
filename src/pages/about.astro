@@ -1,44 +1,48 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
 import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
+import { getLocale, tx } from "../lib/i18n";
+
+const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
 ---
 
 <SiteLayout
-  title="About Malloy | ImMalloy"
-  description="A little about Malloy, the things I make, and what I'm working on."
+  title={tx(locale, "About Malloy | ImMalloy", "Sobre Malloy | ImMalloy")}
+  description={tx(locale, "A little about Malloy, the things I make, and what I'm working on.", "Un poco sobre Malloy, lo que hago y en qué estoy trabajando.")}
+  locale={locale}
 >
   <div class="about-page" data-about-color="blue">
-    <h1 class="about-page-title" id="about-page-title" aria-live="polite">About <span class="about-page-title-name">Malloy</span></h1>
+    <h1 class="about-page-title" id="about-page-title" aria-live="polite">{tx(locale, "About", "Sobre")} <span class="about-page-title-name">Malloy</span></h1>
 
     <main class="swiper about-swiper" aria-labelledby="about-page-title">
       <div class="swiper-wrapper">
         <section class="swiper-slide about-panel about-panel-me" aria-labelledby="about-me-heading">
-          <div class="about-bubbles" aria-label="Floating bubbles">
-            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 8%; --bubble-size: 2.8rem; --bubble-delay: -2s; --bubble-duration: 11s; --bubble-drift: 3rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
-            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 24%; --bubble-size: 2.1rem; --bubble-delay: -7s; --bubble-duration: 13s; --bubble-drift: -4rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
-            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 42%; --bubble-size: 3.4rem; --bubble-delay: -4s; --bubble-duration: 15s; --bubble-drift: 5rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
-            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 61%; --bubble-size: 2.4rem; --bubble-delay: -10s; --bubble-duration: 12s; --bubble-drift: -3rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
-            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 78%; --bubble-size: 3rem; --bubble-delay: -6s; --bubble-duration: 14s; --bubble-drift: 4rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
-            <button class="about-bubble" type="button" aria-label="Pop bubble" style="--bubble-x: 92%; --bubble-size: 1.8rem; --bubble-delay: -12s; --bubble-duration: 10s; --bubble-drift: -5rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
+          <div class="about-bubbles" aria-label={tx(locale, "Floating bubbles", "Burbujas flotantes")}>
+            <button class="about-bubble" type="button" aria-label={tx(locale, "Pop bubble", "Reventar burbuja")} style="--bubble-x: 8%; --bubble-size: 2.8rem; --bubble-delay: -2s; --bubble-duration: 11s; --bubble-drift: 3rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label={tx(locale, "Pop bubble", "Reventar burbuja")} style="--bubble-x: 24%; --bubble-size: 2.1rem; --bubble-delay: -7s; --bubble-duration: 13s; --bubble-drift: -4rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label={tx(locale, "Pop bubble", "Reventar burbuja")} style="--bubble-x: 42%; --bubble-size: 3.4rem; --bubble-delay: -4s; --bubble-duration: 15s; --bubble-drift: 5rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label={tx(locale, "Pop bubble", "Reventar burbuja")} style="--bubble-x: 61%; --bubble-size: 2.4rem; --bubble-delay: -10s; --bubble-duration: 12s; --bubble-drift: -3rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label={tx(locale, "Pop bubble", "Reventar burbuja")} style="--bubble-x: 78%; --bubble-size: 3rem; --bubble-delay: -6s; --bubble-duration: 14s; --bubble-drift: 4rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
+            <button class="about-bubble" type="button" aria-label={tx(locale, "Pop bubble", "Reventar burbuja")} style="--bubble-x: 92%; --bubble-size: 1.8rem; --bubble-delay: -12s; --bubble-duration: 10s; --bubble-drift: -5rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
           </div>
 
           <div class="about-panel-inner about-me-layout">
             <div class="about-panel-copy">
-              <h2 id="about-me-heading">Hi, I'm Malloy.</h2>
+              <h2 id="about-me-heading">{tx(locale, "Hi, I'm Malloy.", "Hola, soy Malloy.")}</h2>
               <p class="about-lede">
-                I'm a programmer, software developer, comic and character artist, singer, and voice actor from Honduras. I like turning passing ideas into small projects and giving them a place to live.
+                {tx(locale, "I'm a programmer, software developer, comic and character artist, singer, and voice actor from Honduras. I like turning passing ideas into small projects and giving them a place to live.", "Soy programador, desarrollador de software, artista de cómics y personajes, cantante y actor de voz de Honduras. Me gusta convertir ideas pasajeras en pequeños proyectos y darles un lugar donde vivir.")}
               </p>
 
-              <nav class="about-socials" aria-label="Find Malloy online">
-                <a class="about-social" href="https://x.com/immalloy" target="_blank" rel="noreferrer" aria-label="Malloy on X">
+              <nav class="about-socials" aria-label={tx(locale, "Find Malloy online", "Encuentra a Malloy en internet")}>
+                <a class="about-social" href="https://x.com/immalloy" target="_blank" rel="noreferrer" aria-label={tx(locale, "Malloy on X", "Malloy en X")}>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siX.path} /></svg>
                   <span>X</span>
                 </a>
-                <a class="about-social" href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer" aria-label="Support Malloy on Ko-fi">
+                <a class="about-social" href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer" aria-label={tx(locale, "Support Malloy on Ko-fi", "Apoya a Malloy en Ko-fi")}>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siKofi.path} /></svg>
                   <span>Ko-fi</span>
                 </a>
-                <a class="about-social" href="https://www.youtube.com/@ImMalloy" target="_blank" rel="noreferrer" aria-label="Malloy on YouTube">
+                <a class="about-social" href="https://www.youtube.com/@ImMalloy" target="_blank" rel="noreferrer" aria-label={tx(locale, "Malloy on YouTube", "Malloy en YouTube")}>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siYoutube.path} /></svg>
                   <span>YouTube</span>
                 </a>
@@ -73,15 +77,15 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
             <div class="about-panel-copy">
               <h2 id="about-oyachi-heading">Oyachi.</h2>
               <p class="about-lede">
-                Oyachi (Also known as Shinjou) is my wife, and she’s really sweet and caring. She shows her affection in lovely ways, and she’s especially cute when she talks or reacts to things, especially when she gets very happy. She can be busy and a little oblivious sometimes, but she’s caring, affectionate, and the love of my life. I’ll always be there for her.
+                {tx(locale, "Oyachi (also known as Shinjou) is my wife, and she’s really sweet and caring. She shows her affection in lovely ways, and she’s especially cute when she talks or reacts to things, especially when she gets very happy. She can be busy and a little oblivious sometimes, but she’s caring, affectionate, and the love of my life. I’ll always be there for her.", "Oyachi (tambi\u00e9n conocida como Shinjou) es mi esposa, y es muy dulce y cari\u00f1osa. Demuestra su afecto de maneras hermosas y es especialmente tierna cuando habla o reacciona a las cosas, sobre todo cuando est\u00e1 muy feliz. A veces puede estar ocupada y un poco despistada, pero es cari\u00f1osa, afectuosa y el amor de mi vida. Siempre estar\u00e9 ah\u00ed para ella.")}
               </p>
               <p class="about-lede">
-                She makes me the happiest man ever! ♥
+                {tx(locale, "She makes me the happiest man ever! ♥", "\u00a1Me hace el hombre m\u00e1s feliz del mundo! ♥")}
               </p>
             </div>
 
             <div class="about-oyachi-visual">
-              <img src="/assets/about/oyachi.webp" alt="A drawing of Oyachi." />
+              <img src="/assets/about/oyachi.webp" alt={tx(locale, "A drawing of Oyachi.", "Un dibujo de Oyachi.")} />
             </div>
           </div>
         </section>

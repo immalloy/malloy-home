@@ -1,19 +1,26 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
+import { getLocale, localizedPath, tx } from "../lib/i18n";
+
+const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
 ---
 
-<SiteLayout title="ImMalloy" description="Welcome to my Website!">
-  <main class="swiper" aria-label="Site sections">
+<SiteLayout
+  title="ImMalloy"
+  description={tx(locale, "Welcome to my website!", "¡Bienvenido a mi sitio web!")}
+  locale={locale}
+>
+  <main class="swiper" aria-label={tx(locale, "Site sections", "Secciones del sitio")}>
       <div class="swiper-wrapper">
         <section class="swiper-slide hero" aria-labelledby="site-title">
           <div class="hero-content">
             <h1 id="site-title">ImMalloy</h1>
-            <p>Welcome to my Website!</p>
+            <p>{tx(locale, "Welcome to my website!", "¡Bienvenido a mi sitio web!")}</p>
           </div>
 
-          <nav class="slide-navigation slide-navigation-down" aria-label="Section navigation">
-            <button class="slide-arrow scroll-cue slide-arrow-down" type="button" aria-label="Scroll to more content" data-slide-direction="next">
-              <span>Scroll to explore</span>
+          <nav class="slide-navigation slide-navigation-down" aria-label={tx(locale, "Section navigation", "Navegación de secciones")}>
+            <button class="slide-arrow scroll-cue slide-arrow-down" type="button" aria-label={tx(locale, "Scroll to more content", "Desliza para ver más contenido")} data-slide-direction="next">
+              <span>{tx(locale, "Scroll to explore", "Desliza para explorar")}</span>
               <img class="slide-arrow-icon" src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
             </button>
           </nav>
@@ -21,15 +28,15 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 
         <section class="swiper-slide about-preview" aria-labelledby="about-preview-title">
           <div class="about-illustration">
-            <img src="/assets/home/memstar-hello.webp" alt="Memstar waving hello." />
+            <img src="/assets/home/memstar-hello.webp" alt={tx(locale, "Memstar waving hello.", "Memstar saludando.")} />
           </div>
 
           <div class="about-preview-content">
-            <h2 id="about-preview-title">Who am I?</h2>
+            <h2 id="about-preview-title">{tx(locale, "Who am I?", "¿Quién soy?")}</h2>
             <p>
-              I'm Malloy. I like coding, drawing, listening to music, and making cool projects! always thinking of something new!
+              {tx(locale, "I'm Malloy. I like coding, drawing, listening to music, and making cool projects! I'm always thinking of something new!", "Soy Malloy. ¡Me gusta programar, dibujar, escuchar música y crear proyectos geniales! Siempre estoy pensando en algo nuevo.")}
             </p>
-            <a class="about-link" href="/about">About Me</a>
+            <a class="about-link" href={localizedPath(locale, "/about")}>{tx(locale, "About Me", "Sobre mí")}</a>
           </div>
 
           <nav class="slide-navigation" aria-label="Section navigation">
@@ -44,20 +51,20 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 
         <section class="swiper-slide explore-preview" aria-labelledby="explore-preview-title">
           <div class="explore-illustration">
-            <img src="/assets/home/inkandcatexplore.webp" alt="Ink and Cat exploring together." />
+            <img src="/assets/home/inkandcatexplore.webp" alt={tx(locale, "Ink and Cat exploring together.", "Ink y Cat explorando juntos.")} />
           </div>
 
           <div class="explore-content">
-            <h2 id="explore-preview-title">Explore</h2>
-            <p>Curious? Open the picker on the right and explore the rest of the site.</p>
-            <button class="about-link explore-picker-button" type="button">Open picker</button>
+            <h2 id="explore-preview-title">{tx(locale, "Explore", "Explora")}</h2>
+            <p>{tx(locale, "Curious? Open the picker on the right and explore the rest of the site.", "\u00bfTienes curiosidad? Abre el selector de la derecha y explora el resto del sitio.")}</p>
+            <button class="about-link explore-picker-button" type="button">{tx(locale, "Open picker", "Abrir selector")}</button>
           </div>
 
-          <nav class="slide-navigation" aria-label="Section navigation">
-            <button class="slide-arrow slide-arrow-up" type="button" aria-label="Previous section" data-slide-direction="prev">
+          <nav class="slide-navigation" aria-label={tx(locale, "Section navigation", "Navegación de secciones")}>
+            <button class="slide-arrow slide-arrow-up" type="button" aria-label={tx(locale, "Previous section", "Sección anterior")} data-slide-direction="prev">
               <img class="slide-arrow-icon" src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
             </button>
-            <button class="slide-arrow slide-arrow-down" type="button" aria-label="Next section" data-slide-direction="next">
+            <button class="slide-arrow slide-arrow-down" type="button" aria-label={tx(locale, "Next section", "Siguiente sección")} data-slide-direction="next">
               <img class="slide-arrow-icon" src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
             </button>
           </nav>
@@ -65,20 +72,20 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 
         <section class="swiper-slide support-preview" aria-labelledby="support-preview-title">
           <div class="support-illustration">
-            <img src="/assets/home/b01andbumyxdonate.webp" alt="B01 and Bumyx supporting the site." />
+            <img src="/assets/home/b01andbumyxdonate.webp" alt={tx(locale, "B01 and Bumyx supporting the site.", "B01 y Bumyx apoyando el sitio.")} />
           </div>
 
           <div class="support-content">
-            <h2 id="support-preview-title">Support my work</h2>
-            <p>Like what I make? A small Ko-fi tip helps me keep building this site and new projects.</p>
-            <a class="about-link" href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer">Support me on Ko-fi</a>
+            <h2 id="support-preview-title">{tx(locale, "Support my work", "Apoya mi trabajo")}</h2>
+            <p>{tx(locale, "Like what I make? A small Ko-fi tip helps me keep building this site and new projects.", "\u00bfTe gusta lo que hago? Una peque\u00f1a propina en Ko-fi me ayuda a seguir construyendo este sitio y nuevos proyectos.")}</p>
+            <a class="about-link" href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer">{tx(locale, "Support me on Ko-fi", "Ap\u00f3yame en Ko-fi")}</a>
           </div>
 
-          <nav class="slide-navigation" aria-label="Section navigation">
-            <button class="slide-arrow slide-arrow-up" type="button" aria-label="Previous section" data-slide-direction="prev">
+          <nav class="slide-navigation" aria-label={tx(locale, "Section navigation", "Navegaci\u00f3n de secciones")}>
+            <button class="slide-arrow slide-arrow-up" type="button" aria-label={tx(locale, "Previous section", "Secci\u00f3n anterior")} data-slide-direction="prev">
               <img class="slide-arrow-icon" src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
             </button>
-            <button class="slide-arrow slide-arrow-down" type="button" aria-label="Next section" data-slide-direction="next">
+            <button class="slide-arrow slide-arrow-down" type="button" aria-label={tx(locale, "Next section", "Siguiente secci\u00f3n")} data-slide-direction="next">
               <img class="slide-arrow-icon" src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
             </button>
           </nav>
@@ -88,18 +95,18 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           <div class="site-footer-content">
             <div class="site-footer-lineup" aria-hidden="true"></div>
             <h2 id="site-footer-title">IMMALLOY</h2>
-            <nav class="site-footer-links" aria-label="Footer links">
-              <a href="/">Home</a>
-              <a href="/about">About</a>
-              <a href="/portfolio">Portfolio</a>
-              <a href="/guestbook">Guestbook</a>
-              <a href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer">Support me on Ko-fi</a>
+            <nav class="site-footer-links" aria-label={tx(locale, "Footer links", "Enlaces del pie de p\u00e1gina")}>
+              <a href={localizedPath(locale, "/")}>{tx(locale, "Home", "Inicio")}</a>
+              <a href={localizedPath(locale, "/about")}>{tx(locale, "About", "Sobre m\u00ed")}</a>
+              <a href={localizedPath(locale, "/comics")}>{tx(locale, "Comics", "C\u00f3mics")}</a>
+              <a href={localizedPath(locale, "/guestbook")}>{tx(locale, "Guestbook", "Libro de visitas")}</a>
+              <a href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer">{tx(locale, "Support me on Ko-fi", "Ap\u00f3yame en Ko-fi")}</a>
             </nav>
             <p class="site-footer-note">© ImMalloy · Honduras</p>
           </div>
 
-          <nav class="slide-navigation slide-navigation-up" aria-label="Section navigation">
-            <button class="slide-arrow slide-arrow-up" type="button" aria-label="Previous section" data-slide-direction="prev">
+          <nav class="slide-navigation slide-navigation-up" aria-label={tx(locale, "Section navigation", "Navegaci\u00f3n de secciones")}>
+            <button class="slide-arrow slide-arrow-up" type="button" aria-label={tx(locale, "Previous section", "Secci\u00f3n anterior")} data-slide-direction="prev">
               <img class="slide-arrow-icon" src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
             </button>
           </nav>

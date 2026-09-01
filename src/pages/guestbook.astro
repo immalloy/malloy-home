@@ -1,90 +1,96 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
+import { getLocale, tx } from "../lib/i18n";
 
 const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
+const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
 ---
 
-<SiteLayout title="Guestbook | ImMalloy" description="Leave me an anonymous note or drawing.">
-  <main class="guestbook-page" data-guestbook-shell inert aria-hidden="true" aria-labelledby="guestbook-title">
-    <h1 id="guestbook-title">Guestbook</h1>
+<SiteLayout
+  title={tx(locale, "Guestbook | ImMalloy", "Libro de visitas | ImMalloy")}
+  description={tx(locale, "Leave me an anonymous note or drawing.", "Déjame una nota o un dibujo anónimo.")}
+  locale={locale}
+>
+  <main class="guestbook-page" data-guestbook-shell data-locale={locale} inert aria-hidden="true" aria-labelledby="guestbook-title">
+    <h1 id="guestbook-title">{tx(locale, "Guestbook", "Libro de visitas")}</h1>
 
-    <nav class="guestbook-view-switch" aria-label="Guestbook view">
-      <button type="button" data-view="browse" aria-controls="browse-panel" aria-pressed="true">Browse</button>
-      <button type="button" data-view="submit" aria-controls="submit-panel" aria-pressed="false">Submit</button>
+    <nav class="guestbook-view-switch" aria-label={tx(locale, "Guestbook view", "Vista del libro de visitas")}>
+      <button type="button" data-view="browse" aria-controls="browse-panel" aria-pressed="true">{tx(locale, "Browse", "Explorar")}</button>
+      <button type="button" data-view="submit" aria-controls="submit-panel" aria-pressed="false">{tx(locale, "Submit", "Escribir")}</button>
     </nav>
 
     <div class="guestbook-layout" data-view-layout data-view="browse">
-      <section class="composer" id="submit-panel" data-view-panel="submit" aria-label="Submit an entry" hidden>
-        <div class="mode-switch" aria-label="Choose what to submit">
-          <button type="button" data-mode="write" aria-pressed="true">Write</button>
-          <button type="button" data-mode="draw" aria-pressed="false">Draw</button>
-          <button type="button" data-mode="both" aria-pressed="false">Both</button>
+      <section class="composer" id="submit-panel" data-view-panel="submit" aria-label={tx(locale, "Submit an entry", "Enviar una entrada")} hidden>
+        <div class="mode-switch" aria-label={tx(locale, "Choose what to submit", "Elige qué enviar")}>
+          <button type="button" data-mode="write" aria-pressed="true">{tx(locale, "Write", "Escribir")}</button>
+          <button type="button" data-mode="draw" aria-pressed="false">{tx(locale, "Draw", "Dibujar")}</button>
+          <button type="button" data-mode="both" aria-pressed="false">{tx(locale, "Both", "Ambos")}</button>
         </div>
         <form data-guestbook-form>
           <div class="field-grid">
             <label>
-              <span>Display name <small>optional</small></span>
-              <input name="name" type="text" maxlength="48" autocomplete="name" placeholder="Anonymous" />
+              <span>{tx(locale, "Display name", "Nombre visible")} <small>{tx(locale, "optional", "opcional")}</small></span>
+            <input name="name" type="text" maxlength="48" autocomplete="name" placeholder={tx(locale, "Anonymous", "Anónimo")} />
             </label>
 
             <label>
-              <span>Country <small>optional</small></span>
+              <span>{tx(locale, "Country", "País")} <small>{tx(locale, "optional", "opcional")}</small></span>
               <select name="country" data-country-select>
-                <option value="__auto__">Auto-detect my country</option>
-                <option value="__private__">Prefer not to say</option>
+                <option value="__auto__">{tx(locale, "Auto-detect my country", "Detectar mi país automáticamente")}</option>
+                <option value="__private__">{tx(locale, "Prefer not to say", "Prefiero no decirlo")}</option>
                 <option value="Honduras">Honduras</option>
-                <option value="United States">United States</option>
+                <option value="United States">{tx(locale, "United States", "Estados Unidos")}</option>
                 <option value="Mexico">Mexico</option>
                 <option value="Canada">Canada</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="Brazil">Brazil</option>
+                <option value="United Kingdom">{tx(locale, "United Kingdom", "Reino Unido")}</option>
+                <option value="Brazil">{tx(locale, "Brazil", "Brasil")}</option>
                 <option value="Argentina">Argentina</option>
                 <option value="Chile">Chile</option>
-                <option value="Spain">Spain</option>
-                <option value="France">France</option>
-                <option value="Germany">Germany</option>
-                <option value="Italy">Italy</option>
+                <option value="Spain">{tx(locale, "Spain", "España")}</option>
+                <option value="France">{tx(locale, "France", "Francia")}</option>
+                <option value="Germany">{tx(locale, "Germany", "Alemania")}</option>
+                <option value="Italy">{tx(locale, "Italy", "Italia")}</option>
                 <option value="Portugal">Portugal</option>
-                <option value="Japan">Japan</option>
-                <option value="South Korea">South Korea</option>
+                <option value="Japan">{tx(locale, "Japan", "Japón")}</option>
+                <option value="South Korea">{tx(locale, "South Korea", "Corea del Sur")}</option>
                 <option value="China">China</option>
                 <option value="Australia">Australia</option>
-                <option value="__other__">Other country…</option>
+                <option value="__other__">{tx(locale, "Other country…", "Otro pa\u00eds…")}</option>
               </select>
             </label>
           </div>
 
           <label class="custom-country" data-custom-country hidden>
-            <span>Your country</span>
-            <input name="customCountry" type="text" maxlength="56" autocomplete="country-name" placeholder="Type your country" />
+            <span>{tx(locale, "Your country", "Tu pa\u00eds")}</span>
+            <input name="customCountry" type="text" maxlength="56" autocomplete="country-name" placeholder={tx(locale, "Type your country", "Escribe tu país")} />
           </label>
 
           <div class="message-field" data-message-field>
             <label for="guestbook-message">
-              <span>Message <small data-message-required>required</small></span>
+              <span>{tx(locale, "Message", "Mensaje")} <small data-message-required>{tx(locale, "required", "obligatorio")}</small></span>
             </label>
             <textarea
               id="guestbook-message"
               name="message"
               rows="7"
               maxlength="1200"
-              placeholder="Say hello…"
+              placeholder={tx(locale, "Say hello…", "Di hola…")}
             ></textarea>
           </div>
 
           <div class="drawing-field" data-drawing-field hidden>
-            <span class="field-title">Drawing <small data-drawing-required>optional</small></span>
+            <span class="field-title">{tx(locale, "Drawing", "Dibujo")} <small data-drawing-required>{tx(locale, "optional", "opcional")}</small></span>
 
-            <div class="drawing-tools" aria-label="Drawing tools">
-              <input type="color" value="#1a1d24" data-ink-color aria-label="Ink color" />
+            <div class="drawing-tools" aria-label={tx(locale, "Drawing tools", "Herramientas de dibujo")}>
+              <input type="color" value="#1a1d24" data-ink-color aria-label={tx(locale, "Ink color", "Color de tinta")} />
               <label class="brush-size">
-                <span>Brush <output data-brush-output>6</output></span>
-                <input type="range" min="2" max="24" value="6" data-brush-size aria-label="Brush size" />
+                <span>{tx(locale, "Brush", "Pincel")} <output data-brush-output>6</output></span>
+                <input type="range" min="2" max="24" value="6" data-brush-size aria-label={tx(locale, "Brush size", "Tama\u00f1o del pincel")} />
               </label>
-              <button type="button" data-undo disabled>Undo</button>
-              <button type="button" data-redo disabled>Redo</button>
-              <button type="button" data-clear>Clear</button>
-              <button type="button" data-expand-drawing aria-controls="drawing-board" aria-expanded="false">Expand</button>
+              <button type="button" data-undo disabled>{tx(locale, "Undo", "Deshacer")}</button>
+              <button type="button" data-redo disabled>{tx(locale, "Redo", "Rehacer")}</button>
+              <button type="button" data-clear>{tx(locale, "Clear", "Limpiar")}</button>
+              <button type="button" data-expand-drawing aria-controls="drawing-board" aria-expanded="false">{tx(locale, "Expand", "Expandir")}</button>
             </div>
 
             <canvas
@@ -94,7 +100,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
               width="900"
               height="520"
               role="img"
-              aria-label="Blank drawing whiteboard"
+              aria-label={tx(locale, "Blank drawing whiteboard", "Pizarra de dibujo en blanco")}
             ></canvas>
           </div>
 
@@ -112,12 +118,12 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
             ></div>
           </div>
 
-          <button class="submit-button" type="submit">Send for review</button>
+          <button class="submit-button" type="submit">{tx(locale, "Send for review", "Enviar para revisión")}</button>
           <p class="form-status" data-form-status role="status" aria-live="polite"></p>
         </form>
       </section>
 
-      <section class="entries" id="browse-panel" data-view-panel="browse" aria-label="Browse guestbook entries">
+      <section class="entries" id="browse-panel" data-view-panel="browse" aria-label={tx(locale, "Browse guestbook entries", "Explorar entradas del libro de visitas")}>
         <p class="entries-status" data-entries-status role="status" aria-live="polite"></p>
         <div class="entry-list" data-entry-list></div>
       </section>
@@ -125,21 +131,21 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
   </main>
 
   <dialog class="rules-dialog" data-rules-dialog open aria-labelledby="rules-title">
-    <p class="section-label">Before you enter</p>
-    <h2 id="rules-title">Keep this corner kind.</h2>
-    <p>Read these quick rules before writing or drawing:</p>
+    <p class="section-label">{tx(locale, "Before you enter", "Antes de entrar")}</p>
+    <h2 id="rules-title">{tx(locale, "Keep this corner kind.", "Mantengamos este rincón amable.")}</h2>
+    <p>{tx(locale, "Read these quick rules before writing or drawing:", "Lee estas reglas antes de escribir o dibujar:")}</p>
     <ul>
-      <li>Be kind. No harassment, hate, threats, or personal information.</li>
-      <li>No spam, malicious links, NSFW or graphic drawings.</li>
-      <li>Entries are anonymous by default and reviewed before appearing.</li>
-      <li>Do not share anything private that you would not want displayed publicly.</li>
+      <li>{tx(locale, "Be kind. No harassment, hate, threats, or personal information.", "Sé amable. No se permiten acoso, odio, amenazas ni información personal.")}</li>
+      <li>{tx(locale, "No spam, malicious links, NSFW or graphic drawings.", "No se permiten spam, enlaces maliciosos, contenido NSFW ni dibujos gráficos.")}</li>
+      <li>{tx(locale, "Entries are anonymous by default and reviewed before appearing.", "Las entradas son anónimas por defecto y se revisan antes de publicarse.")}</li>
+      <li>{tx(locale, "Do not share anything private that you would not want displayed publicly.", "No compartas nada privado que no quieras mostrar públicamente.")}</li>
     </ul>
     <label class="rules-check">
       <input type="checkbox" data-rules-check />
-      <span>I’ve read and agree to the guestbook rules.</span>
+      <span>{tx(locale, "I’ve read and agree to the guestbook rules.", "He leído y acepto las reglas del libro de visitas.")}</span>
     </label>
-    <p class="rules-error" data-rules-error role="alert" hidden>Check the box to enter the guestbook.</p>
-    <button class="enter-button" type="button" data-enter-guestbook>Enter guestbook</button>
+    <p class="rules-error" data-rules-error role="alert" hidden>{tx(locale, "Check the box to enter the guestbook.", "Marca la casilla para entrar al libro de visitas.")}</p>
+    <button class="enter-button" type="button" data-enter-guestbook>{tx(locale, "Enter guestbook", "Entrar al libro de visitas")}</button>
   </dialog>
 </SiteLayout>
 
@@ -686,6 +692,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
   const modeButtons = [...document.querySelectorAll("[data-mode]")];
   const messageField = document.querySelector("[data-message-field]");
   const messageInput = document.querySelector("#guestbook-message");
+  const messageRequired = document.querySelector("[data-message-required]");
   const drawingRequired = document.querySelector("[data-drawing-required]");
   const drawingField = document.querySelector("[data-drawing-field]");
   const form = document.querySelector("[data-guestbook-form]");
@@ -738,13 +745,16 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     if (redoButton instanceof HTMLButtonElement) redoButton.disabled = redoHistory.length === 0;
   };
 
+  const locale = document.querySelector("[data-guestbook-shell]")?.getAttribute("data-locale") === "es" ? "es" : "en";
+  const txClient = (english, spanish) => locale === "es" ? spanish : english;
+
   const setDrawingExpanded = (expanded) => {
     if (!(drawingField instanceof HTMLElement)) return;
     drawingField.classList.toggle("is-expanded", expanded);
     document.documentElement.classList.toggle("drawing-is-expanded", expanded);
     if (expandDrawingButton instanceof HTMLButtonElement) {
       expandDrawingButton.setAttribute("aria-expanded", String(expanded));
-      expandDrawingButton.textContent = expanded ? "Collapse" : "Expand";
+      expandDrawingButton.textContent = expanded ? txClient("Collapse", "Contraer") : txClient("Expand", "Expandir");
     }
   };
 
@@ -760,7 +770,8 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
       messageField.setAttribute("aria-hidden", String(mode === "draw"));
     }
     if (messageInput instanceof HTMLTextAreaElement) messageInput.required = mode !== "draw";
-    if (drawingRequired instanceof HTMLElement) drawingRequired.textContent = mode === "both" ? "required" : "optional";
+    if (messageRequired instanceof HTMLElement) messageRequired.textContent = mode === "draw" ? txClient("optional", "opcional") : txClient("required", "obligatorio");
+    if (drawingRequired instanceof HTMLElement) drawingRequired.textContent = mode === "both" ? txClient("required", "obligatorio") : txClient("optional", "opcional");
     if (drawingField instanceof HTMLElement) {
       drawingField.hidden = mode === "write";
       drawingField.setAttribute("aria-hidden", String(mode === "write"));
@@ -811,7 +822,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     snapshot();
     context.clearRect(0, 0, canvas.width, canvas.height);
     hasDrawing = false;
-    canvas.setAttribute("aria-label", "Blank drawing whiteboard");
+    canvas.setAttribute("aria-label", txClient("Blank drawing whiteboard", "Pizarra de dibujo en blanco"));
     updateHistoryButtons();
   };
 
@@ -823,7 +834,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     redoHistory.push(context.getImageData(0, 0, canvas.width, canvas.height));
     context.putImageData(previous, 0, 0);
     hasDrawing = canvasHasInk();
-    canvas?.setAttribute("aria-label", hasDrawing ? "Drawing whiteboard with marks" : "Blank drawing whiteboard");
+    canvas.setAttribute("aria-label", hasDrawing ? txClient("Drawing whiteboard with marks", "Pizarra de dibujo con trazos") : txClient("Blank drawing whiteboard", "Pizarra de dibujo en blanco"));
     updateHistoryButtons();
   };
 
@@ -836,7 +847,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     if (history.length > 20) history.shift();
     context.putImageData(next, 0, 0);
     hasDrawing = canvasHasInk();
-    canvas.setAttribute("aria-label", hasDrawing ? "Drawing whiteboard with marks" : "Blank drawing whiteboard");
+    canvas.setAttribute("aria-label", hasDrawing ? txClient("Drawing whiteboard with marks", "Pizarra de dibujo con trazos") : txClient("Blank drawing whiteboard", "Pizarra de dibujo en blanco"));
     updateHistoryButtons();
   };
 
@@ -874,7 +885,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     context.stroke();
     lastPoint = point;
     hasDrawing = true;
-    canvas?.setAttribute("aria-label", "Drawing whiteboard with marks");
+    canvas?.setAttribute("aria-label", txClient("Drawing whiteboard with marks", "Pizarra de dibujo con trazos"));
   };
 
   const finishDrawing = (event) => {
@@ -888,7 +899,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     if (!country) return "";
     if (!/^[A-Z]{2}$/.test(country)) return country;
     try {
-      return new Intl.DisplayNames(["en"], { type: "region" }).of(country) ?? country;
+      return new Intl.DisplayNames([locale], { type: "region" }).of(country) ?? country;
     } catch {
       return country;
     }
@@ -901,7 +912,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     if (!entries.length) {
       const empty = document.createElement("p");
       empty.className = "empty-entries";
-      empty.textContent = "No approved entries yet. You could be the first little note here.";
+      empty.textContent = txClient("No approved entries yet. You could be the first little note here.", "Aún no hay entradas aprobadas. Podrías dejar la primera notita aquí.");
       entryList.append(empty);
       return;
     }
@@ -931,7 +942,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
         const drawing = document.createElement("img");
         drawing.className = "entry-drawing";
         drawing.src = `/api/guestbook-drawing?id=${encodeURIComponent(entry.id)}`;
-        drawing.alt = `Drawing left by ${entry.name || "Anonymous"}`;
+        drawing.alt = txClient(`Drawing left by ${entry.name || "Anonymous"}`, `Dibujo dejado por ${entry.name || "Anónimo"}`);
         article.append(drawing);
       }
 
@@ -943,10 +954,10 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
     try {
       const response = await fetch("/api/guestbook", { headers: { Accept: "application/json" } });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "Could not load entries.");
+      if (!response.ok) throw new Error(txClient("Could not load entries.", "No se pudieron cargar las entradas."));
       renderEntries(Array.isArray(payload.entries) ? payload.entries : []);
     } catch (error) {
-      if (entriesStatus instanceof HTMLElement) entriesStatus.textContent = error instanceof Error ? error.message : "Entries are temporarily unavailable.";
+      if (entriesStatus instanceof HTMLElement) entriesStatus.textContent = txClient("Entries are temporarily unavailable.", "Las entradas no están disponibles temporalmente.");
     }
   };
 
@@ -1007,27 +1018,27 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
         : countrySelect.value
       : "__auto__";
     if (!(turnstileInput instanceof HTMLInputElement) || !turnstileInput.value) {
-      setStatus("Complete the bot check before sending.", "error");
+      setStatus(txClient("Complete the bot check before sending.", "Completa la verificación antes de enviar."), "error");
       return;
     }
     if (currentMode !== "draw" && messageInput instanceof HTMLTextAreaElement && !messageInput.value.trim()) {
-      setStatus("Add a message or choose Draw mode.", "error");
+      setStatus(txClient("Add a message or choose Draw mode.", "Añade un mensaje o elige el modo Dibujar."), "error");
       messageInput.focus();
       return;
     }
     if (currentMode !== "write" && !hasDrawing) {
-      setStatus(currentMode === "both" ? "Add a drawing for Both mode." : "Draw something first, or choose Write mode.", "error");
+      setStatus(currentMode === "both" ? txClient("Add a drawing for Both mode.", "Añade un dibujo para el modo Ambos.") : txClient("Draw something first, or choose Write mode.", "Dibuja algo primero o elige el modo Escribir."), "error");
       canvas?.focus();
       return;
     }
 
     const drawing = hasDrawing ? await exportDrawing() : null;
     if (hasDrawing && !drawing) {
-      setStatus("The drawing could not be prepared.", "error");
+      setStatus(txClient("The drawing could not be prepared.", "No se pudo preparar el dibujo."), "error");
       return;
     }
 
-    setStatus("Sending…");
+    setStatus(txClient("Sending…", "Enviando…"));
     const submitButton = form.querySelector(".submit-button");
     if (submitButton instanceof HTMLButtonElement) submitButton.disabled = true;
 
@@ -1046,7 +1057,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
         body: formData,
       });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "The entry could not be sent.");
+      if (!response.ok) throw new Error(txClient("The entry could not be sent.", "No se pudo enviar la entrada."));
 
       clearDrawing();
       history = [];
@@ -1056,10 +1067,10 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
       updateMode("write");
       showCustomCountry();
       globalThis.turnstile?.reset?.();
-      setStatus("Thanks! Your entry is waiting for moderation.", "success");
+      setStatus(txClient("Thanks! Your entry is waiting for moderation.", "¡Gracias! Tu entrada está esperando moderación."), "success");
     } catch (error) {
       globalThis.turnstile?.reset?.();
-      setStatus(error instanceof Error ? error.message : "The entry could not be sent.", "error");
+      setStatus(txClient("The entry could not be sent.", "No se pudo enviar la entrada."), "error");
     } finally {
       if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
     }
