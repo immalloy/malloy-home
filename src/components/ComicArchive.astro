@@ -1,5 +1,5 @@
 ---
-import { getLocale, localizedPath, tx } from "../lib/i18n";
+import { getLocale, localizedPath } from "../lib/i18n";
 
 const { comics, locale: requestedLocale } = Astro.props;
 const locale = getLocale(requestedLocale ?? Astro.currentLocale);
@@ -7,7 +7,7 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
 ---
 
 <main class="comics-archive" aria-labelledby="comics-archive-title">
-  <h1 id="comics-archive-title">{tx(locale, "Comics", "C\u00f3mics")}</h1>
+  <h1 id="comics-archive-title">Comics</h1>
 
   <div class="comic-archive-list">
     {comics.map((comic, index) => (
@@ -18,9 +18,9 @@ const comicNumber = (index) => String(index + 1).padStart(2, "0");
         <div class="comic-archive-copy">
           <h2>
             <span class="comic-archive-number">{comicNumber(index)}.</span>
-            <span>{locale === "es" ? comic.titleEs ?? comic.title : comic.title}</span>
+            <span>{comic.title}</span>
           </h2>
-          <p>{locale === "es" ? comic.descriptionEs ?? comic.description : comic.description}</p>
+          <p>{comic.description}</p>
         </div>
       </a>
     ))}

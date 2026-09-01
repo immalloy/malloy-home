@@ -2,6 +2,8 @@
 import SiteLayout from "../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
 
+return new Response(null, { status: 404 });
+
 const portfolio = (await getCollection("portfolio")).sort((a, b) => a.data.order - b.data.order);
 ---
 

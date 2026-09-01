@@ -2,7 +2,7 @@
 import SiteLayout from "../layouts/SiteLayout.astro";
 import ComicArchive from "../components/ComicArchive.astro";
 import { comics } from "../data/comics.js";
-import { getLocale, localizedPath, tx } from "../lib/i18n";
+import { getLocale, localizedPath } from "../lib/i18n";
 
 const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
 
@@ -23,8 +23,8 @@ const randomIndex = comics.length > 1
 ---
 
 <SiteLayout
-  title={tx(locale, "Comics | ImMalloy", "Cómics | ImMalloy")}
-  description={tx(locale, "Read my comics.", "Lee mis cómics.")}
+  title="Comics | ImMalloy"
+  description="Read my comics."
   locale={locale}
 >
   {isArchive ? (
@@ -33,72 +33,72 @@ const randomIndex = comics.length > 1
   <main class="comics-page">
     <section class="comic-reader" aria-labelledby="comic-title">
       <div class="comic-frame">
-        <img class="comic-image" src={currentComic.src} alt={locale === "es" ? currentComic.altEs ?? currentComic.alt : currentComic.alt} />
+        <img class="comic-image" src={currentComic.src} alt={currentComic.alt} />
       </div>
 
       <div class="comic-details">
         <h2 id="comic-title">
           {comicNumber(comicIndex)}. {currentComic.title}
         </h2>
-          <a class="back-to-comics" href={localizedPath(locale, "/comics")} aria-label={tx(locale, "Back to comics", "Volver a los cómics")}>
+          <a class="back-to-comics" href={localizedPath(locale, "/comics")} aria-label="Back to comics">
           <img src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
         </a>
-        <a class="permalink" href={comicHref(comicIndex)} title={`${tx(locale, "Permalink to", "Enlace permanente a")} ${locale === "es" ? currentComic.titleEs ?? currentComic.title : currentComic.title}`}>
+        <a class="permalink" href={comicHref(comicIndex)} title={`Permalink to ${currentComic.title}`}>
           [Permalink]
         </a>
       </div>
 
-      <nav class="comic-navigation" aria-label={tx(locale, "Comic navigation", "Navegación de cómics")}>
+      <nav class="comic-navigation" aria-label="Comic navigation">
         {isFirst ? (
-          <button class="comic-control is-disabled" type="button" disabled aria-label={tx(locale, "First comic", "Primer cómic")}>
+          <button class="comic-control is-disabled" type="button" disabled aria-label="First comic">
             <img src="/assets/comics/leftend.webp" alt="" aria-hidden="true" />
-            <span class="sr-only">{tx(locale, "First comic", "Primer cómic")}</span>
+            <span class="sr-only">First comic</span>
           </button>
         ) : (
-          <a class="comic-control" href={comicHref(0)} aria-label={tx(locale, "First comic", "Primer cómic")}>
+          <a class="comic-control" href={comicHref(0)} aria-label="First comic">
             <img src="/assets/comics/leftend.webp" alt="" aria-hidden="true" />
-            <span class="sr-only">{tx(locale, "First comic", "Primer cómic")}</span>
+            <span class="sr-only">First comic</span>
           </a>
         )}
 
         {isFirst ? (
-          <button class="comic-control is-disabled" type="button" disabled aria-label={tx(locale, "Previous comic", "Cómic anterior")}>
+          <button class="comic-control is-disabled" type="button" disabled aria-label="Previous comic">
             <img src="/assets/comics/leftarrow.webp" alt="" aria-hidden="true" />
-            <span class="sr-only">{tx(locale, "Previous comic", "Cómic anterior")}</span>
+            <span class="sr-only">Previous comic</span>
           </button>
         ) : (
-          <a class="comic-control" href={comicHref(comicIndex - 1)} aria-label={tx(locale, "Previous comic", "Cómic anterior")}>
+          <a class="comic-control" href={comicHref(comicIndex - 1)} aria-label="Previous comic">
             <img src="/assets/comics/leftarrow.webp" alt="" aria-hidden="true" />
-            <span class="sr-only">{tx(locale, "Previous comic", "Cómic anterior")}</span>
+            <span class="sr-only">Previous comic</span>
           </a>
         )}
 
-        <a class="comic-control" href={comicHref(randomIndex)} aria-label={tx(locale, "Random comic", "Cómic aleatorio")} title={tx(locale, "Random comic", "Cómic aleatorio")}>
+        <a class="comic-control" href={comicHref(randomIndex)} aria-label="Random comic" title="Random comic">
           <img class="random-icon" src="/assets/comics/questionrandom.webp" alt="" aria-hidden="true" />
-          <span class="sr-only">{tx(locale, "Random comic", "Cómic aleatorio")}</span>
+          <span class="sr-only">Random comic</span>
         </a>
 
         {isLast ? (
-          <button class="comic-control is-disabled" type="button" disabled aria-label={tx(locale, "Next comic", "Siguiente cómic")}>
+          <button class="comic-control is-disabled" type="button" disabled aria-label="Next comic">
             <img src="/assets/comics/rightarrow.webp" alt="" aria-hidden="true" />
-            <span class="sr-only">{tx(locale, "Next comic", "Siguiente cómic")}</span>
+            <span class="sr-only">Next comic</span>
           </button>
         ) : (
-          <a class="comic-control" href={comicHref(comicIndex + 1)} aria-label={tx(locale, "Next comic", "Siguiente cómic")}>
+          <a class="comic-control" href={comicHref(comicIndex + 1)} aria-label="Next comic">
             <img src="/assets/comics/rightarrow.webp" alt="" aria-hidden="true" />
-            <span class="sr-only">{tx(locale, "Next comic", "Siguiente cómic")}</span>
+            <span class="sr-only">Next comic</span>
           </a>
         )}
 
         {isLast ? (
-          <button class="comic-control is-disabled" type="button" disabled aria-label={tx(locale, "Last comic", "Último cómic")}>
+          <button class="comic-control is-disabled" type="button" disabled aria-label="Last comic">
             <img src="/assets/comics/rightend.webp" alt="" aria-hidden="true" />
-            <span class="sr-only">{tx(locale, "Last comic", "Último cómic")}</span>
+            <span class="sr-only">Last comic</span>
           </button>
         ) : (
-          <a class="comic-control" href={comicHref(comics.length - 1)} aria-label={tx(locale, "Last comic", "Último cómic")}>
+          <a class="comic-control" href={comicHref(comics.length - 1)} aria-label="Last comic">
             <img src="/assets/comics/rightend.webp" alt="" aria-hidden="true" />
-            <span class="sr-only">{tx(locale, "Last comic", "Último cómic")}</span>
+            <span class="sr-only">Last comic</span>
           </a>
         )}
       </nav>

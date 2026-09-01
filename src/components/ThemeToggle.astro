@@ -1,4 +1,10 @@
-<button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+---
+import { getLocale, tx } from "../lib/i18n";
+
+const locale = getLocale(Astro.currentLocale);
+---
+
+<button class="theme-toggle" type="button" aria-label={tx(locale, "Switch to dark mode", "Cambiar a modo oscuro")} aria-pressed="false">
   <img class="theme-toggle-icon theme-toggle-moon" src="/assets/ui/moon.webp" alt="" aria-hidden="true" />
   <img class="theme-toggle-icon theme-toggle-sun" src="/assets/ui/sun.webp" alt="" aria-hidden="true" />
 </button>
@@ -72,12 +78,13 @@
 
 <script is:inline>
   const themeToggle = document.querySelector(".theme-toggle");
+  const themeText = (english, spanish) => document.documentElement.lang === "es" ? spanish : english;
 
   const updateThemeToggle = (theme) => {
     themeToggle?.setAttribute("aria-pressed", String(theme === "dark"));
     themeToggle?.setAttribute(
       "aria-label",
-      theme === "dark" ? "Switch to light mode" : "Switch to dark mode",
+      theme === "dark" ? themeText("Switch to light mode", "Cambiar a modo claro") : themeText("Switch to dark mode", "Cambiar a modo oscuro"),
     );
   };
 

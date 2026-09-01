@@ -50,7 +50,7 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siDiscord.path} /></svg>
                   <span>malloycore</span>
                 </span>
-                <a class="about-social" href="https://open.spotify.com/user/31vpcyzysmxjx2lk24u3ithegcyi?si=3f4a0a3b38d8429f" target="_blank" rel="noreferrer" aria-label="Malloy on Spotify">
+                <a class="about-social" href="https://open.spotify.com/user/31vpcyzysmxjx2lk24u3ithegcyi?si=3f4a0a3b38d8429f" target="_blank" rel="noreferrer" aria-label={tx(locale, "Malloy on Spotify", "Malloy en Spotify")}>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siSpotify.path} /></svg>
                   <span>Spotify</span>
                 </a>
@@ -58,7 +58,7 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
             </div>
 
             <div class="about-me-visual">
-              <img src="/assets/about/malloy-chud.webp" alt="Malloy standing with crossed arms." />
+              <img src="/assets/about/malloy-chud.webp" alt={tx(locale, "Malloy standing with crossed arms.", "Malloy de pie con los brazos cruzados.")} />
             </div>
           </div>
         </section>
@@ -92,7 +92,7 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
       </div>
     </main>
 
-    <nav class="about-index" aria-label="About sections">
+    <nav class="about-index" aria-label={tx(locale, "About sections", "Secciones sobre mí")}>
       <div class="about-index-items">
         <button type="button" data-about-jump="0" aria-current="page">Malloy</button>
         <button type="button" data-about-jump="1" aria-current="false">Oyachi</button>

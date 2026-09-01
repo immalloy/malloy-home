@@ -39,11 +39,11 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
             <a class="about-link" href={localizedPath(locale, "/about")}>{tx(locale, "About Me", "Sobre mí")}</a>
           </div>
 
-          <nav class="slide-navigation" aria-label="Section navigation">
-            <button class="slide-arrow slide-arrow-up" type="button" aria-label="Previous section" data-slide-direction="prev">
+          <nav class="slide-navigation" aria-label={tx(locale, "Section navigation", "Navegación de secciones")}>
+            <button class="slide-arrow slide-arrow-up" type="button" aria-label={tx(locale, "Previous section", "Sección anterior")} data-slide-direction="prev">
               <img class="slide-arrow-icon" src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
             </button>
-            <button class="slide-arrow slide-arrow-down" type="button" aria-label="Next section" data-slide-direction="next">
+            <button class="slide-arrow slide-arrow-down" type="button" aria-label={tx(locale, "Next section", "Siguiente sección")} data-slide-direction="next">
               <img class="slide-arrow-icon" src="/assets/ui/down-arrow.webp" alt="" aria-hidden="true" />
             </button>
           </nav>
@@ -98,7 +98,7 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
             <nav class="site-footer-links" aria-label={tx(locale, "Footer links", "Enlaces del pie de p\u00e1gina")}>
               <a href={localizedPath(locale, "/")}>{tx(locale, "Home", "Inicio")}</a>
               <a href={localizedPath(locale, "/about")}>{tx(locale, "About", "Sobre m\u00ed")}</a>
-              <a href={localizedPath(locale, "/comics")}>{tx(locale, "Comics", "C\u00f3mics")}</a>
+              <a href={localizedPath(locale, "/comics")}>Comics</a>
               <a href={localizedPath(locale, "/guestbook")}>{tx(locale, "Guestbook", "Libro de visitas")}</a>
               <a href="https://ko-fi.com/immalloy" target="_blank" rel="noreferrer">{tx(locale, "Support me on Ko-fi", "Ap\u00f3yame en Ko-fi")}</a>
             </nav>
