@@ -520,15 +520,16 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
   }
 
   .entry-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
+    column-count: 2;
+    column-gap: 1.25rem;
   }
 
   :global(.entry) {
     position: relative;
+    break-inside: avoid;
     border: 2px solid var(--guestbook-card-border);
-    padding: 1.2rem 1.25rem 1.35rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem 1.1rem 1.15rem;
     background: var(--guestbook-card-background);
     color: var(--site-foreground);
     transform: rotate(-1deg);
@@ -559,15 +560,15 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
 
   :global(.entry-drawing) {
     display: block;
-    width: min(100%, 42rem);
-    aspect-ratio: 900 / 520;
-    height: auto;
-    margin: 1rem auto 0;
+    width: 100%;
+    height: 8rem;
+    margin: 0.8rem auto 0;
     object-fit: contain;
     background: var(--guestbook-paper);
   }
 
   .empty-entries {
+    column-span: all;
     margin: 0;
     color: var(--site-muted-strong);
     font-family: "FunkinOptions", sans-serif;
@@ -652,7 +653,7 @@ const turnstileSiteKey = "0x4AAAAAAEh0ELU3xDTqBuso";
 
   @media (max-width: 52rem) {
     .entry-list {
-      grid-template-columns: 1fr;
+      column-count: 1;
     }
   }
 
