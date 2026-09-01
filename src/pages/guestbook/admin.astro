@@ -25,6 +25,31 @@ if (authError) {
         <button class="action-button" type="button" data-refresh>Refresh</button>
       </div>
 
+      <form class="moderation-filters" data-admin-filters aria-label="Filter guestbook entries">
+        <label class="filter-field filter-search">
+          <span>Search</span>
+          <input type="search" data-filter-search placeholder="Name, message, country..." />
+        </label>
+        <label class="filter-field">
+          <span>Status</span>
+          <select data-filter-status>
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </label>
+        <label class="filter-field">
+          <span>Content</span>
+          <select data-filter-content>
+            <option value="all">All entries</option>
+            <option value="message">With message</option>
+            <option value="drawing">With drawing</option>
+          </select>
+        </label>
+        <button class="filter-clear" type="reset">Clear filters</button>
+      </form>
+
       <section aria-labelledby="entries-title">
         <h2 id="entries-title" class="visually-hidden">Guestbook entries</h2>
         <div class="moderation-list" data-admin-list></div>
@@ -53,6 +78,11 @@ if (authError) {
     const list = document.querySelector("[data-admin-list]");
     const status = document.querySelector("[data-admin-status]");
     const refreshButton = document.querySelector("[data-refresh]");
+    const filters = document.querySelector("[data-admin-filters]");
+    const searchInput = document.querySelector("[data-filter-search]");
+    const statusFilter = document.querySelector("[data-filter-status]");
+    const contentFilter = document.querySelector("[data-filter-content]");
+    let allEntries: AdminEntry[] = [];
 
     const makeText = (tag: keyof HTMLElementTagNameMap, className: string, value: string) => {
       const element = document.createElement(tag);
@@ -88,7 +118,11 @@ if (authError) {
       list.replaceChildren();
 
       if (!entries.length) {
-        list.append(makeText("p", "empty-state", "There are no guestbook entries yet."));
+        list.append(makeText(
+          "p",
+          "empty-state",
+          allEntries.length ? "No entries match these filters." : "There are no guestbook entries yet.",
+        ));
         return;
       }
 
@@ -124,6 +158,7 @@ if (authError) {
           delete: "Delete",
         };
         for (const action of ["approved", "rejected", "pending", "delete"]) {
+          if (action === entry.status) continue;
           const button = document.createElement("button");
           button.type = "button";
           button.className = action === "delete" ? "action-button action-button-danger" : "action-button";
@@ -137,6 +172,32 @@ if (authError) {
       }
     };
 
+    const getFilteredEntries = () => {
+      const query = searchInput instanceof HTMLInputElement ? searchInput.value.trim().toLowerCase() : "";
+      const selectedStatus = statusFilter instanceof HTMLSelectElement ? statusFilter.value : "all";
+      const selectedContent = contentFilter instanceof HTMLSelectElement ? contentFilter.value : "all";
+
+      return allEntries.filter((entry) => {
+        if (selectedStatus !== "all" && entry.status !== selectedStatus) return false;
+        if (selectedContent === "message" && !entry.message) return false;
+        if (selectedContent === "drawing" && !entry.hasDrawing) return false;
+        if (!query) return true;
+
+        return [entry.name, entry.message, entry.country, entry.status]
+          .some((value) => value.toLowerCase().includes(query));
+      });
+    };
+
+    const renderFilteredEntries = () => {
+      const filteredEntries = getFilteredEntries();
+      renderEntries(filteredEntries);
+      if (allEntries.length !== filteredEntries.length) {
+        setStatus(`Showing ${filteredEntries.length} of ${allEntries.length} entries.`);
+      } else {
+        setStatus(`${allEntries.length} entr${allEntries.length === 1 ? "y" : "ies"} loaded.`);
+      }
+    };
+
     const loadEntries = async () => {
       if (refreshButton instanceof HTMLButtonElement) refreshButton.disabled = true;
       setStatus("Loading entries...");
@@ -145,9 +206,8 @@ if (authError) {
         const response = await fetch("/api/guestbook-admin", { headers: { Accept: "application/json" } });
         const payload = await response.json();
         if (!response.ok) throw new Error(payload.error || "Could not load entries.");
-        const entries = Array.isArray(payload.entries) ? payload.entries as AdminEntry[] : [];
-        renderEntries(entries);
-        setStatus(`${entries.length} entr${entries.length === 1 ? "y" : "ies"} loaded.`);
+        allEntries = Array.isArray(payload.entries) ? payload.entries as AdminEntry[] : [];
+        renderFilteredEntries();
       } catch (error) {
         setStatus(error instanceof Error ? error.message : "Could not load entries.", true);
       } finally {
@@ -156,6 +216,10 @@ if (authError) {
     };
 
     refreshButton?.addEventListener("click", loadEntries);
+    filters?.addEventListener("submit", (event) => event.preventDefault());
+    filters?.addEventListener("input", renderFilteredEntries);
+    filters?.addEventListener("change", renderFilteredEntries);
+    filters?.addEventListener("reset", () => window.setTimeout(renderFilteredEntries));
     list?.addEventListener("click", async (event) => {
       const target = event.target;
       if (!(target instanceof HTMLButtonElement)) return;
@@ -278,7 +342,7 @@ if (authError) {
 
   .moderation-toolbar {
     justify-content: space-between;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   [data-admin-status] {
@@ -292,15 +356,73 @@ if (authError) {
     color: #d64264;
   }
 
+  .moderation-filters {
+    display: grid;
+    grid-template-columns: minmax(14rem, 2fr) repeat(2, minmax(9rem, 1fr)) auto;
+    align-items: end;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-field {
+    display: grid;
+    gap: 0.35rem;
+    color: var(--site-muted-strong);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .filter-field input,
+  .filter-field select {
+    min-width: 0;
+    border: 1px solid color-mix(in srgb, var(--site-foreground) 22%, transparent);
+    padding: 0.65rem 0.7rem;
+    background: color-mix(in srgb, var(--site-foreground) 5%, var(--site-background));
+    color: var(--site-foreground);
+    font: 0.95rem "FunkinLingLong", sans-serif;
+  }
+
+  .filter-field input:focus-visible,
+  .filter-field select:focus-visible {
+    outline: 2px solid var(--site-accent);
+    outline-offset: 2px;
+  }
+
+  .filter-clear {
+    border: 0;
+    padding: 0.65rem 0.25rem;
+    background: transparent;
+    color: var(--site-muted-strong);
+    cursor: pointer;
+    font: 0.68rem "FunkinOptions", sans-serif;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .filter-clear:hover,
+  .filter-clear:focus-visible {
+    color: var(--site-accent);
+  }
+
+  .filter-clear:focus-visible {
+    outline: 2px solid var(--site-accent);
+    outline-offset: 2px;
+  }
+
   .moderation-list {
     display: grid;
-    gap: 1rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: start;
+    gap: 0.75rem;
   }
 
   .moderation-entry {
-    padding: clamp(1rem, 3vw, 1.5rem);
+    min-width: 0;
+    padding: 0.85rem;
     background: color-mix(in srgb, var(--site-accent) 8%, var(--site-background));
-    box-shadow: 0 0.5rem 1.5rem color-mix(in srgb, var(--site-foreground) 10%, transparent);
+    box-shadow: 0 0.35rem 1rem color-mix(in srgb, var(--site-foreground) 10%, transparent);
   }
 
   .moderation-entry-pending {
@@ -314,14 +436,15 @@ if (authError) {
   .entry-header {
     flex-wrap: wrap;
     align-items: baseline;
-    margin-bottom: 1rem;
+    gap: 0.35rem 0.65rem;
+    margin-bottom: 0.7rem;
   }
 
   .entry-name {
     margin-bottom: 0;
     color: var(--site-foreground);
     font-family: "FunkinOptions", sans-serif;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 400;
   }
 
@@ -330,36 +453,49 @@ if (authError) {
     margin-bottom: 0;
     color: var(--site-muted-strong);
     font-family: "FunkinLingLong", sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.78rem;
   }
 
   .entry-status {
     margin-inline-start: auto;
     color: var(--site-accent);
     font-family: "FunkinOptions", sans-serif;
+    font-size: 0.65rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
   .entry-message {
-    max-width: 62rem;
-    margin-bottom: 1rem;
+    max-height: 8rem;
+    margin-bottom: 0.75rem;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.25;
     white-space: pre-wrap;
   }
 
   .entry-drawing {
     display: block;
-    width: min(100%, 42rem);
-    max-height: 28rem;
-    margin-bottom: 1rem;
+    width: 100%;
+    max-height: 9rem;
+    margin-bottom: 0.75rem;
     object-fit: contain;
-    object-position: left center;
+    object-position: center;
     background: #fffdf6;
     outline: 1px solid color-mix(in srgb, var(--site-foreground) 16%, transparent);
   }
 
   .entry-actions {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .entry-actions .action-button {
+    min-width: 0;
+    padding: 0.5rem 0.35rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
   }
 
   .entry-actions .action-button-danger {
@@ -409,9 +545,54 @@ if (authError) {
       align-items: flex-start;
     }
 
+    .moderation-filters {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .filter-search,
+    .filter-clear {
+      grid-column: 1 / -1;
+    }
+
     .entry-status {
       width: 100%;
       margin-inline-start: 0;
+    }
+  }
+
+  @media (min-width: 40.01rem) and (max-width: 64rem) {
+    .moderation-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 40.01rem) and (max-width: 50rem) {
+    .moderation-filters {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .filter-search {
+      grid-column: 1 / -1;
+    }
+
+    .filter-clear {
+      justify-self: start;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .moderation-filters,
+    .moderation-list {
+      grid-template-columns: 1fr;
+    }
+
+    .filter-search,
+    .filter-clear {
+      grid-column: auto;
+    }
+
+    .filter-clear {
+      justify-self: start;
     }
   }
 
