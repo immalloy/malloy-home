@@ -5,7 +5,6 @@ import { guestbookDrawingKey } from "../../lib/guestbook-drawing";
 const MAX_NAME_LENGTH = 48;
 const MAX_MESSAGE_LENGTH = 1200;
 const MAX_COUNTRY_LENGTH = 56;
-const MAX_DRAWING_BYTES = 300_000;
 const MAX_TURNSTILE_TOKEN_LENGTH = 2048;
 
 const json = (body: unknown, status = 200) =>
@@ -85,7 +84,7 @@ export const POST: APIRoute = async ({ request }) => {
     return typeof value === "string" ? value : "";
   };
   const drawing = formData.get("drawing");
-  const drawingBytes = drawing instanceof File && drawing.type === "image/png" && drawing.size > 0 && drawing.size <= MAX_DRAWING_BYTES
+  const drawingBytes = drawing instanceof File && drawing.type === "image/png" && drawing.size > 0
     ? new Uint8Array(await drawing.arrayBuffer())
     : null;
 
