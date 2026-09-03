@@ -421,6 +421,7 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
     opacity: 0;
     transform-origin: center;
     animation: about-sakura-fall var(--sakura-duration) linear var(--sakura-delay) infinite;
+    animation-play-state: paused;
   }
 
   @keyframes about-sakura-fall {
@@ -443,6 +444,10 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
       opacity: 0;
       transform: translate3d(115vw, var(--sakura-drift), 0) rotate(260deg);
     }
+  }
+
+  .swiper-slide-active .about-sakura-particle {
+    animation-play-state: running;
   }
 
   .about-index {
