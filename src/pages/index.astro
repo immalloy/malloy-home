@@ -94,7 +94,6 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
         <footer class="swiper-slide site-footer" aria-labelledby="site-footer-title">
           <div class="site-footer-content">
             <div class="site-footer-lineup" aria-hidden="true"></div>
-            <img class="site-footer-animation" src="/assets/home/gangnam-style.gif" alt="Memstar dancing Gangnam Style." />
             <h2 id="site-footer-title">IMMALLOY</h2>
             <nav class="site-footer-links" aria-label={tx(locale, "Footer links", "Enlaces del pie de p\u00e1gina")}>
               <a href={localizedPath(locale, "/")}>{tx(locale, "Home", "Inicio")}</a>
@@ -105,6 +104,8 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
             </nav>
             <p class="site-footer-note">© ImMalloy · Honduras</p>
           </div>
+
+          <img class="site-footer-animation" src="/assets/home/gangnam-style.gif" alt="Memstar dancing Gangnam Style." />
 
           <nav class="slide-navigation slide-navigation-up" aria-label={tx(locale, "Section navigation", "Navegaci\u00f3n de secciones")}>
             <button class="slide-arrow slide-arrow-up" type="button" aria-label={tx(locale, "Previous section", "Secci\u00f3n anterior")} data-slide-direction="prev">
@@ -446,7 +447,6 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
   }
 
   .site-footer h2,
-  .site-footer-animation,
   .site-footer-links,
   .site-footer-note {
     position: relative;
@@ -454,10 +454,15 @@ const locale = getLocale(Astro.props.locale ?? Astro.currentLocale);
   }
 
   .site-footer-animation {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
     display: block;
-    width: min(100%, 18rem);
+    width: min(18rem, 50vw);
     height: auto;
-    margin: 0 auto 0.75rem;
+    margin: 0;
+    transform: translate(-50%, -50%);
   }
 
   .site-footer h2 {
