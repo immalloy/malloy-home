@@ -1,0 +1,319 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  art: CollectionEntry<"art">[];
+}
+
+const { art } = Astro.props;
+const sortedArt = [...art].sort((a, b) => {
+  const dateDifference = b.data.date.getTime() - a.data.date.getTime();
+  return dateDifference || b.data.index - a.data.index;
+});
+
+const years = [];
+
+for (const entry of sortedArt) {
+  const date = entry.data.date;
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth();
+  let yearGroup = years.at(-1);
+
+  if (!yearGroup || yearGroup.year !== year) {
+    yearGroup = { year, months: [] };
+    years.push(yearGroup);
+  }
+
+  let monthGroup = yearGroup.months.at(-1);
+  if (!monthGroup || monthGroup.month !== month) {
+    monthGroup = {
+      month,
+      label: new Intl.DateTimeFormat("en-US", { month: "long", timeZone: "UTC" }).format(date),
+      entries: [],
+    };
+    yearGroup.months.push(monthGroup);
+  }
+
+  monthGroup.entries.push(entry);
+}
+
+const formatDate = (date) =>
+  new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+---
+
+<main class="art-archive" aria-labelledby="art-title">
+  <header class="art-header">
+    <h1 id="art-title">Art</h1>
+  </header>
+
+  <div class="art-gallery" id="art-gallery">
+    {years.map((yearGroup) => (
+      <section class="art-year" data-art-year aria-labelledby={`art-year-${yearGroup.year}`}>
+        <h2 id={`art-year-${yearGroup.year}`}>{yearGroup.year}</h2>
+
+        {yearGroup.months.map((monthGroup) => (
+          <section class="art-month" data-art-month aria-labelledby={`art-month-${yearGroup.year}-${monthGroup.month}`}>
+            <h3 id={`art-month-${yearGroup.year}-${monthGroup.month}`}>{monthGroup.label}</h3>
+
+            <div class="art-grid">
+              {monthGroup.entries.map((entry) => (
+                <a
+                  class="art-entry"
+                  href={`/art/${entry.id}`}
+                  aria-label={`Open ${entry.data.title}`}
+                  data-art-entry
+                  data-pswp-width={entry.data.width}
+                  data-pswp-height={entry.data.height}
+                  data-pswp-src={entry.data.image}
+                  data-pswp-caption={`${entry.data.title} - ${formatDate(entry.data.date)}`}
+                >
+                  <figure>
+                    <div class="art-image-wrap">
+                      <img src={entry.data.image} alt={`Artwork: ${entry.data.title}`} loading="lazy" decoding="async" />
+                    </div>
+                    <figcaption>
+                      <time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time>
+                      <strong>{entry.data.title}</strong>
+                    </figcaption>
+                  </figure>
+                </a>
+              ))}
+            </div>
+          </section>
+        ))}
+      </section>
+    ))}
+  </div>
+</main>
+
+<style>
+  .art-archive {
+    max-width: 86rem;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 4vw, 3rem) 6rem;
+  }
+
+  .art-header {
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .art-header h1 {
+    margin: 0;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(4rem, 12vw, 9rem);
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    line-height: 0.8;
+    text-align: center;
+  }
+
+  html[data-theme="dark"] .art-header h1 {
+    filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
+  }
+
+  .art-year + .art-year {
+    margin-top: clamp(4rem, 9vw, 8rem);
+  }
+
+  .art-year h2 {
+    margin: 0 0 clamp(1.25rem, 3vw, 2rem);
+    color: var(--site-foreground);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .art-month + .art-month {
+    margin-top: clamp(3rem, 7vw, 6rem);
+  }
+
+  .art-month h3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0 0 1rem;
+    color: var(--site-foreground);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .art-month h3::before,
+  .art-month h3::after {
+    height: 4px;
+    flex: 1;
+    background: var(--site-accent);
+    content: "";
+    opacity: 0.7;
+  }
+
+  .art-grid {
+    column-count: 3;
+    column-gap: clamp(1rem, 2.5vw, 2.5rem);
+  }
+
+  .art-entry {
+    display: block;
+    break-inside: avoid;
+    cursor: pointer;
+    margin: 0 0 clamp(1.5rem, 3vw, 3rem);
+    color: var(--site-foreground);
+    text-decoration: none;
+    transform: translateY(0);
+    transition: color 150ms ease-out, transform 180ms ease-out;
+  }
+
+  .art-entry figure {
+    margin: 0;
+  }
+
+  .art-image-wrap {
+    overflow: hidden;
+    background: var(--site-background);
+    box-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 0.12);
+    transition: box-shadow 180ms ease-out;
+  }
+
+  .art-image-wrap img {
+    display: block;
+    width: 100%;
+    height: auto;
+    outline: 1px solid oklch(0 0 0 / 0.1);
+    outline-offset: -1px;
+    transition: transform 180ms ease-out;
+  }
+
+  html[data-theme="dark"] .art-image-wrap img {
+    outline-color: oklch(1 0 0 / 0.1);
+  }
+
+  .art-entry figcaption {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.65rem 0.1rem 0;
+  }
+
+  .art-entry time {
+    color: var(--site-muted-strong);
+    font-size: 0.85rem;
+  }
+
+  .art-entry strong {
+    font-family: "FunkinOptions", sans-serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .art-entry:hover,
+  .art-entry:focus-visible {
+    color: var(--site-accent);
+    transform: translateY(-0.35rem);
+  }
+
+  .art-entry:hover .art-image-wrap,
+  .art-entry:focus-visible .art-image-wrap {
+    box-shadow: 0 1rem 2rem rgb(0 0 0 / 0.2);
+  }
+
+  .art-entry:hover img,
+  .art-entry:focus-visible img {
+    transform: scale(1.035);
+  }
+
+  .art-entry:focus-visible {
+    outline: 2px solid var(--site-accent);
+    outline-offset: 0.35rem;
+  }
+
+  @media (max-width: 60rem) {
+    .art-grid {
+      column-count: 2;
+    }
+  }
+
+  @media (max-width: 38rem) {
+    .art-archive {
+      padding-top: 2.5rem;
+    }
+
+    .art-grid {
+      column-count: 1;
+    }
+  }
+
+  :global(.pswp__art-caption) {
+    position: absolute;
+    right: 1rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    left: 1rem;
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 0.65rem 0.85rem;
+    background: rgb(0 0 0 / 0.72);
+    color: #fff;
+    font-family: "FunkinLingLong", sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    pointer-events: none;
+    text-align: center;
+  }
+</style>
+
+<script>
+  import PhotoSwipeLightbox from "photoswipe/lightbox";
+  import "photoswipe/style.css";
+
+  const entries = [...document.querySelectorAll("a[data-art-entry]")];
+  const lightbox = new PhotoSwipeLightbox({
+    gallery: "#art-gallery",
+    children: "a[data-art-entry]",
+    pswpModule: () => import("photoswipe"),
+    initialZoomLevel: (zoomLevel) => zoomLevel.fit * 0.85,
+    secondaryZoomLevel: 1.1,
+    maxZoomLevel: 1.25,
+    padding: { top: 88, bottom: 104, left: 28, right: 28 },
+  });
+
+  lightbox.on("uiRegister", () => {
+    lightbox.pswp.ui.registerElement({
+      name: "art-caption",
+      order: 9,
+      isButton: false,
+      appendTo: "root",
+      html: "",
+      onInit: (element) => {
+        const updateCaption = () => {
+          const currentElement = lightbox.pswp?.currSlide?.data.element;
+          element.textContent = currentElement?.dataset.pswpCaption ?? "";
+        };
+
+        lightbox.pswp?.on("change", updateCaption);
+        updateCaption();
+      },
+    });
+  });
+
+  entries.forEach((entry, index) => {
+    entry.addEventListener("click", (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      event.stopPropagation();
+      lightbox.loadAndOpen(index, { gallery: document.querySelector("#art-gallery") });
+    });
+  });
+
+  lightbox.init();
+</script>

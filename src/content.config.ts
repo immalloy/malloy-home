@@ -14,7 +14,6 @@ const portfolio = defineCollection({
       thumbnail: z.string(),
       thumbnailAlt: z.string(),
       links: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
-      gallery: z.array(z.object({ src: z.string(), alt: z.string() })).default([]),
       order: z.number().default(0),
     })
     .refine((item) => item.icon || item.iconImage, {
@@ -36,4 +35,16 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { portfolio, blog };
+const art = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/art" }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    image: z.string(),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    index: z.number().int().default(0),
+  }),
+});
+
+export const collections = { portfolio, blog, art };

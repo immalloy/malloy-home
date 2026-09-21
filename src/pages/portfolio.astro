@@ -13,7 +13,10 @@ const portfolio = (await getCollection("portfolio")).sort((a, b) => a.data.order
       {portfolio.map((project) => (
         <a
           class="project-card"
-          href={`/portfolio/${project.id}`}
+          href={project.data.links[0]?.href ?? "/portfolio"}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`Open ${project.data.name}`}
           style={`--project-color: ${project.data.accentColor}`}
         >
           <div class="project-thumbnail">

@@ -1,0 +1,186 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+
+export async function getStaticPaths() {
+  const art = await getCollection("art");
+  return art.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"art">;
+}
+
+const { entry } = Astro.props;
+const art = (await getCollection("art")).sort((a, b) => {
+  const dateDifference = b.data.date.getTime() - a.data.date.getTime();
+  return dateDifference || b.data.index - a.data.index;
+});
+const currentIndex = art.findIndex((item) => item.id === entry.id);
+const previous = art[currentIndex + 1];
+const next = art[currentIndex - 1];
+const formatDate = (date) =>
+  new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(date);
+---
+
+<SiteLayout title={`${entry.data.title} | Art | ImMalloy`} description={`Artwork: ${entry.data.title}.`}>
+  <main class="art-detail">
+    <a class="back-link" href="/art">← Back to art</a>
+
+    <article>
+      <div class="art-detail-gallery">
+        <a
+          class="art-detail-image"
+          href={entry.data.image}
+          aria-label={`Open ${entry.data.title} fullscreen`}
+          data-pswp-width={entry.data.width}
+          data-pswp-height={entry.data.height}
+          data-pswp-caption={`${entry.data.title} - ${formatDate(entry.data.date)}`}
+        >
+          <img src={entry.data.image} alt={`Artwork: ${entry.data.title}`} width={entry.data.width} height={entry.data.height} />
+        </a>
+      </div>
+
+      <header class="art-detail-header">
+        <p class="art-detail-date">{formatDate(entry.data.date)}</p>
+        <h1>{entry.data.title}</h1>
+      </header>
+
+    </article>
+
+    <nav class="art-detail-nav" aria-label="Art navigation">
+      {previous ? <a href={`/art/${previous.id}`}>← Previous</a> : <span></span>}
+      {next ? <a href={`/art/${next.id}`}>Next →</a> : <span></span>}
+    </nav>
+  </main>
+</SiteLayout>
+
+<style>
+  .art-detail {
+    max-width: 70rem;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 6rem) clamp(1.25rem, 4vw, 3rem) 6rem;
+  }
+
+  .back-link,
+  .art-detail-nav a {
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible,
+  .art-detail-nav a:hover,
+  .art-detail-nav a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .art-detail article {
+    margin-top: 2rem;
+  }
+
+  .art-detail-image {
+    display: block;
+    background: var(--site-background);
+    box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 0.14);
+  }
+
+  .art-detail-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    outline: 1px solid oklch(0 0 0 / 0.1);
+    outline-offset: -1px;
+  }
+
+  html[data-theme="dark"] .art-detail-image img {
+    outline-color: oklch(1 0 0 / 0.1);
+  }
+
+  .art-detail-header {
+    margin-top: 2rem;
+  }
+
+  .art-detail-date {
+    margin: 0;
+    color: var(--site-muted-strong);
+  }
+
+  .art-detail h1 {
+    margin: 0.35rem 0;
+    color: var(--site-accent);
+    font-family: "FunkinOptions", sans-serif;
+    font-size: clamp(2.2rem, 6vw, 5rem);
+    font-weight: 400;
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+
+  .art-detail-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 4rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--site-accent);
+  }
+
+  :global(.pswp__art-caption) {
+    position: absolute;
+    right: 1rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    left: 1rem;
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 0.65rem 0.85rem;
+    background: rgb(0 0 0 / 0.72);
+    color: #fff;
+    font-family: "FunkinLingLong", sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    pointer-events: none;
+    text-align: center;
+  }
+</style>
+
+<script>
+  import PhotoSwipeLightbox from "photoswipe/lightbox";
+  import "photoswipe/style.css";
+
+  const lightbox = new PhotoSwipeLightbox({
+    gallery: ".art-detail-gallery",
+    children: "a",
+    pswpModule: () => import("photoswipe"),
+    initialZoomLevel: (zoomLevel) => zoomLevel.fit * 0.85,
+    secondaryZoomLevel: 1.1,
+    maxZoomLevel: 1.25,
+    padding: { top: 88, bottom: 104, left: 28, right: 28 },
+  });
+
+  lightbox.on("uiRegister", () => {
+    lightbox.pswp.ui.registerElement({
+      name: "art-caption",
+      order: 9,
+      isButton: false,
+      appendTo: "root",
+      html: "",
+      onInit: (element) => {
+        const updateCaption = () => {
+          const currentElement = lightbox.pswp?.currSlide?.data.element;
+          element.textContent = currentElement?.dataset.pswpCaption ?? "";
+        };
+
+        lightbox.pswp?.on("change", updateCaption);
+        updateCaption();
+      },
+    });
+  });
+  lightbox.init();
+</script>

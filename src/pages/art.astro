@@ -1,0 +1,11 @@
+---
+import { getCollection } from "astro:content";
+import ArtArchive from "../components/ArtArchive.astro";
+import SiteLayout from "../layouts/SiteLayout.astro";
+
+const art = await getCollection("art");
+---
+
+<SiteLayout title="Art | ImMalloy" description="Drawings and other things I've made.">
+  <ArtArchive art={art} />
+</SiteLayout>

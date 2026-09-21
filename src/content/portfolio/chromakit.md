@@ -8,9 +8,6 @@ thumbnailAlt: ChromaKit logo and wordmark on a light blue background.
 links:
   - label: Download on GameBanana
     href: https://gamebanana.com/tools/23053
-gallery:
-  - src: /assets/projects/chromakit-app.webp
-    alt: ChromaKit desktop app with sample processing controls and generated output.
 order: 3
 ---
 

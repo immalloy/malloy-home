@@ -76,7 +76,7 @@ const languageHref = localizedPath(alternateLocale, currentPath);
           <a href={localizedPath(locale, "/about")}><span class="sidebar-link-icon sidebar-icon-about" aria-hidden="true"></span><span>{tx(locale, "About", "Sobre mí")}</span></a>
           <a href={localizedPath(locale, "/portfolio")}><span class="sidebar-link-icon sidebar-icon-portfolio" aria-hidden="true"></span><span>{tx(locale, "Portfolio", "Portafolio")}</span></a>
           <a href={localizedPath(locale, "/blog")}><span class="sidebar-link-icon sidebar-icon-blog" aria-hidden="true"></span><span>Blog</span></a>
-          <a href={localizedPath(locale, "/comics")}><span class="sidebar-link-icon sidebar-icon-comics" aria-hidden="true"></span><span>Comics</span></a>
+          <a href="/art"><span class="sidebar-link-icon sidebar-icon-art" aria-hidden="true"></span><span>Art</span></a>
           <a class="language-link" href={languageHref} lang={alternateLocale}>{locale === "en" ? "Español" : "English"}</a>
         </nav>
       </div>
@@ -85,6 +85,18 @@ const languageHref = localizedPath(alternateLocale, currentPath);
 </html>
 
 <style is:global>
+  @font-face {
+    font-family: "FunkinOptions";
+    src: url("/fonts/FunkinOptions.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "FunkinLingLong";
+    src: url("/fonts/FunkinLingLong.otf") format("opentype");
+    font-display: swap;
+  }
+
   :root {
     color-scheme: light;
     --site-background: #f7f5ef;
@@ -295,8 +307,8 @@ const languageHref = localizedPath(alternateLocale, currentPath);
     --sidebar-icon: url("/assets/sidebar/blog.webp");
   }
 
-  .sidebar-icon-comics {
-    --sidebar-icon: url("/assets/sidebar/comics.webp");
+  .sidebar-icon-art {
+    --sidebar-icon: url("/assets/sidebar/art.webp");
   }
 
   .site-sidebar nav a:hover,

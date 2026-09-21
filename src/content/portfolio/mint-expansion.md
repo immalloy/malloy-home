@@ -8,11 +8,6 @@ thumbnailAlt: "V.S. Impostor Legacy: Mint Expansion banner"
 links:
   - label: Download on GameBanana
     href: https://gamebanana.com/mods/711293
-gallery:
-  - src: /assets/projects/mint-expansion-screenshot-01.webp
-    alt: "V.S. Impostor Legacy: Mint Expansion gameplay"
-  - src: /assets/projects/mint-expansion-screenshot-02.webp
-    alt: "V.S. Impostor Legacy: Mint Expansion menu featuring the Detective DLC."
 order: 4
 ---
 

@@ -8,11 +8,6 @@ thumbnailAlt: Your Little Oyachi project banner.
 links:
   - label: Play on itch.io
     href: https://immalloy.itch.io/oyachigame
-gallery:
-  - src: /assets/projects/your-little-oyachi-screenshot-01.webp
-    alt: Your Little Oyachi with the character standing in the room.
-  - src: /assets/projects/your-little-oyachi-screenshot-02.webp
-    alt: Your Little Oyachi with the Toys menu open.
 order: 1
 ---
 

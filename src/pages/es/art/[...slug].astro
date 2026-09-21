@@ -1,0 +1,7 @@
+---
+export function getStaticPaths() {
+  return [{ params: { slug: "2026/pretty-isnt-it" } }];
+}
+
+return Astro.redirect("/art/2026/pretty-isnt-it", 301);
+---
