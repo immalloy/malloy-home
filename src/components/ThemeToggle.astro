@@ -1,10 +1,7 @@
 ---
-import { getLocale, tx } from "../lib/i18n";
-
-const locale = getLocale(Astro.currentLocale);
 ---
 
-<button class="theme-toggle" type="button" aria-label={tx(locale, "Switch to dark mode", "Cambiar a modo oscuro")} aria-pressed="false">
+<button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
   <img class="theme-toggle-icon theme-toggle-moon" src="/assets/ui/moon.webp" alt="" aria-hidden="true" />
   <img class="theme-toggle-icon theme-toggle-sun" src="/assets/ui/sun.webp" alt="" aria-hidden="true" />
 </button>

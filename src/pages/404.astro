@@ -1,22 +1,19 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
-import { getLocale, localizedPath, tx } from "../lib/i18n";
-
-const locale = getLocale(Astro.currentLocale);
 ---
 
-<SiteLayout title="404 | ImMalloy" description={tx(locale, "B01 could not find that page.", "B01 no pudo encontrar esa página.")} locale={locale} noIndex>
+<SiteLayout title="404 | ImMalloy" description="B01 could not find that page." noIndex>
     <main class="not-found" aria-labelledby="not-found-title">
       <div class="character">
-        <img src="/assets/errors/b01-404.webp" alt={tx(locale, "B01 looking at a missing page.", "B01 mirando una página que no existe.")} />
+        <img src="/assets/errors/b01-404.webp" alt="B01 looking at a missing page." />
       </div>
 
       <div class="not-found-content">
-        <p class="eyebrow">{tx(locale, "Oops, where did this go?", "Uy, ¿a dónde se fue esto?")}</p>
+        <p class="eyebrow">Oops, where did this go?</p>
         <h1 id="not-found-title">404</h1>
-        <p class="message">{tx(locale, "B01 couldn’t find that page.", "B01 no pudo encontrar esa página.")}</p>
-        <a class="home-link" href={localizedPath(locale, "/")}>
-          {tx(locale, "Back to home", "Volver al inicio")}
+        <p class="message">B01 couldn’t find that page.</p>
+        <a class="home-link" href="/">
+          Back to home
           <span class="home-link-arrow" aria-hidden="true"></span>
         </a>
       </div>
