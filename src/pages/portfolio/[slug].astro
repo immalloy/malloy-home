@@ -1,8 +1,11 @@
 ---
-import { getEntry, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import SiteLayout from "../../layouts/SiteLayout.astro";
 
-return new Response(null, { status: 404 });
+export async function getStaticPaths() {
+  const projects = await getCollection("portfolio");
+  return projects.map((project) => ({ params: { slug: project.id } }));
+}
 
 const { slug } = Astro.params;
 const project = slug ? await getEntry("portfolio", slug) : undefined;

@@ -1,5 +1,10 @@
 ---
 import ComicsPage from "../../comics.astro";
+import { comics } from "../../../data/comics.js";
+
+export function getStaticPaths() {
+  return comics.map((_, index) => ({ params: { comic: String(index + 1) } }));
+}
 
 const comic = Astro.params.comic ?? "1";
 ---

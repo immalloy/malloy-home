@@ -74,8 +74,9 @@ const languageHref = localizedPath(alternateLocale, currentPath);
         <nav aria-label={tx(locale, "Site navigation", "Navegación del sitio")}>
           <a href={localizedPath(locale, "/")}><span class="sidebar-link-icon sidebar-icon-home" aria-hidden="true"></span><span>{tx(locale, "Home", "Inicio")}</span></a>
           <a href={localizedPath(locale, "/about")}><span class="sidebar-link-icon sidebar-icon-about" aria-hidden="true"></span><span>{tx(locale, "About", "Sobre mí")}</span></a>
+          <a href={localizedPath(locale, "/portfolio")}><span class="sidebar-link-icon sidebar-icon-portfolio" aria-hidden="true"></span><span>{tx(locale, "Portfolio", "Portafolio")}</span></a>
+          <a href={localizedPath(locale, "/blog")}><span class="sidebar-link-icon sidebar-icon-blog" aria-hidden="true"></span><span>Blog</span></a>
           <a href={localizedPath(locale, "/comics")}><span class="sidebar-link-icon sidebar-icon-comics" aria-hidden="true"></span><span>Comics</span></a>
-          <a href={localizedPath(locale, "/guestbook")}><span class="sidebar-link-icon sidebar-icon-guestbook" aria-hidden="true"></span><span>{tx(locale, "Guestbook", "Libro de visitas")}</span></a>
           <a class="language-link" href={languageHref} lang={alternateLocale}>{locale === "en" ? "Español" : "English"}</a>
         </nav>
       </div>
@@ -296,10 +297,6 @@ const languageHref = localizedPath(alternateLocale, currentPath);
 
   .sidebar-icon-comics {
     --sidebar-icon: url("/assets/sidebar/comics.webp");
-  }
-
-  .sidebar-icon-guestbook {
-    --sidebar-icon: url("/assets/sidebar/guestbook.webp");
   }
 
   .site-sidebar nav a:hover,
