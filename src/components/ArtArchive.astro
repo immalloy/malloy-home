@@ -74,7 +74,7 @@ const formatDate = (date) =>
                 >
                   <figure>
                     <div class="art-image-wrap">
-                      <img src={entry.data.image} alt={`Artwork: ${entry.data.title}`} loading="lazy" decoding="async" />
+                      <img src={entry.data.thumbnail ?? entry.data.image} alt={`Artwork: ${entry.data.title}`} loading="lazy" decoding="async" />
                     </div>
                     <figcaption>
                       <time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time>
@@ -270,6 +270,7 @@ const formatDate = (date) =>
     pointer-events: none;
     text-align: center;
   }
+
 </style>
 
 <script>

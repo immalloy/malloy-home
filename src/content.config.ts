@@ -41,6 +41,7 @@ const art = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     image: z.string(),
+    thumbnail: z.string().optional(),
     width: z.number().int().positive(),
     height: z.number().int().positive(),
     index: z.number().int().default(0),

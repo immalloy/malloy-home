@@ -1,7 +1,8 @@
 ---
 title: "Dance"
 date: 2026-10-03
-image: "/assets/art/2026/10/001-dance.png"
+image: "/assets/art/2026/10/001-dance.webp"
+thumbnail: "/assets/art/2026/10/thumbs/001-dance.webp"
 width: 2565
 height: 2098
 index: 1
