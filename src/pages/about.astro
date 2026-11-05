@@ -6,12 +6,11 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
 <SiteLayout
   title={"About Malloy | ImMalloy"}
   description={"A little about Malloy, the things I make, and what I'm working on."}>
-  <div class="about-page" data-about-color="blue">
-    <h1 class="about-page-title" id="about-page-title" aria-live="polite">{"About"} <span class="about-page-title-name">Malloy</span></h1>
+  <div class="about-page">
+    <h1 class="about-page-title" id="about-page-title">{"About"} <span>Malloy</span></h1>
 
-    <main class="swiper about-swiper" aria-labelledby="about-page-title">
-      <div class="swiper-wrapper">
-        <section class="swiper-slide about-panel about-panel-me" aria-labelledby="about-me-heading">
+    <main aria-labelledby="about-page-title">
+        <section class="about-panel about-panel-me" aria-labelledby="about-me-heading">
           <div class="about-bubbles" aria-label={"Floating bubbles"}>
             <button class="about-bubble" type="button" aria-label={"Pop bubble"} style="--bubble-x: 8%; --bubble-size: 2.8rem; --bubble-delay: -2s; --bubble-duration: 11s; --bubble-drift: 3rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
             <button class="about-bubble" type="button" aria-label={"Pop bubble"} style="--bubble-x: 24%; --bubble-size: 2.1rem; --bubble-delay: -7s; --bubble-duration: 13s; --bubble-drift: -4rem;"><img src="/assets/about/about-bubble.webp" alt="" /></button>
@@ -57,42 +56,7 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
             </div>
           </div>
         </section>
-
-        <section class="swiper-slide about-panel about-panel-oyachi" aria-labelledby="about-oyachi-heading">
-          <div class="about-sakura" aria-hidden="true">
-            <img class="about-sakura-particle" src="/assets/about/oyachi-leaf.webp" alt="" style="--sakura-y: 7%; --sakura-size: 2.2rem; --sakura-delay: -2s; --sakura-duration: 14s; --sakura-drift: 10rem;" />
-            <img class="about-sakura-particle" src="/assets/about/oyachi-flower.webp" alt="" style="--sakura-y: 19%; --sakura-size: 2.7rem; --sakura-delay: -8s; --sakura-duration: 18s; --sakura-drift: -13rem;" />
-            <img class="about-sakura-particle" src="/assets/about/oyachi-leaf.webp" alt="" style="--sakura-y: 36%; --sakura-size: 1.5rem; --sakura-delay: -12s; --sakura-duration: 20s; --sakura-drift: 15rem;" />
-            <img class="about-sakura-particle" src="/assets/about/oyachi-flower.webp" alt="" style="--sakura-y: 55%; --sakura-size: 2rem; --sakura-delay: -5s; --sakura-duration: 16s; --sakura-drift: -9rem;" />
-            <img class="about-sakura-particle" src="/assets/about/oyachi-leaf.webp" alt="" style="--sakura-y: 72%; --sakura-size: 2.5rem; --sakura-delay: -15s; --sakura-duration: 19s; --sakura-drift: 12rem;" />
-            <img class="about-sakura-particle" src="/assets/about/oyachi-flower.webp" alt="" style="--sakura-y: 89%; --sakura-size: 1.7rem; --sakura-delay: -10s; --sakura-duration: 15s; --sakura-drift: -15rem;" />
-          </div>
-
-          <div class="about-panel-inner about-oyachi-layout">
-            <div class="about-panel-copy">
-              <h2 id="about-oyachi-heading">Oyachi.</h2>
-              <p class="about-lede">
-                {"Oyachi (also known as Shinjou) is my wife, and she’s really sweet and caring. She shows her affection in lovely ways, and she’s especially cute when she talks or reacts to things, especially when she gets very happy. She can be busy and a little oblivious sometimes, but she’s caring, affectionate, and the love of my life. I’ll always be there for her."}
-              </p>
-              <p class="about-lede">
-                {"She makes me the happiest man ever! ♥"}
-              </p>
-            </div>
-
-            <div class="about-oyachi-visual">
-              <img src="/assets/about/oyachi.webp" alt={"A drawing of Oyachi."} />
-            </div>
-          </div>
-        </section>
-      </div>
     </main>
-
-    <nav class="about-index" aria-label={"About sections"}>
-      <div class="about-index-items">
-        <button type="button" data-about-jump="0" aria-current="page">Malloy</button>
-        <button type="button" data-about-jump="1" aria-current="false">Oyachi</button>
-      </div>
-    </nav>
   </div>
 </SiteLayout>
 
@@ -130,15 +94,6 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
     transition: background-color 700ms ease;
   }
 
-  .about-page[data-about-color="pink"] {
-    --about-accent: #FA5656;
-    --about-background: #f7eee8;
-  }
-
-  :global(html[data-theme="dark"]) .about-page[data-about-color="pink"] {
-    --about-background: #252026;
-  }
-
   .about-page-title {
     position: absolute;
     z-index: 4;
@@ -159,14 +114,6 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
   :global(html[data-theme="dark"]) .about-page-title,
   :global(html[data-theme="dark"]) .about-panel h2 {
     filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
-  }
-
-  .about-swiper {
-    --swiper-wrapper-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    height: 100svh;
   }
 
   .about-panel {
@@ -196,13 +143,6 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
     justify-content: center;
   }
 
-  .about-oyachi-layout {
-    width: min(100%, 78rem);
-    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.85fr);
-    gap: clamp(0.5rem, 1.5vw, 1.5rem);
-    justify-content: center;
-  }
-
   .about-panel-copy {
     max-width: 42rem;
   }
@@ -218,10 +158,6 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
     line-height: 0.82;
     text-wrap: balance;
     transition: color 700ms ease;
-  }
-
-  .about-oyachi-layout h2 {
-    font-size: clamp(3.5rem, 7vw, 7rem);
   }
 
   .about-lede {
@@ -278,8 +214,7 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
     cursor: default;
   }
 
-  .about-me-visual,
-  .about-oyachi-visual {
+  .about-me-visual {
     display: grid;
     align-content: center;
     justify-items: start;
@@ -292,26 +227,8 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
     object-fit: contain;
   }
 
-  .about-oyachi-visual img {
-    display: block;
-    width: min(100%, 30rem);
-    max-height: 64svh;
-    object-fit: contain;
-  }
-
-  :global(html[data-theme="dark"]) .about-me-visual img,
-  :global(html[data-theme="dark"]) .about-oyachi-visual img {
+  :global(html[data-theme="dark"]) .about-me-visual img {
     filter: drop-shadow(2px 0 var(--site-foreground)) drop-shadow(-2px 0 var(--site-foreground)) drop-shadow(0 2px var(--site-foreground)) drop-shadow(0 -2px var(--site-foreground)) drop-shadow(1px 1px var(--site-foreground)) drop-shadow(-1px 1px var(--site-foreground)) drop-shadow(1px -1px var(--site-foreground)) drop-shadow(-1px -1px var(--site-foreground));
-  }
-
-  .about-sakura {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 700ms ease;
   }
 
   .about-bubbles {
@@ -319,13 +236,9 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
     z-index: 2;
     inset: 0;
     overflow: hidden;
-    opacity: 0;
+    opacity: 1;
     pointer-events: none;
     transition: opacity 700ms ease;
-  }
-
-  .swiper-slide-active .about-bubbles {
-    opacity: 1;
   }
 
   .about-bubble {
@@ -342,11 +255,7 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
     cursor: pointer;
     opacity: 0;
     pointer-events: auto;
-    animation: about-bubble-rise var(--bubble-duration) linear var(--bubble-delay) infinite paused;
-  }
-
-  .swiper-slide-active .about-bubble {
-    animation-play-state: running;
+    animation: about-bubble-rise var(--bubble-duration) linear var(--bubble-delay) infinite;
   }
 
   .about-bubble img {
@@ -403,91 +312,6 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
     }
   }
 
-  .swiper-slide-active .about-sakura {
-    opacity: 1;
-  }
-
-  .about-sakura-particle {
-    position: absolute;
-    top: var(--sakura-y);
-    left: -5rem;
-    width: var(--sakura-size);
-    height: auto;
-    opacity: 0;
-    transform-origin: center;
-    animation: about-sakura-fall var(--sakura-duration) linear var(--sakura-delay) infinite;
-    animation-play-state: paused;
-  }
-
-  @keyframes about-sakura-fall {
-    0% {
-      opacity: 0;
-      transform: translate3d(-10vw, 0, 0) rotate(-35deg);
-    }
-
-    16% {
-      opacity: 0.28;
-      transform: translate3d(10vw, calc(var(--sakura-drift) * -0.2), 0) rotate(35deg);
-    }
-
-    58% {
-      opacity: 0.16;
-      transform: translate3d(60vw, calc(var(--sakura-drift) * 0.35), 0) rotate(150deg);
-    }
-
-    100% {
-      opacity: 0;
-      transform: translate3d(115vw, var(--sakura-drift), 0) rotate(260deg);
-    }
-  }
-
-  .swiper-slide-active .about-sakura-particle {
-    animation-play-state: running;
-  }
-
-  .about-index {
-    position: absolute;
-    z-index: 5;
-    inset-inline: 0;
-    inset-block-end: max(1.25rem, env(safe-area-inset-bottom));
-    display: flex;
-    justify-content: center;
-    padding-inline: 1rem;
-    pointer-events: none;
-  }
-
-  .about-index-items {
-    display: flex;
-    gap: 0.4rem;
-    pointer-events: auto;
-  }
-
-  .about-index-items button {
-    border: 0;
-    border-block-end: 2px solid transparent;
-    padding: 0.35rem 0.55rem;
-    background: transparent;
-    color: var(--site-muted-strong);
-    cursor: pointer;
-    font-family: "FunkinOptions", sans-serif;
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: border-color 700ms ease, color 700ms ease;
-  }
-
-  .about-index-items button[aria-current="page"],
-  .about-index-items button:hover,
-  .about-index-items button:focus-visible {
-    border-color: var(--about-accent);
-    color: var(--about-accent);
-  }
-
-  .about-index-items button:focus-visible {
-    outline: 2px solid var(--site-foreground);
-    outline-offset: 0.25rem;
-  }
-
   @media (max-width: 800px) {
     .about-page-title {
       font-size: clamp(2.5rem, 10vw, 4rem);
@@ -497,29 +321,25 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
       padding: 5.5rem max(1.25rem, env(safe-area-inset-right)) 6rem 1.25rem;
     }
 
-    .about-me-layout,
-    .about-oyachi-layout {
+    .about-me-layout {
       width: 100%;
       grid-template-columns: 1fr;
       gap: 0.35rem;
       align-content: center;
     }
 
-    .about-me-layout .about-panel-copy,
-    .about-oyachi-layout .about-panel-copy {
+    .about-me-layout .about-panel-copy {
       order: 2;
       text-align: center;
     }
 
-    .about-me-layout .about-me-visual,
-    .about-oyachi-layout .about-oyachi-visual {
+    .about-me-layout .about-me-visual {
       order: 1;
       justify-items: center;
     }
 
     h1,
-    h2,
-    .about-oyachi-layout h2 {
+    h2 {
       font-size: clamp(3.1rem, 14vw, 5.25rem);
     }
 
@@ -535,11 +355,6 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
     .about-me-visual img {
       width: min(100%, 18rem);
       height: min(40svh, 23rem);
-    }
-
-    .about-oyachi-visual img {
-      width: min(100%, 17rem);
-      max-height: 36svh;
     }
 
   }
@@ -561,76 +376,7 @@ import { siDiscord, siKofi, siSpotify, siX, siYoutube } from "simple-icons";
 </style>
 
 <script>
-  import Swiper from "swiper";
-  import { Keyboard, Mousewheel } from "swiper/modules";
-  import "swiper/css";
-
-  const aboutPage = document.querySelector(".about-page");
-  const pageTitleName = document.querySelector(".about-page-title-name");
-  const sectionControls = document.querySelectorAll("[data-about-jump]");
   const bubbles = document.querySelectorAll(".about-bubble");
-  const sectionTitles = ["Malloy", "Oyachi"];
-  let titleTypeTimer;
-  const swiper = new Swiper(".about-swiper", {
-    modules: [Keyboard, Mousewheel],
-    direction: "horizontal",
-    slidesPerView: 1,
-    speed: 800,
-    mousewheel: {
-      forceToAxis: false,
-      releaseOnEdges: true,
-    },
-    keyboard: { enabled: true },
-  });
-
-  const updateAboutState = () => {
-    const isOyachi = swiper.activeIndex === 1;
-    const nextTitle = sectionTitles[swiper.activeIndex] ?? sectionTitles[0];
-
-    if (pageTitleName.textContent !== nextTitle) {
-      window.clearTimeout(titleTypeTimer);
-
-      let erasingTitle = true;
-      const typeTitle = () => {
-        const currentTitle = pageTitleName.textContent ?? "";
-
-        if (erasingTitle && currentTitle) {
-          pageTitleName.textContent = currentTitle.slice(0, -1);
-          titleTypeTimer = window.setTimeout(typeTitle, 28);
-          return;
-        }
-
-        erasingTitle = false;
-        const typedTitle = pageTitleName.textContent ?? "";
-        const nextCharacter = nextTitle[typedTitle.length];
-
-        if (nextCharacter) {
-          pageTitleName.textContent = typedTitle + nextCharacter;
-          titleTypeTimer = window.setTimeout(typeTitle, 52);
-        }
-      };
-
-      typeTitle();
-    }
-
-    aboutPage.dataset.aboutColor = isOyachi ? "pink" : "blue";
-
-    sectionControls.forEach((control) => {
-      control.setAttribute(
-        "aria-current",
-        Number(control.dataset.aboutJump) === swiper.activeIndex ? "page" : "false",
-      );
-    });
-  };
-
-  swiper.on("slideChange", updateAboutState);
-  updateAboutState();
-
-  sectionControls.forEach((control) => {
-    control.addEventListener("click", () => {
-      swiper.slideTo(Number(control.dataset.aboutJump));
-    });
-  });
 
   const randomizeBubble = (bubble) => {
     bubble.style.setProperty("--bubble-x", `${Math.random() * 100}%`);
